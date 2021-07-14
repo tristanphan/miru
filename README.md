@@ -100,9 +100,8 @@ the [Android SDK](https://developer.android.com/studio).
 5. Open `ios/Runner.xcodeproj` in Xcode
 6. Set the scheme to `Runner > My Mac (Designed for iPad)`
 7. Press Run
-8. Copy `~/Library/Developer/Xcode/DerivedData/Runner-cmyiaqkfspsbjsdtjdbkahptzvrh/Build/Products/Debug-iphoneos/.XCInstall/Miru.app` to `/Applications/`
-    - Use `~/Library/Developer/Xcode/DerivedData/Runner-cmyiaqkfspsbjsdtjdbkahptzvrh/Build/Products/Release-iphoneos/.XCInstall/Miru.app` if you are compiling in Release mode
-
+8. When the app opens, ⌘-click the app in the dock to get the Miru.app file
+9. Copy Miru.app to /Applications/
 
 ## Android Notes
 
