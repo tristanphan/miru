@@ -1,0 +1,37 @@
+{
+  "name": "Miru",
+  "identifier": "com.tristanphan.miru",
+  "sourceURL": "",
+  "userInfo": {},
+  "apps": [
+    {
+      "name": "NineAnimator",
+      "bundleIdentifier": "com.tristanphan.miru",
+      "developerName": "Tristan Phan",
+      "version": "1.0.0",
+      "versionDate": "",
+      "versionDescription": "",
+      "downloadURL": "",
+      "localizedDescription": "",
+      "iconURL": "",
+      "tintColor": "79A9CB",
+      "size": 0,
+      "screenshotURLs": [
+      ],
+      "permissions": [
+      ]
+    }
+  ],
+  "news": [
+    {
+      "title": "GitHub",
+      "identifier": "com.tristanphan.miru.news.1",
+      "caption": "See the source code and bug trackers!",
+      "url": "",
+      "imageURL": "",
+      "tintColor": "000000",
+      "date": "",
+      "notify": false
+    }
+  ]
+}
