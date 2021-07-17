@@ -2,6 +2,24 @@
 
 ### Watch all your favorite anime shows and movies in one place.
 
+## Table of Contents
+
+1. [Features](#features)
+    1. [Video Player Features](#video-player-features)
+1. [Screenshots](#screenshots)
+1. [Install](#install)
+    1. [iOS](#ios)
+    1. [Android](#android)
+    1. [Apple Silicon Macs](#apple-silicon-macs)
+1. [Build](#build)
+    1. [Get an IPA File](#to-get-an-ipa-file)
+    1. [Compile for Apple Silicon Macs](#to-compile-for-apple-silicon-macs)
+1. [Android Notes](#android-notes)
+1. [Apple Silicon Mac Notes](#apple-silicon-mac-notes)
+1. [Resources](#resources)
+    1. [Pub Packages](#pub-packages)
+1. [Licensing](#licensing)
+
 ## Features
 
 - No Ads, Free
