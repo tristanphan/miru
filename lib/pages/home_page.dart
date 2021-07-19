@@ -90,7 +90,7 @@ class _HomePageState extends State<HomePage> {
                                 actions: [
                                   CupertinoActionSheetAction(
                                     child: Text(
-                                      "Clear All Pinned/Marked",
+                                      "Clear All Pinned",
                                     ),
                                     onPressed: () {
                                       Navigator.of(context).pop();
