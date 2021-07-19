@@ -39,35 +39,27 @@ class _DetailsPageState extends State<DetailsPage> {
     }
 
     return Scaffold(
-        appBar: AppBar(
-          actions: [
-            IconButton(
+        appBar: AppBar(actions: [
+          IconButton(
               icon: Icon(Icons.info),
               onPressed: () {
                 showInfo(context);
-              }
-            ),
-            IconButton(
+              }),
+          IconButton(
               icon: Icon(Icons.refresh),
               onPressed: () {
                 setState(() {
                   details = null;
                   loadedDetails.remove(widget.url);
                 });
-              }
-            )
-          ],
-          centerTitle: true,
-          title: Text(widget.title)
-        ),
+              })
+        ], centerTitle: true, title: Text(widget.title)),
         body: FutureBuilder(
             future: details,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting ||
                   snapshot.data == null)
-                return Center(
-                  child: CupertinoActivityIndicator()
-                );
+                return Center(child: CupertinoActivityIndicator());
               AnimeDetails details = snapshot.data;
               return SingleChildScrollView(
                   child: Column(children: [
@@ -77,30 +69,28 @@ class _DetailsPageState extends State<DetailsPage> {
                     child: Card(
                         elevation: 8,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
+                            borderRadius: BorderRadius.circular(15)),
                         child: Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: Row(children: [
                               ClipRRect(
-                                child: Image.network(
-                                  details.image,
-                                  height: min(
+                                  child: Image.network(details.image,
+                                      height: min(
+                                              200,
+                                              MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  2) *
+                                          3 /
+                                          2,
+                                      width: min(
                                           200,
                                           MediaQuery.of(context).size.width /
-                                              2) *
-                                      3 /
-                                      2,
-                                  width: min(200,
-                                      MediaQuery.of(context).size.width / 2),
-                                  fit: BoxFit.cover,
-                                  alignment: Alignment.center,
-                                ),
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.all(8)
-                              ),
+                                              2),
+                                      fit: BoxFit.cover,
+                                      alignment: Alignment.center),
+                                  borderRadius: BorderRadius.circular(15)),
+                              Padding(padding: EdgeInsets.all(8)),
                               Expanded(
                                   child: Column(
                                       crossAxisAlignment:
@@ -116,10 +106,10 @@ class _DetailsPageState extends State<DetailsPage> {
                                                         "Selectable Summary"),
                                                     shape:
                                                         RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              15)
-                                                    ),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        15)),
                                                     content: Column(
                                                         mainAxisSize:
                                                             MainAxisSize.min,
@@ -157,10 +147,9 @@ class _DetailsPageState extends State<DetailsPage> {
                                                 6 /
                                                 5,
                                             child: Center(
-                                                child: Text(
-                                              details.summary,
-                                              overflow: TextOverflow.fade,
-                                            )))),
+                                                child: Text(details.summary,
+                                                    overflow:
+                                                        TextOverflow.fade)))),
                                     Padding(padding: EdgeInsets.all(8)),
                                     Row(
                                         mainAxisAlignment:
@@ -170,7 +159,10 @@ class _DetailsPageState extends State<DetailsPage> {
                                               heroTag: Random().nextDouble(),
                                               mini: true,
                                               tooltip: "Pin Anime",
-                                              backgroundColor: pinned ? Colors.teal : Color.fromRGBO(100, 100, 100, 1),
+                                              backgroundColor: pinned
+                                                  ? Colors.teal
+                                                  : Color.fromRGBO(
+                                                      100, 100, 100, 1),
                                               foregroundColor: Colors.white,
                                               onPressed: () {
                                                 togglePin(
@@ -197,13 +189,11 @@ class _DetailsPageState extends State<DetailsPage> {
                                                       return AlertDialog(
                                                           title:
                                                               Text("More Info"),
-                                                          shape:
-                                                              RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        15),
-                                                          ),
+                                                          shape: RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          15)),
                                                           content:
                                                               SingleChildScrollView(
                                                                   child: Column(
@@ -247,7 +237,8 @@ class _DetailsPageState extends State<DetailsPage> {
                                                     },
                                                     context: context);
                                               },
-                                              backgroundColor: Color.fromRGBO(100, 100, 100, 1),
+                                              backgroundColor: Color.fromRGBO(
+                                                  100, 100, 100, 1),
                                               foregroundColor: Colors.white,
                                               child: Icon(Icons.info),
                                               tooltip: "More Info"),
@@ -258,23 +249,40 @@ class _DetailsPageState extends State<DetailsPage> {
                                                   Icons.play_arrow_rounded),
                                               foregroundColor: Colors.white,
                                               onPressed: () async {
-                                                int epNum = details.episodes.length - 1;
-                                                while (epNum >=0 && !isMarked(details.episodes[epNum].url)) {
+                                                int epNum =
+                                                    details.episodes.length - 1;
+                                                while (epNum >= 0 &&
+                                                    !isMarked(details
+                                                        .episodes[epNum].url)) {
                                                   epNum--;
                                                 }
                                                 if (epNum < 0) epNum = 0;
-                                                if (isMarked(details.episodes[epNum].url) && getEpisodeTotalTime(details.episodes[epNum].url) == getEpisodeTime(details.episodes[epNum].url)) epNum++;
-                                                if (epNum >= details.episodes.length) epNum = 0;
-                                                await Navigator.of(context).push(MaterialPageRoute(
-                                                    builder: (BuildContext context) {
-                                                      return Loading(
-                                                          url: details.episodes[epNum].url,
-                                                          name: details.name +
-                                                              " " +
-                                                              details.episodes[epNum].name,
-                                                          anime: details,
-                                                          detailsState: setState);
-                                                    }));
+                                                if (isMarked(details
+                                                        .episodes[epNum].url) &&
+                                                    getEpisodeTotalTime(details
+                                                            .episodes[epNum]
+                                                            .url) ==
+                                                        getEpisodeTime(details
+                                                            .episodes[epNum]
+                                                            .url)) epNum++;
+                                                if (epNum >=
+                                                    details.episodes.length)
+                                                  epNum = 0;
+                                                await Navigator.of(context)
+                                                    .push(MaterialPageRoute(
+                                                        builder: (BuildContext
+                                                            context) {
+                                                  return Loading(
+                                                      url: details
+                                                          .episodes[epNum].url,
+                                                      name: details.name +
+                                                          " " +
+                                                          details
+                                                              .episodes[epNum]
+                                                              .name,
+                                                      anime: details,
+                                                      detailsState: setState);
+                                                }));
                                                 setState(() {});
                                               },
                                               backgroundColor: Colors.red)
@@ -350,23 +358,22 @@ class _DetailsPageState extends State<DetailsPage> {
                                         if (episodeTime != 0 &&
                                             episodeTime != totalTime)
                                           Text(
-                                            formatDuration(
-                                                    Duration(
-                                                        milliseconds:
-                                                            episodeTime),
-                                                    Duration(
-                                                        milliseconds:
-                                                            episodeTime)) +
-                                                " / " +
-                                                formatDuration(
-                                                    Duration(
-                                                        milliseconds:
-                                                            totalTime),
-                                                    Duration(
-                                                        milliseconds:
-                                                            totalTime)),
-                                            style: TextStyle(fontSize: 20),
-                                          ),
+                                              formatDuration(
+                                                      Duration(
+                                                          milliseconds:
+                                                              episodeTime),
+                                                      Duration(
+                                                          milliseconds:
+                                                              episodeTime)) +
+                                                  " / " +
+                                                  formatDuration(
+                                                      Duration(
+                                                          milliseconds:
+                                                              totalTime),
+                                                      Duration(
+                                                          milliseconds:
+                                                              totalTime)),
+                                              style: TextStyle(fontSize: 20)),
                                         Row(
                                             mainAxisSize: MainAxisSize.min,
                                             children: [
@@ -383,18 +390,20 @@ class _DetailsPageState extends State<DetailsPage> {
                                               SizedBox(
                                                   width: 200,
                                                   child: FAProgressBar(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            15),
-                                                    animatedDuration: Duration(
-                                                        milliseconds: 100),
-                                                    maxValue: totalTime,
-                                                    size: 5,
-                                                    backgroundColor:
-                                                        Colors.white24,
-                                                    progressColor: Colors.white,
-                                                    currentValue: episodeTime,
-                                                  ))
+                                                      borderRadius: BorderRadius
+                                                          .circular(15),
+                                                      animatedDuration:
+                                                          Duration(
+                                                              milliseconds:
+                                                                  100),
+                                                      maxValue: totalTime,
+                                                      size: 5,
+                                                      backgroundColor:
+                                                          Colors.white24,
+                                                      progressColor:
+                                                          Colors.white,
+                                                      currentValue:
+                                                          episodeTime))
                                             ])
                                       ]),
                                 IconButton(
@@ -410,19 +419,13 @@ class _DetailsPageState extends State<DetailsPage> {
                                           details.episodes[index].url, details);
                                       setState(() {});
                                     }),
-                                Padding(
-                                  padding: EdgeInsets.all(4),
-                                ),
+                                Padding(padding: EdgeInsets.all(4)),
                                 Icon(Icons.navigate_next),
-                                Padding(
-                                  padding: EdgeInsets.all(8),
-                                )
+                                Padding(padding: EdgeInsets.all(8))
                               ])));
                     },
                     separatorBuilder: (BuildContext context, int index) {
-                      return Divider(
-                        height: 0,
-                      );
+                      return Divider(height: 0);
                     })
               ]));
             }));

@@ -15,9 +15,7 @@ class Seek {
       newDuration = controller.value.position - Duration(seconds: seconds);
     else
       newDuration = controller.value.position + Duration(seconds: seconds);
-    await controller.seekTo(
-      newDuration,
-    );
+    await controller.seekTo(newDuration);
     if (play) await controller.play();
   }
 
@@ -27,9 +25,7 @@ class Seek {
         darkenLeft = true;
       else
         darkenRight = true;
-      Future.delayed(
-        Duration(milliseconds: 400),
-      ).then((value) {
+      Future.delayed(Duration(milliseconds: 400)).then((value) {
         setState(() {
           if (direction == SeekDirection.BACKWARDS)
             darkenLeft = false;

@@ -41,60 +41,45 @@ class _LoadingState extends State<Loading> {
     super.initState();
     if (loadedVideos.containsKey(widget.url)) {
       VideoDetails video = loadedVideos[widget.url]!;
-      Future(
-        () => Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) {
-              return Player(
-                  name: video.title,
-                  url: video.url,
-                  sourceUrl: widget.url,
-                  anime: widget.anime,
-                  detailsState: widget.detailsState,
-                  lastEpisode: video.last,
-                  nextEpisode: video.next);
-            },
-          ),
-        ),
-      );
+      Future(() => Navigator.of(context)
+              .pushReplacement(MaterialPageRoute(builder: (context) {
+            return Player(
+                name: video.title,
+                url: video.url,
+                sourceUrl: widget.url,
+                anime: widget.anime,
+                detailsState: widget.detailsState,
+                lastEpisode: video.last,
+                nextEpisode: video.next);
+          })));
     } else {
-      Anime.getVideoWithProgress(widget.url, changeProgress).then(
-        (video) {
-          if (!mounted) return;
-          if (video == null) {
-            if (!errorVideoUrl.isCompleted) Navigator.of(context).pop();
-            errorVideoUrl.future.then(
-              (url) {
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (BuildContext context) {
-                      return EmergencyView(url);
-                    },
-                  ),
-                );
-                errorVideoUrl = Completer<String>();
-              },
-            );
-            return;
-          } else {
-            loadedVideos[widget.url] = video;
+      Anime.getVideoWithProgress(widget.url, changeProgress).then((video) {
+        if (!mounted) return;
+        if (video == null) {
+          if (!errorVideoUrl.isCompleted) Navigator.of(context).pop();
+          errorVideoUrl.future.then((url) {
             Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (context) {
-                  return Player(
-                      name: video.title,
-                      url: video.url,
-                      sourceUrl: widget.url,
-                      anime: widget.anime,
-                      detailsState: widget.detailsState,
-                      lastEpisode: video.last,
-                      nextEpisode: video.next);
-                },
-              ),
-            );
-          }
-        },
-      );
+                MaterialPageRoute(builder: (BuildContext context) {
+              return EmergencyView(url);
+            }));
+            errorVideoUrl = Completer<String>();
+          });
+          return;
+        } else {
+          loadedVideos[widget.url] = video;
+          Navigator.of(context)
+              .pushReplacement(MaterialPageRoute(builder: (context) {
+            return Player(
+                name: video.title,
+                url: video.url,
+                sourceUrl: widget.url,
+                anime: widget.anime,
+                detailsState: widget.detailsState,
+                lastEpisode: video.last,
+                nextEpisode: video.next);
+          }));
+        }
+      });
     }
   }
 
@@ -108,90 +93,65 @@ class _LoadingState extends State<Loading> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
-      body: Container(
-        width: double.maxFinite,
-        height: double.maxFinite,
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  (fallback ? "Fallback: " : "") + loadingProgress,
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(4),
-                ),
+        backgroundColor: Colors.black,
+        body: Container(
+            width: double.maxFinite,
+            height: double.maxFinite,
+            child: Stack(alignment: Alignment.center, children: [
+              Column(mainAxisSize: MainAxisSize.min, children: [
+                Text((fallback ? "Fallback: " : "") + loadingProgress,
+                    style:
+                        TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                Padding(padding: EdgeInsets.all(4)),
                 Container(
-                  width: 300,
-                  child: FAProgressBar(
-                    borderRadius: BorderRadius.circular(15),
-                    animatedDuration: Duration(milliseconds: 300),
-                    maxValue: 100,
-                    size: 10,
-                    backgroundColor: Colors.white24,
-                    progressColor: Colors.white,
-                    currentValue: progress,
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(4),
-                ),
-                Text(
-                  widget.name,
-                  style: TextStyle(fontSize: 20),
-                ),
-              ],
-            ),
-            Positioned(
-              top: 40,
-              right: 20,
-              child: Opacity(
-                opacity: fallback ? 0 : 1,
-                child: FloatingActionButton.extended(
-                  heroTag: Random().nextDouble(),
-                  backgroundColor: Colors.white12,
-                  foregroundColor: Colors.white,
-                  onPressed: () {
-                    setState(() {
-                      fallback = true;
-                      errorVideoUrl.future.then((url) {
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                            builder: (BuildContext context) {
-                              return EmergencyView(url);
-                            },
-                          ),
-                        );
-                        errorVideoUrl = Completer<String>();
-                      });
-                    });
-                  },
-                  label: Text("Fallback"),
-                  icon: Icon(Icons.error_outline_rounded),
-                ),
-              ),
-            ),
-            Positioned(
-              top: 40,
-              left: 20,
-              child: FloatingActionButton.extended(
-                heroTag: Random().nextDouble(),
-                backgroundColor: Colors.white12,
-                foregroundColor: Colors.white,
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                label: Text("Back"),
-                icon: Icon(Icons.navigate_before_rounded),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+                    width: 300,
+                    child: FAProgressBar(
+                        borderRadius: BorderRadius.circular(15),
+                        animatedDuration: Duration(milliseconds: 300),
+                        maxValue: 100,
+                        size: 10,
+                        backgroundColor: Colors.white24,
+                        progressColor: Colors.white,
+                        currentValue: progress)),
+                Padding(padding: EdgeInsets.all(4)),
+                Text(widget.name, style: TextStyle(fontSize: 20))
+              ]),
+              Positioned(
+                  top: 40,
+                  right: 20,
+                  child: Opacity(
+                      opacity: fallback ? 0 : 1,
+                      child: FloatingActionButton.extended(
+                          heroTag: Random().nextDouble(),
+                          backgroundColor: Colors.white12,
+                          foregroundColor: Colors.white,
+                          onPressed: () {
+                            setState(() {
+                              fallback = true;
+                              errorVideoUrl.future.then((url) {
+                                Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) {
+                                  return EmergencyView(url);
+                                }));
+                                errorVideoUrl = Completer<String>();
+                              });
+                            });
+                          },
+                          label: Text("Fallback"),
+                          icon: Icon(Icons.error_outline_rounded)))),
+              Positioned(
+                  top: 40,
+                  left: 20,
+                  child: FloatingActionButton.extended(
+                      heroTag: Random().nextDouble(),
+                      backgroundColor: Colors.white12,
+                      foregroundColor: Colors.white,
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      label: Text("Back"),
+                      icon: Icon(Icons.navigate_before_rounded)))
+            ])));
   }
 }
