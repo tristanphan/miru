@@ -19,9 +19,7 @@ Future<List<RecentRelease>> _getRecentReleases() async {
   var numberOfAnime =
       await Anime.evaluate("document.querySelectorAll('ul.items > li').length");
   while (numberOfAnime == 0) {
-    await Future.delayed(
-      Duration(milliseconds: 10),
-    );
+    await Future.delayed(Duration(milliseconds: 10));
     numberOfAnime = await Anime.evaluate(
         "document.querySelectorAll('div.popular.added_series_body > ul > li').length");
   }
@@ -42,9 +40,8 @@ Future<List<RecentRelease>> _getRecentReleases() async {
         "document.querySelectorAll('ul.items > li > div > a > img')[$item].src.trim()");
     String latestEp = await Anime.evaluate(
         "document.querySelectorAll('ul.items > li > p.episode')[$item].textContent.trim()");
-    recentReleases.add(
-      RecentRelease(title: title, url: url, image: image, latestEp: latestEp),
-    );
+    recentReleases.add(RecentRelease(
+        title: title, url: url, image: image, latestEp: latestEp));
   }
 
   return recentReleases;
@@ -56,9 +53,7 @@ Future<List<Popular>> _getPopular() async {
   var numberOfAnime = await Anime.evaluate(
       "document.querySelectorAll('div.popular.added_series_body > ul > li').length");
   while (numberOfAnime == 0) {
-    await Future.delayed(
-      Duration(milliseconds: 10),
-    );
+    await Future.delayed(Duration(milliseconds: 10));
     numberOfAnime = await Anime.evaluate(
         "document.querySelectorAll('div.popular.added_series_body > ul > li').length");
   }
@@ -73,14 +68,12 @@ Future<List<Popular>> _getPopular() async {
         "document.querySelectorAll('div.popular.added_series_body > ul > li > p:last-child > a')[$item].textContent.trim()");
     String genres = await Anime.evaluate(
         "document.querySelectorAll('div.popular.added_series_body > ul > li > p.genres')[$item].textContent.replace('Genres:', '').trim()");
-    popular.add(
-      Popular(
-          title: title,
-          url: url,
-          image: image,
-          latestEp: latestEp,
-          genres: genres),
-    );
+    popular.add(Popular(
+        title: title,
+        url: url,
+        image: image,
+        latestEp: latestEp,
+        genres: genres));
   }
 
   return popular;

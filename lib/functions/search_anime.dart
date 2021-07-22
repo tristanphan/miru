@@ -7,8 +7,7 @@ Future<List<SearchItem>> animeSearch(String keyword, Language language) async {
   print("Searching: " + keyword);
 
   await Anime.load(
-    "https://gogoanime.vc//search.html?keyword=" + Uri.encodeFull(keyword),
-  );
+      "https://gogoanime.vc//search.html?keyword=" + Uri.encodeFull(keyword));
 
   return _searchEngine(language);
 }
@@ -40,8 +39,7 @@ Future<List<SearchItem>> _searchEngine(Language language) async {
     String released = await Anime.evaluate(
         "window.document.querySelectorAll('ul.items > li > p.released')[$entry].textContent.replace('Released:', '').trim()");
     items.add(
-      SearchItem(title: title, image: image, url: url, released: released),
-    );
+        SearchItem(title: title, image: image, url: url, released: released));
   }
 
   return items;

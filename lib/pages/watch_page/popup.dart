@@ -268,11 +268,11 @@ class _PopupState extends State<Popup> {
                               decoration: BoxDecoration(color: Colors.tealAccent, shape: BoxShape.circle),
                               child: Container()))))
             ])),
-        Padding(padding: EdgeInsets.all(16))
+        Padding(padding: EdgeInsets.all(8))
       ]),
       // Top Toolbar
       Column(children: [
-        Padding(padding: EdgeInsets.all(16)),
+        Padding(padding: EdgeInsets.all(4)),
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Padding(padding: EdgeInsets.all(8)),
           // Close Button
@@ -317,35 +317,37 @@ class _PopupState extends State<Popup> {
                       label: Text("Last Episode")))),
           Expanded(
               child: Center(
-                  child: InkWell(
-                      borderRadius: BorderRadius.circular(15),
-                      onTap: () {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text("Host: " +
-                                Uri.parse(widget.url).host +
-                                "\nPress and hold to enter Fallback Mode!"),
-                            duration: Duration(seconds: 2),
-                            behavior: SnackBarBehavior.floating));
-                      },
-                      onLongPress: () async {
-                        String url = await errorVideoUrl.future;
-                        widget.controller.pause();
-                        Navigator.of(context).push(
-                            MaterialPageRoute(builder: (BuildContext context) {
-                          return EmergencyView(url);
-                        }));
-                      },
-                      child: Container(
-                          decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0.3),
-                              borderRadius: BorderRadius.circular(15)),
-                          padding:
-                              EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                          child: Text(widget.name,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(color: Colors.white)))))),
+                  child: (MediaQuery.of(context).size.height > 500)
+                      ? InkWell(
+                          borderRadius: BorderRadius.circular(15),
+                          onTap: () {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text("Host: " +
+                                    Uri.parse(widget.url).host +
+                                    "\nPress and hold to enter Fallback Mode!"),
+                                duration: Duration(seconds: 2),
+                                behavior: SnackBarBehavior.floating));
+                          },
+                          onLongPress: () async {
+                            String url = await errorVideoUrl.future;
+                            widget.controller.pause();
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) {
+                              return EmergencyView(url);
+                            }));
+                          },
+                          child: Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.black.withOpacity(0.3),
+                                  borderRadius: BorderRadius.circular(15)),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 12),
+                              child: Text(widget.name,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(color: Colors.white))))
+                      : Container())),
           IgnorePointer(
               ignoring: widget.nextEpisode.isEmpty,
               child: Opacity(
@@ -409,145 +411,153 @@ class _PopupState extends State<Popup> {
           Padding(padding: EdgeInsets.all(8))
         ])
       ]),
-      Positioned(
-          left: 10,
-          top: 100,
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                IconButton(
-                    icon: Icon(widget.controller.value.volume != 0
-                        ? Icons.volume_up_rounded
-                        : Icons.volume_off_rounded),
-                    tooltip: "Volume",
-                    iconSize: 30,
-                    onPressed: () {
-                      if (widget.controller.value.volume == 0) {
-                        widget.controller
-                            .setVolume(Popup.volume == 0 ? 0.5 : Popup.volume);
-                      } else {
-                        widget.controller.setVolume(0);
-                      }
-                    }),
-                SizedBox(
-                    height: 200,
-                    child: Container(
-                        height: 20,
-                        child: FlutterSlider(
-                            min: 0,
-                            max: 100,
-                            handlerWidth: 20,
-                            handlerHeight: 20,
-                            selectByTap: false,
-                            tooltip: FlutterSliderTooltip(
-                                direction: FlutterSliderTooltipDirection.right,
-                                textStyle: TextStyle(color: Colors.black),
-                                format: (text) =>
-                                    double.parse(text).floor().toString() + "%",
-                                boxStyle: FlutterSliderTooltipBox(
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius:
-                                            BorderRadius.circular(15)))),
-                            trackBar: FlutterSliderTrackBar(
-                                activeTrackBarHeight: 5,
-                                activeTrackBar: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(15)),
-                                inactiveTrackBar: BoxDecoration(
-                                    color: Colors.white24,
-                                    borderRadius: BorderRadius.circular(15))),
-                            handler: FlutterSliderHandler(
-                                decoration: BoxDecoration(
-                                    color: Colors.tealAccent,
-                                    shape: BoxShape.circle),
-                                child: Container()),
-                            onDragStarted:
-                                (handlerIndex, firstValue, secondValue) {
-                              widget.unsetTimer();
-                            },
-                            onDragCompleted:
-                                (handlerIndex, firstValue, secondValue) {
-                              widget.setTimer();
-                            },
-                            onDragging: (handlerIndex, lowerValue, upperValue) {
-                              widget.controller.setVolume(lowerValue / 100);
-                              Popup.volume = lowerValue / 100;
-                            },
-                            axis: Axis.vertical,
-                            rtl: true,
-                            values: [
-                              max(min(widget.controller.value.volume, 1), 0) *
-                                  100
-                            ])))
-              ])),
-      Positioned(
-          right: 10,
-          top: 100,
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                IconButton(
-                    icon: Icon(Icons.speed_rounded),
-                    disabledColor: Colors.white,
-                    tooltip: "Playback Speed",
-                    onPressed: () {
-                      widget.controller.setPlaybackSpeed(1);
-                    }),
-                SizedBox(
-                    height: 200,
-                    child: Container(
-                        height: 20,
-                        child: FlutterSlider(
-                            min: 0.25,
-                            max: 2.0,
-                            handlerWidth: 20,
-                            handlerHeight: 20,
-                            selectByTap: false,
-                            step: FlutterSliderStep(step: 0.25),
-                            tooltip: FlutterSliderTooltip(
-                                direction: FlutterSliderTooltipDirection.left,
-                                textStyle: TextStyle(color: Colors.black),
-                                format: (text) =>
-                                    double.parse(text).toString() + "x",
-                                boxStyle: FlutterSliderTooltipBox(
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius:
-                                            BorderRadius.circular(15)))),
-                            trackBar: FlutterSliderTrackBar(
-                                activeTrackBarHeight: 5,
-                                activeTrackBar: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(15)),
-                                inactiveTrackBar: BoxDecoration(
-                                    color: Colors.white24,
-                                    borderRadius: BorderRadius.circular(15))),
-                            handler: FlutterSliderHandler(
-                                decoration: BoxDecoration(
-                                    color: Colors.tealAccent,
-                                    shape: BoxShape.circle),
-                                child: Container()),
-                            onDragStarted:
-                                (handlerIndex, firstValue, secondValue) {
-                              widget.unsetTimer();
-                            },
-                            onDragCompleted:
-                                (handlerIndex, firstValue, secondValue) {
-                              widget.setTimer();
-                            },
-                            onDragging: (handlerIndex, lowerValue, upperValue) {
-                              widget.controller.setPlaybackSpeed(lowerValue);
-                            },
-                            axis: Axis.vertical,
-                            rtl: true,
-                            values: [
-                              max(min(widget.controller.value.playbackSpeed, 2),
-                                  0.25)
-                            ])))
-              ]))
+      if (MediaQuery.of(context).size.height > 500)
+        Positioned(
+            left: 10,
+            top: 100,
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  IconButton(
+                      icon: Icon(widget.controller.value.volume != 0
+                          ? Icons.volume_up_rounded
+                          : Icons.volume_off_rounded),
+                      tooltip: "Volume",
+                      iconSize: 30,
+                      onPressed: () {
+                        if (widget.controller.value.volume == 0) {
+                          widget.controller.setVolume(
+                              Popup.volume == 0 ? 0.5 : Popup.volume);
+                        } else {
+                          widget.controller.setVolume(0);
+                        }
+                      }),
+                  SizedBox(
+                      height: 200,
+                      child: Container(
+                          height: 20,
+                          child: FlutterSlider(
+                              min: 0,
+                              max: 100,
+                              handlerWidth: 20,
+                              handlerHeight: 20,
+                              selectByTap: false,
+                              tooltip: FlutterSliderTooltip(
+                                  direction:
+                                      FlutterSliderTooltipDirection.right,
+                                  textStyle: TextStyle(color: Colors.black),
+                                  format: (text) =>
+                                      double.parse(text).floor().toString() +
+                                      "%",
+                                  boxStyle: FlutterSliderTooltipBox(
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(15)))),
+                              trackBar: FlutterSliderTrackBar(
+                                  activeTrackBarHeight: 5,
+                                  activeTrackBar: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(15)),
+                                  inactiveTrackBar: BoxDecoration(
+                                      color: Colors.white24,
+                                      borderRadius: BorderRadius.circular(15))),
+                              handler: FlutterSliderHandler(
+                                  decoration: BoxDecoration(
+                                      color: Colors.tealAccent,
+                                      shape: BoxShape.circle),
+                                  child: Container()),
+                              onDragStarted:
+                                  (handlerIndex, firstValue, secondValue) {
+                                widget.unsetTimer();
+                              },
+                              onDragCompleted:
+                                  (handlerIndex, firstValue, secondValue) {
+                                widget.setTimer();
+                              },
+                              onDragging:
+                                  (handlerIndex, lowerValue, upperValue) {
+                                widget.controller.setVolume(lowerValue / 100);
+                                Popup.volume = lowerValue / 100;
+                              },
+                              axis: Axis.vertical,
+                              rtl: true,
+                              values: [
+                                max(min(widget.controller.value.volume, 1), 0) *
+                                    100
+                              ])))
+                ])),
+      if (MediaQuery.of(context).size.height > 500)
+        Positioned(
+            right: 10,
+            top: 100,
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  IconButton(
+                      icon: Icon(Icons.speed_rounded),
+                      disabledColor: Colors.white,
+                      tooltip: "Playback Speed",
+                      onPressed: () {
+                        widget.controller.setPlaybackSpeed(1);
+                      }),
+                  SizedBox(
+                      height: 200,
+                      child: Container(
+                          height: 20,
+                          child: FlutterSlider(
+                              min: 0.25,
+                              max: 1.75,
+                              handlerWidth: 20,
+                              handlerHeight: 20,
+                              selectByTap: false,
+                              step: FlutterSliderStep(step: 0.25),
+                              tooltip: FlutterSliderTooltip(
+                                  direction: FlutterSliderTooltipDirection.left,
+                                  textStyle: TextStyle(color: Colors.black),
+                                  format: (text) =>
+                                      double.parse(text).toString() + "x",
+                                  boxStyle: FlutterSliderTooltipBox(
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(15)))),
+                              trackBar: FlutterSliderTrackBar(
+                                  activeTrackBarHeight: 5,
+                                  activeTrackBar: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(15)),
+                                  inactiveTrackBar: BoxDecoration(
+                                      color: Colors.white24,
+                                      borderRadius: BorderRadius.circular(15))),
+                              handler: FlutterSliderHandler(
+                                  decoration: BoxDecoration(
+                                      color: Colors.tealAccent,
+                                      shape: BoxShape.circle),
+                                  child: Container()),
+                              onDragStarted:
+                                  (handlerIndex, firstValue, secondValue) {
+                                widget.unsetTimer();
+                              },
+                              onDragCompleted:
+                                  (handlerIndex, firstValue, secondValue) {
+                                widget.setTimer();
+                              },
+                              onDragging:
+                                  (handlerIndex, lowerValue, upperValue) {
+                                widget.controller.setPlaybackSpeed(lowerValue);
+                              },
+                              axis: Axis.vertical,
+                              rtl: true,
+                              values: [
+                                max(
+                                    min(widget.controller.value.playbackSpeed,
+                                        2),
+                                    0.25)
+                              ])))
+                ]))
     ]));
   }
 }

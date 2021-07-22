@@ -58,9 +58,7 @@ Future<AnimeDetails> animeDetails(String url) async {
     name = name.replaceAll("EP", "Episode");
     var category = await Anime.evaluate(
         "document.querySelectorAll('ul#episode_related > li > a > div.cate')[$item].textContent");
-    episodes.add(
-      Episode(name: name, url: link, category: category),
-    );
+    episodes.add(Episode(name: name, url: link, category: category));
   }
 
   return AnimeDetails(

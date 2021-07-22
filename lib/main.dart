@@ -11,9 +11,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Anime.view.run();
   await getPrefs();
-  runApp(
-    MyApp(),
-  );
+  runApp(MyApp());
 }
 
 Future<Null> getPrefs() async {
@@ -28,15 +26,16 @@ Future<Null> getPrefs() async {
   if (sharedPrefs.containsKey("pinnedNames")) {
     pinnedNames.addAll(sharedPrefs.getStringList("pinnedNames")!);
   }
-  if (sharedPrefs.containsKey("markedEpisodes")) {
-    markedEpisodes.addAll(sharedPrefs.getStringList("markedEpisodes")!);
+  if (sharedPrefs.containsKey("bookmarkedEpisodes")) {
+    bookmarkedEpisodes.addAll(sharedPrefs.getStringList("bookmarkedEpisodes")!);
   }
-  if (sharedPrefs.containsKey("markedEpisodeTimes")) {
-    markedEpisodeTimes.addAll(sharedPrefs.getStringList("markedEpisodeTimes")!);
+  if (sharedPrefs.containsKey("bookmarkedEpisodeTimes")) {
+    bookmarkedEpisodeTimes
+        .addAll(sharedPrefs.getStringList("bookmarkedEpisodeTimes")!);
   }
-  if (sharedPrefs.containsKey("markedEpisodeLength")) {
-    markedEpisodeLength
-        .addAll(sharedPrefs.getStringList("markedEpisodeLength")!);
+  if (sharedPrefs.containsKey("bookmarkedEpisodeLength")) {
+    bookmarkedEpisodeLength
+        .addAll(sharedPrefs.getStringList("bookmarkedEpisodeLength")!);
   }
 }
 
@@ -44,9 +43,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      themeMode: ThemeMode.dark,
-      darkTheme: ThemeData.dark().copyWith(),
-      home: HomePage(),
-    );
+        debugShowCheckedModeBanner: false,
+        themeMode: ThemeMode.dark,
+        darkTheme: ThemeData.dark().copyWith(),
+        home: HomePage());
   }
 }

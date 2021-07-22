@@ -13,15 +13,9 @@ import '../functions/search_anime.dart';
 
 class Anime {
   static Future<void> load(String url) async {
-    controller!.loadUrl(
-      urlRequest: URLRequest(
-        url: Uri.parse(url),
-      ),
-    );
+    controller!.loadUrl(urlRequest: URLRequest(url: Uri.parse(url)));
     while (await controller!.isLoading()) {
-      await Future.delayed(
-        Duration(milliseconds: 10),
-      );
+      await Future.delayed(Duration(milliseconds: 10));
     }
     return;
   }
@@ -32,17 +26,14 @@ class Anime {
 
   static InAppWebViewController? controller;
   static HeadlessInAppWebView view = new HeadlessInAppWebView(
-    onWebViewCreated: (c) {
-      controller = c;
-    },
-    initialOptions: InAppWebViewGroupOptions(
-      crossPlatform: InAppWebViewOptions(
-        incognito: true,
-        cacheEnabled: true,
-        javaScriptCanOpenWindowsAutomatically: false,
-      ),
-    ),
-  );
+      onWebViewCreated: (c) {
+        controller = c;
+      },
+      initialOptions: InAppWebViewGroupOptions(
+          crossPlatform: InAppWebViewOptions(
+              incognito: true,
+              cacheEnabled: true,
+              javaScriptCanOpenWindowsAutomatically: false)));
 
   // GoGoAnime Home Page
   static Future<Home> getHomePage() => homeCrawl();

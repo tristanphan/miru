@@ -9,15 +9,14 @@ SharedPreferences? data;
 List<String> pinnedURLs = [];
 List<String> pinnedImages = [];
 List<String> pinnedNames = [];
-List<String> markedEpisodes = [];
-List<String> markedEpisodeTimes = [];
-List<String> markedEpisodeLength = [];
-
+List<String> bookmarkedEpisodes = [];
+List<String> bookmarkedEpisodeTimes = [];
+List<String> bookmarkedEpisodeLength = [];
 
 void save() {
-  data!.setStringList("markedEpisodes", markedEpisodes);
-  data!.setStringList("markedEpisodeTimes", markedEpisodeTimes);
-  data!.setStringList("markedEpisodeLength", markedEpisodeLength);
+  data!.setStringList("bookmarkedEpisodes", bookmarkedEpisodes);
+  data!.setStringList("bookmarkedEpisodeTimes", bookmarkedEpisodeTimes);
+  data!.setStringList("bookmarkedEpisodeLength", bookmarkedEpisodeLength);
   data!.setStringList("pinnedURLs", pinnedURLs);
   data!.setStringList("pinnedNames", pinnedNames);
   data!.setStringList("pinnedImages", pinnedImages);
@@ -42,11 +41,11 @@ void removePinAt(int index) async {
   pinnedImages.removeAt(index);
   AnimeDetails details = await Anime.getDetails(url);
   for (Episode episode in details.episodes)
-    if (isMarked(episode.url)) {
-      int index = markedEpisodes.indexOf(episode.url);
-      markedEpisodes.removeAt(index);
-      markedEpisodeTimes.removeAt(index);
-      markedEpisodeLength.removeAt(index);
+    if (isBookmarked(episode.url)) {
+      int index = bookmarkedEpisodes.indexOf(episode.url);
+      bookmarkedEpisodes.removeAt(index);
+      bookmarkedEpisodeTimes.removeAt(index);
+      bookmarkedEpisodeLength.removeAt(index);
     }
 
   save();
@@ -70,13 +69,9 @@ void addEpisode(String url, AnimeDetails anime) {
 
 void addEpisodeWithTime(
     String url, AnimeDetails anime, int timeMs, int totalTime) {
-  markedEpisodes.add(url);
-  markedEpisodeTimes.add(
-    timeMs.toString(),
-  );
-  markedEpisodeLength.add(
-    totalTime.toString(),
-  );
+  bookmarkedEpisodes.add(url);
+  bookmarkedEpisodeTimes.add(timeMs.toString());
+  bookmarkedEpisodeLength.add(totalTime.toString());
   if (!pinnedURLs.contains(anime.url)) {
     pinnedURLs.add(anime.url);
     pinnedNames.add(anime.name);
@@ -86,49 +81,51 @@ void addEpisodeWithTime(
 }
 
 void updateEpisodeTime(String url, int newTimeMs, int totalTimeMs) {
-  markedEpisodeTimes[markedEpisodes.indexOf(url)] = newTimeMs.toString();
-  markedEpisodeLength[markedEpisodes.indexOf(url)] = totalTimeMs.toString();
+  bookmarkedEpisodeTimes[bookmarkedEpisodes.indexOf(url)] =
+      newTimeMs.toString();
+  bookmarkedEpisodeLength[bookmarkedEpisodes.indexOf(url)] =
+      totalTimeMs.toString();
   save();
 }
 
 int getEpisodeTime(String url) {
-  return int.parse(markedEpisodeTimes[markedEpisodes.indexOf(url)]);
+  return int.parse(bookmarkedEpisodeTimes[bookmarkedEpisodes.indexOf(url)]);
 }
 
 int getEpisodeTotalTime(String url) {
-  return int.parse(markedEpisodeLength[markedEpisodes.indexOf(url)]);
+  return int.parse(bookmarkedEpisodeLength[bookmarkedEpisodes.indexOf(url)]);
 }
 
 void removeEpisode(String url) {
-  int index = markedEpisodes.indexOf(url);
+  int index = bookmarkedEpisodes.indexOf(url);
   removeEpisodeAt(index);
 }
 
 void removeEpisodeAt(int index) {
-  markedEpisodes.removeAt(index);
-  markedEpisodeTimes.removeAt(index);
-  markedEpisodeLength.removeAt(index);
+  bookmarkedEpisodes.removeAt(index);
+  bookmarkedEpisodeTimes.removeAt(index);
+  bookmarkedEpisodeLength.removeAt(index);
   save();
 }
 
 void toggleEpisode(String url, AnimeDetails anime) {
-  if (markedEpisodes.contains(url)) {
+  if (bookmarkedEpisodes.contains(url)) {
     removeEpisode(url);
   } else {
     addEpisode(url, anime);
   }
 }
 
-bool isMarked(String url) {
-  return markedEpisodes.contains(url);
+bool isBookmarked(String url) {
+  return bookmarkedEpisodes.contains(url);
 }
 
 void clearAll() {
   pinnedURLs.clear();
   pinnedImages.clear();
   pinnedNames.clear();
-  markedEpisodes.clear();
-  markedEpisodeTimes.clear();
-  markedEpisodeLength.clear();
+  bookmarkedEpisodes.clear();
+  bookmarkedEpisodeTimes.clear();
+  bookmarkedEpisodeLength.clear();
   save();
 }

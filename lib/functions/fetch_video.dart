@@ -11,9 +11,7 @@ Future<VideoDetails?> animeVideo(String url, Function changeProgress) async {
 
   changeProgress("Loading Episode URL");
   await Anime.load(url);
-  print(
-    "Loaded: " + (await Anime.controller!.getUrl()).toString(),
-  );
+  print("Loaded: " + (await Anime.controller!.getUrl()).toString());
 
   int errorCount = 0;
   while ((await Anime.controller!.getUrl()).toString() != url) {
@@ -22,9 +20,7 @@ Future<VideoDetails?> animeVideo(String url, Function changeProgress) async {
     await Anime.load(url);
     if (errorCount > 100) return null;
   }
-  print(
-    "Loaded: " + (await Anime.controller!.getUrl()).toString(),
-  );
+  print("Loaded: " + (await Anime.controller!.getUrl()).toString());
 
   return _crawl(changeProgress);
 }
@@ -35,9 +31,7 @@ Future<VideoDetails?> _crawl(Function changeProgress) async {
   int errorCount = 0;
   while (title == null) {
     errorCount += 1;
-    Future.delayed(
-      Duration(milliseconds: 10),
-    );
+    Future.delayed(Duration(milliseconds: 10));
     title = await Anime.evaluate(
         "document.querySelector('div.title_name > h2').textContent.trim()");
     if (errorCount > 100) return null;
@@ -52,9 +46,7 @@ Future<VideoDetails?> _crawl(Function changeProgress) async {
         "document.querySelector('div.anime_video_body_episodes_l > a').text.trim()");
     String lastURL = await Anime.evaluate(
         "document.querySelector('div.anime_video_body_episodes_l > a').href.trim()");
-    last.add(
-      lastName.substring(3),
-    );
+    last.add(lastName.substring(3));
     last.add(lastURL);
   }
 
@@ -67,9 +59,7 @@ Future<VideoDetails?> _crawl(Function changeProgress) async {
         "document.querySelector('div.anime_video_body_episodes_r > a').text.trim()");
     String nextURL = await Anime.evaluate(
         "document.querySelector('div.anime_video_body_episodes_r > a').href.trim()");
-    next.add(
-      nextName.substring(0, nextName.length - 3),
-    );
+    next.add(nextName.substring(0, nextName.length - 3));
     next.add(nextURL);
   }
 

@@ -45,11 +45,12 @@ class _PlayerState extends State<Player> {
 
   @override
   void initState() {
-    if (!isMarked(widget.sourceUrl)) addEpisode(widget.sourceUrl, widget.anime);
+    if (!isBookmarked(widget.sourceUrl))
+      addEpisode(widget.sourceUrl, widget.anime);
     controller = VideoPlayerController.network(widget.url);
     controller!.initialize().then((value) {
       setState(() {
-        if (isMarked(widget.sourceUrl) &&
+        if (isBookmarked(widget.sourceUrl) &&
             getEpisodeTime(widget.sourceUrl) !=
                 getEpisodeTotalTime(widget.sourceUrl))
           controller!
@@ -59,6 +60,11 @@ class _PlayerState extends State<Player> {
         setTimer();
       });
     });
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+    SystemChrome.setEnabledSystemUIOverlays([]);
     super.initState();
   }
 
@@ -67,12 +73,22 @@ class _PlayerState extends State<Player> {
     Wakelock.disable();
     controller!.dispose();
     super.dispose();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.portraitUp,
+    ]);
+    SystemChrome.setEnabledSystemUIOverlays([
+      SystemUiOverlay.top,
+      SystemUiOverlay.bottom,
+    ]);
   }
 
   @override
   void deactivate() {
     controller!.pause();
-    if (isMarked(widget.sourceUrl) &&
+    if (isBookmarked(widget.sourceUrl) &&
         controller != null &&
         controller!.value.isInitialized) {
       updateEpisodeTime(
@@ -184,7 +200,7 @@ class _PlayerState extends State<Player> {
                           : Seek.darkenLeft || Seek.darkenRight
                               ? 0.5
                               : 0,
-                      child: Container(color: Color.fromRGBO(0, 0, 0, 0.3))),
+                      child: Container(color: Color.fromRGBO(0, 0, 0, 0.4))),
                   // Seek Icons, shows on double tap only
                   AnimatedOpacity(
                       duration: Duration(milliseconds: 200),

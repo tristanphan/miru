@@ -3,8 +3,6 @@
 - Improve UI
     - Make more appealing
     - Tweak UI scaling
-    - Add proper portrait-mode support
-    - Pull to Refresh
     - Separate pages
 - Code Cleanup & Comments
 - Video Player Tweaks
