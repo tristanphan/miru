@@ -1,19 +1,13 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:miru/data/anime.dart';
 import 'package:miru/data/structures/home.dart';
+import 'package:palette_generator/palette_generator.dart';
 
-Future<Home> homeCrawl() async {
-  print("Fetching Home Page");
+Future<List<RecentRelease>> recentReleasesCrawl() async {
+  print("Fetching Recent Releases Page");
   await Anime.load("https://gogoanime.vc/");
-
-  List<RecentRelease> recentReleases = await _getRecentReleases();
-  List<Popular> popular = await _getPopular();
-
-  return Home(recentReleases: recentReleases, popular: popular);
-}
-
-Future<List<RecentRelease>> _getRecentReleases() async {
   List<RecentRelease> recentReleases = [];
 
   var numberOfAnime =
@@ -41,13 +35,20 @@ Future<List<RecentRelease>> _getRecentReleases() async {
     String latestEp = await Anime.evaluate(
         "document.querySelectorAll('ul.items > li > p.episode')[$item].textContent.trim()");
     recentReleases.add(RecentRelease(
-        title: title, url: url, image: image, latestEp: latestEp));
+        title: title,
+        url: url,
+        image: image,
+        latestEp: latestEp,
+        palette:
+            await PaletteGenerator.fromImageProvider(NetworkImage(image))));
   }
 
   return recentReleases;
 }
 
-Future<List<Popular>> _getPopular() async {
+Future<List<Popular>> popularCrawl() async {
+  print("Fetching Popular Page");
+  await Anime.load("https://gogoanime.vc/");
   List<Popular> popular = [];
 
   var numberOfAnime = await Anime.evaluate(
@@ -73,7 +74,9 @@ Future<List<Popular>> _getPopular() async {
         url: url,
         image: image,
         latestEp: latestEp,
-        genres: genres));
+        genres: genres,
+        palette:
+            await PaletteGenerator.fromImageProvider(NetworkImage(image))));
   }
 
   return popular;

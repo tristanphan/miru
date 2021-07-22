@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:miru/data/anime.dart';
 import 'package:miru/data/structures/search_item.dart';
+import 'package:palette_generator/palette_generator.dart';
 
 Future<List<SearchItem>> animeSearch(String keyword, Language language) async {
   print("Searching: " + keyword);
@@ -38,8 +40,13 @@ Future<List<SearchItem>> _searchEngine(Language language) async {
         "window.document.querySelectorAll('ul.items > li > p.name > a')[$entry].href.trim()");
     String released = await Anime.evaluate(
         "window.document.querySelectorAll('ul.items > li > p.released')[$entry].textContent.replace('Released:', '').trim()");
-    items.add(
-        SearchItem(title: title, image: image, url: url, released: released));
+    items.add(SearchItem(
+        title: title,
+        image: image,
+        url: url,
+        released: released,
+        palette:
+            await PaletteGenerator.fromImageProvider(NetworkImage(image))));
   }
 
   return items;

@@ -303,13 +303,12 @@ class _PopupState extends State<Popup> {
                           : () {
                               Navigator.of(context).pushReplacement(
                                   MaterialPageRoute(
-                                      builder: (BuildContext context) {
-                                return Loading(
-                                    anime: widget.anime,
-                                    detailsState: widget.detailsState,
-                                    name: widget.lastEpisode[0],
-                                    url: widget.lastEpisode[1]);
-                              }));
+                                      builder: (BuildContext context) =>
+                                          Loading(
+                                              anime: widget.anime,
+                                              detailsState: widget.detailsState,
+                                              name: widget.lastEpisode[0],
+                                              url: widget.lastEpisode[1])));
                             },
                       heroTag: Random().nextDouble(),
                       backgroundColor: Colors.transparent,
@@ -332,9 +331,8 @@ class _PopupState extends State<Popup> {
                             String url = await errorVideoUrl.future;
                             widget.controller.pause();
                             Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) {
-                              return EmergencyView(url);
-                            }));
+                                builder: (BuildContext context) =>
+                                    EmergencyView(url)));
                           },
                           child: Container(
                               decoration: BoxDecoration(
@@ -360,13 +358,12 @@ class _PopupState extends State<Popup> {
                           : () {
                               Navigator.of(context).pushReplacement(
                                   MaterialPageRoute(
-                                      builder: (BuildContext context) {
-                                return Loading(
-                                    anime: widget.anime,
-                                    detailsState: widget.detailsState,
-                                    name: widget.nextEpisode[0],
-                                    url: widget.nextEpisode[1]);
-                              }));
+                                      builder: (BuildContext context) =>
+                                          Loading(
+                                              anime: widget.anime,
+                                              detailsState: widget.detailsState,
+                                              name: widget.nextEpisode[0],
+                                              url: widget.nextEpisode[1])));
                             },
                       heroTag: Random().nextDouble(),
                       backgroundColor: Colors.transparent,

@@ -1,17 +1,18 @@
 import 'dart:async';
 
+import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:miru/pages/home_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'data/anime.dart';
 import 'data/data_storage.dart';
+import 'navigator.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Anime.view.run();
   await getPrefs();
-  runApp(MyApp());
+  runApp(EasyDynamicThemeWidget(child: MyApp()));
 }
 
 Future<Null> getPrefs() async {
@@ -44,8 +45,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
-        themeMode: ThemeMode.dark,
-        darkTheme: ThemeData.dark().copyWith(),
-        home: HomePage());
+        title: "Miru",
+        theme: ThemeData.light(),
+        darkTheme: ThemeData.dark(),
+        themeMode: EasyDynamicTheme.of(context).themeMode,
+        home: Navigation());
   }
 }

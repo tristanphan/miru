@@ -20,9 +20,8 @@ class Anime {
     return;
   }
 
-  static Future<dynamic> evaluate(String javascript) async {
-    return controller!.evaluateJavascript(source: javascript);
-  }
+  static Future<dynamic> evaluate(String javascript) async =>
+      controller!.evaluateJavascript(source: javascript);
 
   static InAppWebViewController? controller;
   static HeadlessInAppWebView view = new HeadlessInAppWebView(
@@ -36,7 +35,10 @@ class Anime {
               javaScriptCanOpenWindowsAutomatically: false)));
 
   // GoGoAnime Home Page
-  static Future<Home> getHomePage() => homeCrawl();
+  static Future<List<RecentRelease>> getRecentReleases() =>
+      recentReleasesCrawl();
+
+  static Future<List<Popular>> getPopular() => popularCrawl();
 
   // Searches Anime Titles by Keyword
   static Future<List<SearchItem>> search(String keyword, Language language) =>

@@ -4,7 +4,8 @@ import 'package:flutter/widgets.dart';
 import 'package:miru/data/anime.dart';
 import 'package:miru/data/structures/search_item.dart';
 
-import 'details_page.dart';
+import 'home_page/header_silver_builder.dart';
+import 'home_page/homelist.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
@@ -31,8 +32,8 @@ class _SearchPageState extends State<SearchPage> {
     _controller.addListener(() {
       FocusScope.of(context).requestFocus(FocusNode());
     });
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-        appBar: AppBar(centerTitle: true, title: Text("Search")),
         floatingActionButton: FloatingActionButton.extended(
             onPressed: () async {
               if (language == Language.ALL)
@@ -55,84 +56,37 @@ class _SearchPageState extends State<SearchPage> {
                 return "Dubbed Only";
             }()),
             icon: Icon(Icons.translate)),
-        body: Column(children: [
-          Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: CupertinoSearchTextField(
-                  focusNode: searchFocusNode,
-                  style: TextStyle(color: Colors.white),
-                  borderRadius: BorderRadius.circular(15),
-                  onSubmitted: (String keyword) async {
-                    query = keyword;
-                    setState(() {
-                      items.clear();
-                    });
-                    items = await Anime.search(query, language);
-                    FocusScope.of(context).requestFocus(FocusNode());
-                    setState(() {});
-                  })),
-          Expanded(
-              child: items.length == 0
-                  ? query.isEmpty
-                      ? Container()
-                      : Center(child: CupertinoActivityIndicator())
-                  : ListView.separated(
-                      controller: _controller,
-                      itemCount: items.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return InkWell(
-                            onTap: () {
-                              Navigator.of(context)
-                                  .push(MaterialPageRoute(builder: (context) {
-                                return DetailsPage(
-                                    title: items[index].title,
-                                    url: items[index].url);
-                              }));
-                            },
-                            child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 16.0, horizontal: 16.0),
-                                child: Row(children: [
-                                  ClipRRect(
-                                      borderRadius: BorderRadius.circular(15),
-                                      child: Image.network(items[index].image,
-                                          fit: BoxFit.cover,
-                                          alignment: Alignment.center,
-                                          width: 200 * 2 / 3,
-                                          height: 200, loadingBuilder:
-                                              (BuildContext context,
-                                                  Widget widget,
-                                                  ImageChunkEvent? progress) {
-                                        if (progress == null) return widget;
-                                        return Container(
-                                            width: 200 * 2 / 3,
-                                            height: 200,
-                                            child: Center(
-                                                child:
-                                                    CupertinoActivityIndicator()));
-                                      })),
-                                  Padding(padding: EdgeInsets.all(8)),
-                                  Expanded(
-                                      child: Column(
-                                          mainAxisSize: MainAxisSize.max,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                        Text(items[index].title,
-                                            style: TextStyle(fontSize: 22),
-                                            softWrap: true,
-                                            maxLines: 4,
-                                            overflow: TextOverflow.ellipsis),
-                                        if (items[index].released.isNotEmpty)
-                                          Text("Released: " +
-                                              items[index].released)
-                                      ])),
-                                  Icon(Icons.navigate_next)
-                                ])));
-                      },
-                      separatorBuilder: (BuildContext context, int index) {
-                        return Divider(height: 0);
-                      }))
-        ]));
+        body: NestedScrollView(
+            headerSliverBuilder: (BuildContext context, bool scroll) =>
+                headerSilverBuilder(context, "Search"),
+            body: Column(children: [
+              Padding(
+                  padding:
+                      const EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
+                  child: CupertinoSearchTextField(
+                      focusNode: searchFocusNode,
+                      style: TextStyle(
+                          color: isDark ? Colors.white : Colors.black),
+                      borderRadius: BorderRadius.circular(15),
+                      onSubmitted: (String keyword) async {
+                        query = keyword;
+                        setState(() {
+                          items.clear();
+                        });
+                        items = await Anime.search(query, language);
+                        FocusScope.of(context).requestFocus(FocusNode());
+                        setState(() {});
+                      })),
+              Expanded(
+                  child: items.length == 0
+                      ? query.isEmpty
+                          ? Container()
+                          : Center(child: CupertinoActivityIndicator())
+                      : SingleChildScrollView(
+                          child: HomeList(
+                              list: items,
+                              subtext: (item) => item.released,
+                              setState: setState)))
+            ])));
   }
 }

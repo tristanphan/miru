@@ -1,3 +1,5 @@
+import 'package:palette_generator/palette_generator.dart';
+
 import 'episode.dart';
 
 class AnimeDetails {
@@ -11,6 +13,7 @@ class AnimeDetails {
   String alias;
   List<Episode> episodes;
   String url;
+  PaletteGenerator palette;
 
   AnimeDetails(
       {required this.name,
@@ -22,18 +25,6 @@ class AnimeDetails {
       required this.status,
       required this.alias,
       required this.episodes,
-      required this.url});
-
-  @override
-  String toString() {
-    return "\nName: $name"
-        "\nImage: $image"
-        "\nSummary: $summary"
-        "\nType: $type"
-        "\nGenre: $genre"
-        "\nReleased: $released"
-        "\nStatus: $status"
-        "\nEpisodes: $episodes"
-        "\nURL: $url";
-  }
+      required this.url,
+      required this.palette});
 }

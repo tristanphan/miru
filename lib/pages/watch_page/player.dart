@@ -6,10 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:miru/data/data_storage.dart';
 import 'package:miru/data/structures/anime_details.dart';
+import 'package:miru/functions/fetch_video.dart';
 import 'package:miru/pages/watch_page/functions/controls.dart';
 import 'package:miru/pages/watch_page/popup.dart';
 import 'package:video_player/video_player.dart';
 import 'package:wakelock/wakelock.dart';
+
+import 'emergency_view.dart';
 
 class Player extends StatefulWidget {
   final String name;
@@ -60,10 +63,16 @@ class _PlayerState extends State<Player> {
         setTimer();
       });
     });
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-    ]);
+    controller!.addListener(() async {
+      if (controller!.value.hasError) {
+        String url = await errorVideoUrl.future;
+        controller!.pause();
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (BuildContext context) => EmergencyView(url)));
+      }
+    });
+    SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
     SystemChrome.setEnabledSystemUIOverlays([]);
     super.initState();
   }
@@ -72,17 +81,15 @@ class _PlayerState extends State<Player> {
   void dispose() {
     Wakelock.disable();
     controller!.dispose();
-    super.dispose();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
       DeviceOrientation.portraitDown,
-      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitUp
     ]);
-    SystemChrome.setEnabledSystemUIOverlays([
-      SystemUiOverlay.top,
-      SystemUiOverlay.bottom,
-    ]);
+    SystemChrome.setEnabledSystemUIOverlays(
+        [SystemUiOverlay.top, SystemUiOverlay.bottom]);
+    super.dispose();
   }
 
   @override

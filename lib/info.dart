@@ -33,25 +33,24 @@ void showInfo(
                         context: context,
                         builder: (BuildContext context) {
                           return CupertinoAlertDialog(
-                            title: Text("Remove Pin"),
-                            content: Text(
-                                "All your viewing progress in this show will be cleared!"),
-                            actions: [
-                              CupertinoDialogAction(
-                                  child: Text("Remove"),
-                                  isDestructiveAction: true,
-                                  onPressed: () {
-                                    removePin(url);
-                                    Navigator.of(context).pop();
-                                    setState(() {});
-                                  }),
-                              CupertinoDialogAction(
-                                  child: Text("Cancel"),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  })
-                            ],
-                          );
+                              title: Text("Remove Pin"),
+                              content: Text(
+                                  "All your viewing progress in this show will be cleared!"),
+                              actions: [
+                                CupertinoDialogAction(
+                                    child: Text("Remove"),
+                                    isDestructiveAction: true,
+                                    onPressed: () {
+                                      removePin(url);
+                                      Navigator.of(context).pop();
+                                      setState(() {});
+                                    }),
+                                CupertinoDialogAction(
+                                    child: Text("Cancel"),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    })
+                              ]);
                         });
                   }),
               CupertinoDialogAction(

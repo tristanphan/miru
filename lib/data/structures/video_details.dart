@@ -9,12 +9,4 @@ class VideoDetails {
       required this.url,
       required this.next,
       required this.last});
-
-  @override
-  String toString() {
-    return "\nTitle: $title"
-        "\nURL: $url"
-        "\nNext: ${next.toString()}"
-        "\nLast: ${last.toString()}";
-  }
 }

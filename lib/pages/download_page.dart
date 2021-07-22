@@ -37,44 +37,49 @@ class _DownloadState extends State<Download> {
   Widget build(BuildContext context) {
     return WillPopScope(
         onWillPop: () async => false,
-        child: Scaffold(
-            appBar: AppBar(
-                leading: Container(),
-                centerTitle: true,
-                title: Text(widget.name)),
-            backgroundColor: Colors.black,
-            body: Center(
-                child: Column(mainAxisSize: MainAxisSize.min, children: [
-              Text(progress,
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-              Padding(padding: EdgeInsets.all(8)),
-              Container(
-                  width: 300,
-                  child: FAProgressBar(
-                      borderRadius: BorderRadius.circular(15),
-                      animatedDuration: Duration(milliseconds: 300),
-                      maxValue: total,
-                      size: 10,
-                      backgroundColor: Colors.white24,
-                      progressColor: Colors.white,
-                      currentValue: received)),
-              Padding(padding: EdgeInsets.all(4)),
-              Text(((received / total * 10000).floor() ~/ 100).toString() + "%",
-                  style: TextStyle(fontSize: 16)),
-              Padding(padding: EdgeInsets.all(16)),
-              AnimatedOpacity(
-                  duration: Duration(milliseconds: 200),
-                  opacity: canCancel ? 1 : 0,
-                  child: CupertinoButton(
-                      onPressed: canCancel
-                          ? () {
-                              cancelToken.cancel();
-                              Navigator.of(context).pop();
-                            }
-                          : null,
-                      child: Text(error ? "Close" : "Cancel"),
-                      color: error ? Colors.red : Colors.white12))
-            ]))));
+        child: Theme(
+            data: ThemeData.dark(),
+            child: Scaffold(
+                appBar: AppBar(
+                    leading: Container(),
+                    centerTitle: true,
+                    title: Text(widget.name)),
+                backgroundColor: Colors.black,
+                body: Center(
+                    child: Column(mainAxisSize: MainAxisSize.min, children: [
+                  Text(progress,
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  Padding(padding: EdgeInsets.all(8)),
+                  Container(
+                      width: 300,
+                      child: FAProgressBar(
+                          borderRadius: BorderRadius.circular(15),
+                          animatedDuration: Duration(milliseconds: 300),
+                          maxValue: total,
+                          size: 10,
+                          backgroundColor: Colors.white24,
+                          progressColor: Colors.white,
+                          currentValue: received)),
+                  Padding(padding: EdgeInsets.all(4)),
+                  Text(
+                      ((received / total * 10000).floor() ~/ 100).toString() +
+                          "%",
+                      style: TextStyle(fontSize: 16)),
+                  Padding(padding: EdgeInsets.all(16)),
+                  AnimatedOpacity(
+                      duration: Duration(milliseconds: 200),
+                      opacity: canCancel ? 1 : 0,
+                      child: CupertinoButton(
+                          onPressed: canCancel
+                              ? () {
+                                  cancelToken.cancel();
+                                  Navigator.of(context).pop();
+                                }
+                              : null,
+                          child: Text(error ? "Close" : "Cancel"),
+                          color: error ? Colors.red : Colors.white12))
+                ])))));
   }
 
   void download() async {

@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:miru/data/anime.dart';
 import 'package:miru/data/structures/anime_details.dart';
 import 'package:miru/data/structures/episode.dart';
+import 'package:palette_generator/palette_generator.dart';
 
 Future<AnimeDetails> animeDetails(String url) async {
   print("Getting Details: " + url);
@@ -47,18 +49,32 @@ Future<AnimeDetails> animeDetails(String url) async {
   // Episodes
   List<Episode> episodes = [];
 
-  var episodeCount = await Anime.evaluate(
-      "document.querySelectorAll('ul#episode_related > li').length");
+  Future<void> getEpisodes() async {
+    var episodeCount = await Anime.evaluate(
+        "document.querySelectorAll('ul#episode_related > li').length");
 
-  for (int item = episodeCount.toInt() - 1; item >= 0; item--) {
-    var link = await Anime.evaluate(
-        "document.querySelectorAll('ul#episode_related > li > a')[$item].href");
-    var name = await Anime.evaluate(
-        "document.querySelectorAll('ul#episode_related > li > a > div.name')[$item].textContent");
-    name = name.replaceAll("EP", "Episode");
-    var category = await Anime.evaluate(
-        "document.querySelectorAll('ul#episode_related > li > a > div.cate')[$item].textContent");
-    episodes.add(Episode(name: name, url: link, category: category));
+    for (int item = episodeCount.toInt() - 1; item >= 0; item--) {
+      var link = await Anime.evaluate(
+          "document.querySelectorAll('ul#episode_related > li > a')[$item].href");
+      var name = await Anime.evaluate(
+          "document.querySelectorAll('ul#episode_related > li > a > div.name')[$item].textContent");
+      name = name.replaceAll("EP", "Episode");
+      var category = await Anime.evaluate(
+          "document.querySelectorAll('ul#episode_related > li > a > div.cate')[$item].textContent");
+      episodes.add(Episode(name: name, url: link, category: category));
+    }
+  }
+
+  var pageCount = await Anime.evaluate(
+      "document.querySelectorAll('ul#episode_page > li > a').length");
+  if (pageCount <= 1) {
+    await getEpisodes();
+  } else {
+    for (int i = 1; i <= pageCount; i++) {
+      await Anime.evaluate(
+          "document.querySelector('ul#episode_page > li:nth-child($i) > a').click()");
+      await getEpisodes();
+    }
   }
 
   return AnimeDetails(
@@ -71,5 +87,6 @@ Future<AnimeDetails> animeDetails(String url) async {
       status: status,
       alias: alias,
       episodes: episodes,
-      url: url);
+      url: url,
+      palette: await PaletteGenerator.fromImageProvider(NetworkImage(image)));
 }

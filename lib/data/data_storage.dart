@@ -1,3 +1,4 @@
+import 'package:miru/data/temporary_memory.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'anime.dart';
@@ -59,9 +60,7 @@ void togglePin(String url, String title, String image) {
   }
 }
 
-bool isPinned(String url) {
-  return pinnedURLs.contains(url);
-}
+bool isPinned(String url) => pinnedURLs.contains(url);
 
 void addEpisode(String url, AnimeDetails anime) {
   addEpisodeWithTime(url, anime, 0, 10);
@@ -88,13 +87,11 @@ void updateEpisodeTime(String url, int newTimeMs, int totalTimeMs) {
   save();
 }
 
-int getEpisodeTime(String url) {
-  return int.parse(bookmarkedEpisodeTimes[bookmarkedEpisodes.indexOf(url)]);
-}
+int getEpisodeTime(String url) =>
+    int.parse(bookmarkedEpisodeTimes[bookmarkedEpisodes.indexOf(url)]);
 
-int getEpisodeTotalTime(String url) {
-  return int.parse(bookmarkedEpisodeLength[bookmarkedEpisodes.indexOf(url)]);
-}
+int getEpisodeTotalTime(String url) =>
+    int.parse(bookmarkedEpisodeLength[bookmarkedEpisodes.indexOf(url)]);
 
 void removeEpisode(String url) {
   int index = bookmarkedEpisodes.indexOf(url);
@@ -116,9 +113,7 @@ void toggleEpisode(String url, AnimeDetails anime) {
   }
 }
 
-bool isBookmarked(String url) {
-  return bookmarkedEpisodes.contains(url);
-}
+bool isBookmarked(String url) => bookmarkedEpisodes.contains(url);
 
 void clearAll() {
   pinnedURLs.clear();
@@ -128,4 +123,6 @@ void clearAll() {
   bookmarkedEpisodeTimes.clear();
   bookmarkedEpisodeLength.clear();
   save();
+  loadedDetails.clear();
+  loadedVideos.clear();
 }
