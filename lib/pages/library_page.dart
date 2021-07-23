@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:miru/data/data_storage.dart';
+import 'package:miru/data/persistent_data/data_storage.dart';
+import 'package:miru/data/persistent_data/pinmark.dart';
 import 'package:miru/data/structures/home.dart';
 import 'package:palette_generator/palette_generator.dart';
 
@@ -24,8 +25,8 @@ class _LibraryPageState extends State<LibraryPage> {
   Widget build(BuildContext context) {
     Future<List<PaletteGenerator>> pinnedPalette = () async {
       return [
-        for (var image in pinnedImages)
-          await PaletteGenerator.fromImageProvider(NetworkImage(image))
+        for (Pin pin in pinned)
+          await PaletteGenerator.fromImageProvider(NetworkImage(pin.image))
       ];
     }();
     return Scaffold(
@@ -73,14 +74,14 @@ class _LibraryPageState extends State<LibraryPage> {
                           snapshot.data == null)
                         return Center(child: CupertinoActivityIndicator());
                       List<Popular> libraryItems = [
-                        for (int index = pinnedURLs.length - 1;
+                        for (int index = pinned.length - 1;
                             index >= 0;
                             index--)
                           Popular(
-                              image: pinnedImages[index],
+                              image: pinned[index].image,
                               genres: "",
-                              url: pinnedURLs[index],
-                              title: pinnedNames[index],
+                              url: pinned[index].url,
+                              title: pinned[index].title,
                               latestEp: "",
                               palette: snapshot.data![index])
                       ];

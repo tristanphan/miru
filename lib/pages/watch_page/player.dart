@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:miru/data/data_storage.dart';
+import 'package:miru/data/persistent_data/data_storage.dart';
 import 'package:miru/data/structures/anime_details.dart';
 import 'package:miru/functions/fetch_video.dart';
 import 'package:miru/pages/watch_page/functions/controls.dart';
@@ -48,16 +48,16 @@ class _PlayerState extends State<Player> {
 
   @override
   void initState() {
-    if (!isBookmarked(widget.sourceUrl))
+    if (!isBookmarked(widget.anime.url, widget.sourceUrl))
       addEpisode(widget.sourceUrl, widget.anime);
     controller = VideoPlayerController.network(widget.url);
     controller!.initialize().then((value) {
       setState(() {
-        if (isBookmarked(widget.sourceUrl) &&
-            getEpisodeTime(widget.sourceUrl) !=
-                getEpisodeTotalTime(widget.sourceUrl))
+        if (isBookmarked(widget.anime.url, widget.sourceUrl) &&
+            getEpisodePosition(widget.anime.url, widget.sourceUrl) !=
+                getEpisodeDuration(widget.anime.url, widget.sourceUrl))
           controller!
-              .seekTo(Duration(milliseconds: getEpisodeTime(widget.sourceUrl)));
+              .seekTo(Duration(milliseconds: getEpisodePosition(widget.anime.url, widget.sourceUrl)));
         controller!.play();
         Wakelock.enable();
         setTimer();
@@ -80,7 +80,10 @@ class _PlayerState extends State<Player> {
   @override
   void dispose() {
     Wakelock.disable();
-    controller!.dispose();
+    if (controller != null) {
+      controller!.pause();
+      controller!.dispose();
+    }
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
@@ -95,10 +98,10 @@ class _PlayerState extends State<Player> {
   @override
   void deactivate() {
     controller!.pause();
-    if (isBookmarked(widget.sourceUrl) &&
+    if (isBookmarked(widget.anime.url, widget.sourceUrl) &&
         controller != null &&
         controller!.value.isInitialized) {
-      updateEpisodeTime(
+      updateEpisodeTime(widget.anime.url,
           widget.sourceUrl,
           controller!.value.position.inMilliseconds,
           controller!.value.duration.inMilliseconds);

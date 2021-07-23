@@ -5,9 +5,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
 import 'package:miru/data/anime.dart';
-import 'package:miru/data/data_storage.dart';
+import 'package:miru/data/persistent_data/data_storage.dart';
 import 'package:miru/data/structures/anime_details.dart';
-import 'package:miru/data/temporary_memory.dart';
+import 'package:miru/data/cache.dart';
 import 'package:miru/info.dart';
 import 'package:miru/pages/home_page/header_silver_builder.dart';
 import 'package:miru/pages/watch_page/functions/formatter.dart';
@@ -40,11 +40,11 @@ class _DetailsPageState extends State<DetailsPage> {
   Widget build(BuildContext context) {
     bool pinned = isPinned(widget.url);
     if (detailsFuture == null) {
-      if (loadedDetails.containsKey(widget.url))
-        detailsFuture = (() async => loadedDetails[widget.url]!)();
+      if (Cache.loadedDetails.containsKey(widget.url))
+        detailsFuture = (() async => Cache.loadedDetails[widget.url]!)();
       else {
         detailsFuture = Anime.getDetails(widget.url);
-        detailsFuture!.then((value) => loadedDetails[widget.url] = value);
+        detailsFuture!.then((value) => Cache.loadedDetails[widget.url] = value);
       }
     }
 
@@ -111,7 +111,7 @@ class _DetailsPageState extends State<DetailsPage> {
                           onRefresh: () async {
                             setState(() {
                               detailsFuture = null;
-                              loadedDetails.remove(widget.url);
+                              Cache.loadedDetails.remove(widget.url);
                             });
                           },
                           child: Scrollbar(
@@ -280,16 +280,16 @@ class _DetailsPageState extends State<DetailsPage> {
                                                                                 1;
                                                                         while (epNum >=
                                                                                 0 &&
-                                                                            !isBookmarked(details.episodes[epNum].url)) {
+                                                                            !isBookmarked(details.url, details.episodes[epNum].url)) {
                                                                           epNum--;
                                                                         }
                                                                         if (epNum <
                                                                             0)
                                                                           epNum =
                                                                               0;
-                                                                        if (isBookmarked(details.episodes[epNum].url) &&
-                                                                            getEpisodeTotalTime(details.episodes[epNum].url) ==
-                                                                                getEpisodeTime(details.episodes[epNum].url))
+                                                                        if (isBookmarked(details.url, details.episodes[epNum].url) &&
+                                                                            getEpisodeDuration(details.url, details.episodes[epNum].url) ==
+                                                                                getEpisodePosition(details.url, details.episodes[epNum].url))
                                                                           epNum++;
                                                                         if (epNum >=
                                                                             details.episodes.length)
@@ -327,12 +327,12 @@ class _DetailsPageState extends State<DetailsPage> {
                                       int episodeTime = 0;
                                       int totalTime = 0;
                                       bool bookmarked = pinned &&
-                                          isBookmarked(
+                                          isBookmarked(details.url,
                                               details.episodes[index].url);
                                       if (bookmarked) {
-                                        episodeTime = getEpisodeTime(
+                                        episodeTime = getEpisodePosition(details.url,
                                             details.episodes[index].url);
-                                        totalTime = getEpisodeTotalTime(
+                                        totalTime = getEpisodeDuration(details.url,
                                             details.episodes[index].url);
                                       }
                                       return InkWell(

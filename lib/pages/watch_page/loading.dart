@@ -5,9 +5,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
 import 'package:miru/data/anime.dart';
+import 'package:miru/data/cache.dart';
 import 'package:miru/data/structures/anime_details.dart';
 import 'package:miru/data/structures/video_details.dart';
-import 'package:miru/data/temporary_memory.dart';
 import 'package:miru/functions/fetch_video.dart';
 import 'package:miru/pages/watch_page/player.dart';
 
@@ -38,8 +38,8 @@ class _LoadingState extends State<Loading> {
 
   @override
   void initState() {
-    if (loadedVideos.containsKey(widget.url)) {
-      VideoDetails video = loadedVideos[widget.url]!;
+    if (Cache.loadedVideos.containsKey(widget.url)) {
+      VideoDetails video = Cache.loadedVideos[widget.url]!;
       Future(() => Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (context) => Player(
               name: video.title,
@@ -61,7 +61,7 @@ class _LoadingState extends State<Loading> {
           });
           return;
         } else {
-          loadedVideos[widget.url] = video;
+          Cache.loadedVideos[widget.url] = video;
           Navigator.of(context)
               .pushReplacement(MaterialPageRoute(builder: (context) {
             return Player(
@@ -101,24 +101,29 @@ class _LoadingState extends State<Loading> {
                 width: double.maxFinite,
                 height: double.maxFinite,
                 child: Stack(alignment: Alignment.center, children: [
-                  Column(mainAxisSize: MainAxisSize.min, children: [
-                    Text((fallback ? "Fallback: " : "") + loadingProgress,
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold)),
-                    Padding(padding: EdgeInsets.all(4)),
-                    Container(
-                        width: 300,
-                        child: FAProgressBar(
-                            borderRadius: BorderRadius.circular(15),
-                            animatedDuration: Duration(milliseconds: 300),
-                            maxValue: 100,
-                            size: 10,
-                            backgroundColor: Colors.white24,
-                            progressColor: Colors.white,
-                            currentValue: progress)),
-                    Padding(padding: EdgeInsets.all(4)),
-                    Text(widget.name, style: TextStyle(fontSize: 20))
-                  ]),
+                  Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text((fallback ? "Fallback: " : "") + loadingProgress,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold)),
+                        Padding(padding: EdgeInsets.all(4)),
+                        Container(
+                            width: 300,
+                            child: FAProgressBar(
+                                borderRadius: BorderRadius.circular(15),
+                                animatedDuration: Duration(milliseconds: 300),
+                                maxValue: 100,
+                                size: 10,
+                                backgroundColor: Colors.white24,
+                                progressColor: Colors.white,
+                                currentValue: progress)),
+                        Padding(padding: EdgeInsets.all(4)),
+                        Text(widget.name, style: TextStyle(fontSize: 20), textAlign: TextAlign.center,)
+                      ]),
                   Positioned(
                       top: 40,
                       right: 20,
