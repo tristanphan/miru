@@ -7,7 +7,7 @@ class AppTheme {
   static ThemeMode theme = ThemeMode.system;
   static Color? color;
 
-  static void loadTheme() {
+  static void load() {
     if (Storage.sharedPreferences == null) return;
     String? themePref = Storage.sharedPreferences!.getString("theme");
     if (themePref == null) {
@@ -19,6 +19,9 @@ class AppTheme {
       theme = ThemeMode.light;
     else
       theme = ThemeMode.system;
+    if (Storage.sharedPreferences!.containsKey("color")) {
+      color = Color(Storage.sharedPreferences!.getInt("color")!);
+    }
   }
 
   static void setTheme(BuildContext context, ThemeMode mode) {
@@ -38,6 +41,17 @@ class AppTheme {
     _theme(context);
   }
 
+  static void setColor(BuildContext context, Color? newColor) {
+    if (Storage.sharedPreferences == null) return;
+    if (newColor == null && Storage.sharedPreferences!.containsKey("color")) {
+      Storage.sharedPreferences!.remove("color");
+    } else if (newColor != null) {
+      Storage.sharedPreferences!.setInt("color", newColor.value);
+    }
+    color = newColor;
+    _theme(context);
+  }
+
   static void _theme(BuildContext context) {
     if (theme == ThemeMode.dark) {
       EasyDynamicTheme.of(context).changeTheme(dark: true, dynamic: false);
@@ -46,10 +60,5 @@ class AppTheme {
     } else {
       EasyDynamicTheme.of(context).changeTheme(dynamic: true);
     }
-  }
-
-  static void setColor(BuildContext context, Color? newColor) {
-    color = newColor;
-    _theme(context);
   }
 }

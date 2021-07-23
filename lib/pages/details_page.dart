@@ -166,7 +166,8 @@ class _DetailsPageState extends State<DetailsPage> {
                                                                 GestureDetector(
                                                                     onTap: () {
                                                                       showDialog(
-                                                                          barrierDismissible: false,
+                                                                          barrierDismissible:
+                                                                              false,
                                                                           builder: (BuildContext
                                                                               context) {
                                                                             return AlertDialog(
@@ -208,7 +209,8 @@ class _DetailsPageState extends State<DetailsPage> {
                                                                   onPressed:
                                                                       () {
                                                                     showDialog(
-                                                                        barrierDismissible: false,
+                                                                        barrierDismissible:
+                                                                            false,
                                                                         builder:
                                                                             (BuildContext
                                                                                 context) {

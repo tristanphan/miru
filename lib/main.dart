@@ -8,8 +8,9 @@ import 'navigator.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Storage.initialize();
   Storage.load();
-  AppTheme.loadTheme();
+  AppTheme.load();
   await Anime.view.run();
   runApp(EasyDynamicThemeWidget(
     child: MyApp(),
@@ -24,7 +25,8 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: "Miru",
         theme: ThemeData(accentColor: AppTheme.color),
-        darkTheme: ThemeData(brightness: Brightness.dark, accentColor: AppTheme.color),
+        darkTheme:
+            ThemeData(brightness: Brightness.dark, accentColor: AppTheme.color),
         themeMode: EasyDynamicTheme.of(context).themeMode,
         home: Navigation());
   }

@@ -91,6 +91,8 @@ class _SettingsPageState extends State<SettingsPage> {
                       Expanded(
                         child: Container(),
                       ),
+                      if (AppTheme.color != null) IconButton(onPressed: () { AppTheme.setColor(context, null); }, icon: Icon(Icons.refresh), tooltip: "Reset Color",),
+                      Padding(padding: EdgeInsets.all(4)),
                       ColorIndicator(
                         color: AppTheme.color ??
                             (isDark ? Colors.tealAccent : Colors.blueAccent),
@@ -142,8 +144,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 CupertinoButton(
                   child: Text(
                     "Done",
-                    style: TextStyle(
-                        color: isDark ? Colors.white : Colors.black),
+                    style:
+                        TextStyle(color: isDark ? Colors.white : Colors.black),
                   ),
                   onPressed: () {
                     Navigator.of(context).pop(color);

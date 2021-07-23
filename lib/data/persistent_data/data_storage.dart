@@ -17,9 +17,12 @@ class Storage {
     sharedPreferences!.setString("pinned", jsonEncode(pinned));
   }
 
-  static void load() async {
-    if (sharedPreferences == null)
-      sharedPreferences = await SharedPreferences.getInstance();
+  static Future<void> initialize() async {
+    sharedPreferences = await SharedPreferences.getInstance();
+  }
+
+  static void load() {
+    if (sharedPreferences == null) return;
     String? pref = sharedPreferences!.getString("pinned");
     try {
       List<dynamic> data = jsonDecode(pref!) as List<dynamic>;
