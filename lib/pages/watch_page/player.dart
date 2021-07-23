@@ -56,8 +56,9 @@ class _PlayerState extends State<Player> {
         if (isBookmarked(widget.anime.url, widget.sourceUrl) &&
             getEpisodePosition(widget.anime.url, widget.sourceUrl) !=
                 getEpisodeDuration(widget.anime.url, widget.sourceUrl))
-          controller!
-              .seekTo(Duration(milliseconds: getEpisodePosition(widget.anime.url, widget.sourceUrl)));
+          controller!.seekTo(Duration(
+              milliseconds:
+                  getEpisodePosition(widget.anime.url, widget.sourceUrl)));
         controller!.play();
         Wakelock.enable();
         setTimer();
@@ -90,8 +91,7 @@ class _PlayerState extends State<Player> {
       DeviceOrientation.portraitDown,
       DeviceOrientation.portraitUp
     ]);
-    SystemChrome.setEnabledSystemUIOverlays(
-        [SystemUiOverlay.top, SystemUiOverlay.bottom]);
+    SystemChrome.restoreSystemUIOverlays();
     super.dispose();
   }
 
@@ -101,7 +101,8 @@ class _PlayerState extends State<Player> {
     if (isBookmarked(widget.anime.url, widget.sourceUrl) &&
         controller != null &&
         controller!.value.isInitialized) {
-      updateEpisodeTime(widget.anime.url,
+      updateEpisodeTime(
+          widget.anime.url,
           widget.sourceUrl,
           controller!.value.position.inMilliseconds,
           controller!.value.duration.inMilliseconds);

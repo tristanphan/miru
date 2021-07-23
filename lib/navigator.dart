@@ -30,7 +30,7 @@ class _NavigationState extends State<Navigation> {
               BottomNavigationBarItem(
                   icon: Icon(Icons.leaderboard), label: "Popular"),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.leaderboard), label: "Library"),
+                  icon: Icon(Icons.book), label: "Library"),
               BottomNavigationBarItem(icon: Icon(Icons.search), label: "Search")
             ],
             currentIndex: page,

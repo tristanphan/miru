@@ -16,8 +16,9 @@ void save() {
   sharedPreferences!.setString("pinned", jsonEncode(pinned));
 }
 
-void load() {
-  if (sharedPreferences == null) return;
+void load() async {
+  if (sharedPreferences == null)
+    sharedPreferences = await SharedPreferences.getInstance();
   String? pref = sharedPreferences!.getString("pinned");
   try {
     List<dynamic> data = jsonDecode(pref!) as List<dynamic>;

@@ -25,32 +25,45 @@ class _PopularPageState extends State<PopularPage> {
 
   @override
   Widget build(BuildContext context) {
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-        body: NestedScrollView(
-            headerSliverBuilder: (BuildContext context, bool scroll) =>
-                headerSilverBuilder(context, "Popular"),
-            body: FutureBuilder(
-                future: popularFuture,
-                builder: (BuildContext context,
-                    AsyncSnapshot<List<Popular>> snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting ||
-                      snapshot.data == null)
-                    return Center(child: CupertinoActivityIndicator());
+        body: RefreshIndicator(
+          onRefresh: () async {
+            setState(() {
+              popularFuture = Anime.getPopular();
+              return;
+            });
+          },
+          color: isDark ? Colors.black : Colors.white,
+          backgroundColor: isDark ? Colors.white : Colors.black,
+          child: NestedScrollView(
+              headerSliverBuilder: (BuildContext context, bool scroll) =>
+                  headerSilverBuilder(context, "Popular"),
+              body: FutureBuilder(
+                  future: popularFuture,
+                  builder: (BuildContext context,
+                      AsyncSnapshot<List<Popular>> snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting ||
+                        snapshot.data == null)
+                      return Center(child: CupertinoActivityIndicator());
 
-                  return RefreshIndicator(
-                      onRefresh: () async {
-                        setState(() {
-                          popularFuture = Anime.getPopular();
-                          return;
-                        });
-                      },
-                      child: Container(
-                          height: double.maxFinite,
-                          child: SingleChildScrollView(
-                              child: HomeList(
-                                  list: snapshot.data!,
-                                  subtext: (item) => item.genres,
-                                  setState: setState))));
-                })));
+                    return RefreshIndicator(
+                        onRefresh: () async {
+                          setState(() {
+                            popularFuture = Anime.getPopular();
+                            return;
+                          });
+                        },
+                        color: isDark ? Colors.black : Colors.white,
+                        backgroundColor: isDark ? Colors.white : Colors.black,
+                        child: Container(
+                            height: double.maxFinite,
+                            child: SingleChildScrollView(
+                                child: HomeList(
+                                    list: snapshot.data!,
+                                    subtext: (item) => item.genres,
+                                    setState: setState))));
+                  })),
+        ));
   }
 }

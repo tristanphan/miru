@@ -23,6 +23,7 @@ class _LibraryPageState extends State<LibraryPage> {
 
   @override
   Widget build(BuildContext context) {
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
     Future<List<PaletteGenerator>> pinnedPalette = () async {
       return [
         for (Pin pin in pinned)
@@ -66,6 +67,8 @@ class _LibraryPageState extends State<LibraryPage> {
                 onRefresh: () async {
                   setState(() {});
                 },
+                color: isDark ? Colors.black : Colors.white,
+                backgroundColor: isDark ? Colors.white : Colors.black,
                 child: FutureBuilder(
                     future: pinnedPalette,
                     builder: (BuildContext context,

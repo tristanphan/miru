@@ -1,14 +1,12 @@
 import 'dart:math';
 
-import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
 import 'package:miru/data/anime.dart';
+import 'package:miru/data/cache.dart';
 import 'package:miru/data/persistent_data/data_storage.dart';
 import 'package:miru/data/structures/anime_details.dart';
-import 'package:miru/data/cache.dart';
-import 'package:miru/info.dart';
 import 'package:miru/pages/home_page/header_silver_builder.dart';
 import 'package:miru/pages/watch_page/functions/formatter.dart';
 import 'package:miru/pages/watch_page/loading.dart';
@@ -75,39 +73,26 @@ class _DetailsPageState extends State<DetailsPage> {
           }
 
           return Scaffold(
+              floatingActionButton: FloatingActionButton.extended(
+                  onPressed: () {},
+                  label: Text(pinned ? "Unpin" : "Pin"),
+                  icon: Icon(pinned ? Icons.favorite : Icons.favorite_border),
+                  backgroundColor: pinned
+                      ? Colors.red
+                      : isDark
+                          ? Colors.white
+                          : Colors.black),
               body: NestedScrollView(
                   headerSliverBuilder: (BuildContext context, bool scroll) =>
-                      headerSilverBuilder(context, widget.title,
-                          trailing: InkWell(
-                              splashColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                              child: Icon(
-                                  pinned
-                                      ? Icons.favorite
-                                      : Icons.favorite_border,
-                                  color: pinned
-                                      ? Colors.red
-                                      : isDark
-                                          ? Colors.white
-                                          : Colors.black),
-                              onTap: () async {
-                                showInfo(
-                                    context: context,
-                                    url: details.url,
-                                    name: details.name,
-                                    image: details.image,
-                                    setState: setState);
-                              },
-                              onLongPress: () {
-                                EasyDynamicTheme.of(context).changeTheme(
-                                    dark: Theme.of(context).brightness ==
-                                        Brightness.light);
-                              })),
+                      headerSilverBuilder(
+                        context,
+                        widget.title,
+                      ),
                   body: Container(
                       height: double.maxFinite,
                       child: RefreshIndicator(
-                          color: Colors.black,
-                          backgroundColor: Colors.white,
+                          color: isDark ? Colors.black : Colors.white,
+                          backgroundColor: isDark ? Colors.white : Colors.black,
                           onRefresh: () async {
                             setState(() {
                               detailsFuture = null;
@@ -280,7 +265,8 @@ class _DetailsPageState extends State<DetailsPage> {
                                                                                 1;
                                                                         while (epNum >=
                                                                                 0 &&
-                                                                            !isBookmarked(details.url, details.episodes[epNum].url)) {
+                                                                            !isBookmarked(details.url,
+                                                                                details.episodes[epNum].url)) {
                                                                           epNum--;
                                                                         }
                                                                         if (epNum <
@@ -330,9 +316,11 @@ class _DetailsPageState extends State<DetailsPage> {
                                           isBookmarked(details.url,
                                               details.episodes[index].url);
                                       if (bookmarked) {
-                                        episodeTime = getEpisodePosition(details.url,
+                                        episodeTime = getEpisodePosition(
+                                            details.url,
                                             details.episodes[index].url);
-                                        totalTime = getEpisodeDuration(details.url,
+                                        totalTime = getEpisodeDuration(
+                                            details.url,
                                             details.episodes[index].url);
                                       }
                                       return InkWell(

@@ -63,7 +63,7 @@ class _HomeCardState extends State<HomeCard> {
                             title: widget.title,
                             url: widget.url,
                             homeCard: widget)));
-                    setState(() {});
+                    widget.setState(() {});
                   },
                   onLongPress: () {
                     showInfo(

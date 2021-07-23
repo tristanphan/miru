@@ -25,32 +25,45 @@ class _RecentlyUpdatedPageState extends State<RecentlyUpdatedPage> {
 
   @override
   Widget build(BuildContext context) {
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-        body: NestedScrollView(
-            headerSliverBuilder: (BuildContext context, bool scroll) =>
-                headerSilverBuilder(context, "Recently Updated"),
-            body: FutureBuilder(
-                future: recentlyUpdatedFuture,
-                builder: (BuildContext context,
-                    AsyncSnapshot<List<RecentRelease>> snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting ||
-                      snapshot.data == null)
-                    return Center(child: CupertinoActivityIndicator());
+        body: RefreshIndicator(
+          onRefresh: () async {
+            setState(() {
+              recentlyUpdatedFuture = Anime.getRecentReleases();
+              return;
+            });
+          },
+          color: isDark ? Colors.black : Colors.white,
+          backgroundColor: isDark ? Colors.white : Colors.black,
+          child: NestedScrollView(
+              headerSliverBuilder: (BuildContext context, bool scroll) =>
+                  headerSilverBuilder(context, "Recently Updated"),
+              body: FutureBuilder(
+                  future: recentlyUpdatedFuture,
+                  builder: (BuildContext context,
+                      AsyncSnapshot<List<RecentRelease>> snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting ||
+                        snapshot.data == null)
+                      return Center(child: CupertinoActivityIndicator());
 
-                  return RefreshIndicator(
-                      onRefresh: () async {
-                        setState(() {
-                          recentlyUpdatedFuture = Anime.getRecentReleases();
-                          return;
-                        });
-                      },
-                      child: Container(
-                          height: double.maxFinite,
-                          child: SingleChildScrollView(
-                              child: HomeList(
-                                  list: snapshot.data!,
-                                  subtext: (item) => item.latestEp,
-                                  setState: setState))));
-                })));
+                    return RefreshIndicator(
+                        onRefresh: () async {
+                          setState(() {
+                            recentlyUpdatedFuture = Anime.getRecentReleases();
+                            return;
+                          });
+                        },
+                        color: isDark ? Colors.black : Colors.white,
+                        backgroundColor: isDark ? Colors.white : Colors.black,
+                        child: Container(
+                            height: double.maxFinite,
+                            child: SingleChildScrollView(
+                                child: HomeList(
+                                    list: snapshot.data!,
+                                    subtext: (item) => item.latestEp,
+                                    setState: setState))));
+                  })),
+        ));
   }
 }
