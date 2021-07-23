@@ -7,6 +7,7 @@ import 'package:miru/data/anime.dart';
 import 'package:miru/data/cache.dart';
 import 'package:miru/data/persistent_data/data_storage.dart';
 import 'package:miru/data/structures/anime_details.dart';
+import 'package:miru/info.dart';
 import 'package:miru/pages/home_page/header_silver_builder.dart';
 import 'package:miru/pages/watch_page/functions/formatter.dart';
 import 'package:miru/pages/watch_page/loading.dart';
@@ -36,7 +37,7 @@ class _DetailsPageState extends State<DetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    bool pinned = isPinned(widget.url);
+    bool pinned = Storage.isPinned(widget.url);
     if (detailsFuture == null) {
       if (Cache.loadedDetails.containsKey(widget.url))
         detailsFuture = (() async => Cache.loadedDetails[widget.url]!)();
@@ -74,9 +75,21 @@ class _DetailsPageState extends State<DetailsPage> {
 
           return Scaffold(
               floatingActionButton: FloatingActionButton.extended(
-                  onPressed: () {},
+                  onPressed: () {
+                    showInfo(
+                        context: context,
+                        url: widget.url,
+                        name: widget.title,
+                        image: details.image,
+                        setState: setState);
+                  },
                   label: Text(pinned ? "Unpin" : "Pin"),
                   icon: Icon(pinned ? Icons.favorite : Icons.favorite_border),
+                  foregroundColor: pinned
+                      ? Colors.white
+                      : isDark
+                          ? Colors.black
+                          : Colors.white,
                   backgroundColor: pinned
                       ? Colors.red
                       : isDark
@@ -153,6 +166,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                                                 GestureDetector(
                                                                     onTap: () {
                                                                       showDialog(
+                                                                          barrierDismissible: false,
                                                                           builder: (BuildContext
                                                                               context) {
                                                                             return AlertDialog(
@@ -194,6 +208,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                                                   onPressed:
                                                                       () {
                                                                     showDialog(
+                                                                        barrierDismissible: false,
                                                                         builder:
                                                                             (BuildContext
                                                                                 context) {
@@ -265,7 +280,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                                                                 1;
                                                                         while (epNum >=
                                                                                 0 &&
-                                                                            !isBookmarked(details.url,
+                                                                            !Storage.isBookmarked(details.url,
                                                                                 details.episodes[epNum].url)) {
                                                                           epNum--;
                                                                         }
@@ -273,9 +288,9 @@ class _DetailsPageState extends State<DetailsPage> {
                                                                             0)
                                                                           epNum =
                                                                               0;
-                                                                        if (isBookmarked(details.url, details.episodes[epNum].url) &&
-                                                                            getEpisodeDuration(details.url, details.episodes[epNum].url) ==
-                                                                                getEpisodePosition(details.url, details.episodes[epNum].url))
+                                                                        if (Storage.isBookmarked(details.url, details.episodes[epNum].url) &&
+                                                                            Storage.getEpisodeDuration(details.url, details.episodes[epNum].url) ==
+                                                                                Storage.getEpisodePosition(details.url, details.episodes[epNum].url))
                                                                           epNum++;
                                                                         if (epNum >=
                                                                             details.episodes.length)
@@ -313,13 +328,14 @@ class _DetailsPageState extends State<DetailsPage> {
                                       int episodeTime = 0;
                                       int totalTime = 0;
                                       bool bookmarked = pinned &&
-                                          isBookmarked(details.url,
+                                          Storage.isBookmarked(details.url,
                                               details.episodes[index].url);
                                       if (bookmarked) {
-                                        episodeTime = getEpisodePosition(
-                                            details.url,
-                                            details.episodes[index].url);
-                                        totalTime = getEpisodeDuration(
+                                        episodeTime =
+                                            Storage.getEpisodePosition(
+                                                details.url,
+                                                details.episodes[index].url);
+                                        totalTime = Storage.getEpisodeDuration(
                                             details.url,
                                             details.episodes[index].url);
                                       }
@@ -496,7 +512,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                                               .bookmark_add_outlined;
                                                       }()),
                                                       onPressed: () {
-                                                        toggleEpisode(
+                                                        Storage.toggleEpisode(
                                                             details
                                                                 .episodes[index]
                                                                 .url,

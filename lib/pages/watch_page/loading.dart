@@ -122,7 +122,11 @@ class _LoadingState extends State<Loading> {
                                 progressColor: Colors.white,
                                 currentValue: progress)),
                         Padding(padding: EdgeInsets.all(4)),
-                        Text(widget.name, style: TextStyle(fontSize: 20), textAlign: TextAlign.center,)
+                        Text(
+                          widget.name,
+                          style: TextStyle(fontSize: 20),
+                          textAlign: TextAlign.center,
+                        )
                       ]),
                   Positioned(
                       top: 40,

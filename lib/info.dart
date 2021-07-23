@@ -8,7 +8,7 @@ void showInfo(
     required String name,
     required String image,
     required Function setState}) {
-  bool pinned = isPinned(url);
+  bool pinned = Storage.isPinned(url);
   showCupertinoModalPopup(
       context: context,
       builder: (BuildContext context) {
@@ -25,7 +25,7 @@ void showInfo(
                   onPressed: () {
                     Navigator.of(context).pop();
                     if (!pinned) {
-                      addPin(url, name, image);
+                      Storage.addPin(url, name, image);
                       setState(() {});
                       return;
                     }
@@ -41,7 +41,7 @@ void showInfo(
                                     child: Text("Remove"),
                                     isDestructiveAction: true,
                                     onPressed: () {
-                                      removePin(url);
+                                      Storage.removePin(url);
                                       Navigator.of(context).pop();
                                       setState(() {});
                                     }),

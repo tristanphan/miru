@@ -14,7 +14,9 @@ class Pin {
       : this.url = json['url'],
         this.title = json['title'],
         this.image = json['image'],
-        this.episodes = [for (var episode in json['episodes']) Bookmark.fromJson(episode)];
+        this.episodes = [
+          for (var episode in json['episodes']) Bookmark.fromJson(episode)
+        ];
 
   Map<String, dynamic> toJson() => {
         'url': this.url,
@@ -37,8 +39,8 @@ class Bookmark {
         this.duration = json['duration'];
 
   Map<String, dynamic> toJson() => {
-    'url': this.url,
-    'position': this.position,
-    'duration': this.duration,
-  };
+        'url': this.url,
+        'position': this.position,
+        'duration': this.duration,
+      };
 }

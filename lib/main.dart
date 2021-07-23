@@ -3,13 +3,18 @@ import 'package:flutter/material.dart';
 
 import 'data/anime.dart';
 import 'data/persistent_data/data_storage.dart';
+import 'data/persistent_data/theme.dart';
 import 'navigator.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  load();
+  Storage.load();
+  AppTheme.loadTheme();
   await Anime.view.run();
-  runApp(EasyDynamicThemeWidget(child: MyApp()));
+  runApp(EasyDynamicThemeWidget(
+    child: MyApp(),
+    initialThemeMode: AppTheme.theme,
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -18,8 +23,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         title: "Miru",
-        theme: ThemeData.light(),
-        darkTheme: ThemeData.dark(),
+        theme: ThemeData(accentColor: AppTheme.color),
+        darkTheme: ThemeData(brightness: Brightness.dark, accentColor: AppTheme.color),
         themeMode: EasyDynamicTheme.of(context).themeMode,
         home: Navigation());
   }

@@ -48,17 +48,17 @@ class _PlayerState extends State<Player> {
 
   @override
   void initState() {
-    if (!isBookmarked(widget.anime.url, widget.sourceUrl))
-      addEpisode(widget.sourceUrl, widget.anime);
+    if (!Storage.isBookmarked(widget.anime.url, widget.sourceUrl))
+      Storage.addEpisode(widget.sourceUrl, widget.anime);
     controller = VideoPlayerController.network(widget.url);
     controller!.initialize().then((value) {
       setState(() {
-        if (isBookmarked(widget.anime.url, widget.sourceUrl) &&
-            getEpisodePosition(widget.anime.url, widget.sourceUrl) !=
-                getEpisodeDuration(widget.anime.url, widget.sourceUrl))
+        if (Storage.isBookmarked(widget.anime.url, widget.sourceUrl) &&
+            Storage.getEpisodePosition(widget.anime.url, widget.sourceUrl) !=
+                Storage.getEpisodeDuration(widget.anime.url, widget.sourceUrl))
           controller!.seekTo(Duration(
-              milliseconds:
-                  getEpisodePosition(widget.anime.url, widget.sourceUrl)));
+              milliseconds: Storage.getEpisodePosition(
+                  widget.anime.url, widget.sourceUrl)));
         controller!.play();
         Wakelock.enable();
         setTimer();
@@ -98,10 +98,10 @@ class _PlayerState extends State<Player> {
   @override
   void deactivate() {
     controller!.pause();
-    if (isBookmarked(widget.anime.url, widget.sourceUrl) &&
+    if (Storage.isBookmarked(widget.anime.url, widget.sourceUrl) &&
         controller != null &&
         controller!.value.isInitialized) {
-      updateEpisodeTime(
+      Storage.updateEpisodeTime(
           widget.anime.url,
           widget.sourceUrl,
           controller!.value.position.inMilliseconds,

@@ -26,7 +26,7 @@ class _LibraryPageState extends State<LibraryPage> {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
     Future<List<PaletteGenerator>> pinnedPalette = () async {
       return [
-        for (Pin pin in pinned)
+        for (Pin pin in Storage.pinned)
           await PaletteGenerator.fromImageProvider(NetworkImage(pin.image))
       ];
     }();
@@ -45,7 +45,7 @@ class _LibraryPageState extends State<LibraryPage> {
                               onPressed: () {
                                 Navigator.of(context).pop();
                                 setState(() {
-                                  clearAll();
+                                  Storage.clearAll();
                                 });
                               },
                               isDestructiveAction: true,
@@ -77,14 +77,14 @@ class _LibraryPageState extends State<LibraryPage> {
                           snapshot.data == null)
                         return Center(child: CupertinoActivityIndicator());
                       List<Popular> libraryItems = [
-                        for (int index = pinned.length - 1;
+                        for (int index = Storage.pinned.length - 1;
                             index >= 0;
                             index--)
                           Popular(
-                              image: pinned[index].image,
+                              image: Storage.pinned[index].image,
                               genres: "",
-                              url: pinned[index].url,
-                              title: pinned[index].title,
+                              url: Storage.pinned[index].url,
+                              title: Storage.pinned[index].title,
                               latestEp: "",
                               palette: snapshot.data![index])
                       ];

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:miru/pages/library_page.dart';
 import 'package:miru/pages/popular_page.dart';
 import 'package:miru/pages/recently_updated_page.dart';
-import 'package:miru/pages/search_page.dart';
+import 'package:miru/pages/settings.dart';
 
 class Navigation extends StatefulWidget {
   const Navigation({Key? key}) : super(key: key);
@@ -17,7 +17,7 @@ class _NavigationState extends State<Navigation> {
     RecentlyUpdatedPage(),
     PopularPage(),
     LibraryPage(),
-    SearchPage()
+    SettingsPage()
   ];
 
   @override
@@ -25,13 +25,14 @@ class _NavigationState extends State<Navigation> {
     return Scaffold(
         bottomNavigationBar: BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
+            selectedItemColor: Theme.of(context).accentColor,
             items: [
               BottomNavigationBarItem(icon: Icon(Icons.feed), label: "Updated"),
               BottomNavigationBarItem(
                   icon: Icon(Icons.leaderboard), label: "Popular"),
+              BottomNavigationBarItem(icon: Icon(Icons.book), label: "Library"),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.book), label: "Library"),
-              BottomNavigationBarItem(icon: Icon(Icons.search), label: "Search")
+                  icon: Icon(Icons.settings), label: "Settings")
             ],
             currentIndex: page,
             onTap: (int index) {

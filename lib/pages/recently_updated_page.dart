@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:miru/data/anime.dart';
 import 'package:miru/data/structures/home.dart';
+import 'package:miru/pages/search_page.dart';
 
 import 'home_page/header_silver_builder.dart';
 import 'home_page/homelist.dart';
@@ -27,6 +28,13 @@ class _RecentlyUpdatedPageState extends State<RecentlyUpdatedPage> {
   Widget build(BuildContext context) {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
+        floatingActionButton: FloatingActionButton.extended(
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => SearchPage()));
+            },
+            label: Text("Search"),
+            icon: Icon(Icons.search)),
         body: RefreshIndicator(
           onRefresh: () async {
             setState(() {
