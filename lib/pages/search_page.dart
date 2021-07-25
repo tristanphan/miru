@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:miru/data/anime.dart';
+import 'package:miru/data/sources/sources.dart';
 import 'package:miru/data/structures/search_item.dart';
 
 import 'home_page/header_silver_builder.dart';
@@ -44,7 +45,7 @@ class _SearchPageState extends State<SearchPage> {
               setState(() {
                 items.clear();
               });
-              items = await Anime.search(query, language);
+              items = await Sources.get().search(query, language);
               setState(() {});
             },
             label: Text(() {
@@ -73,7 +74,7 @@ class _SearchPageState extends State<SearchPage> {
                         setState(() {
                           items.clear();
                         });
-                        items = await Anime.search(query, language);
+                        items = await Sources.get().search(query, language);
                         FocusScope.of(context).requestFocus(FocusNode());
                         setState(() {});
                       })),
@@ -85,7 +86,7 @@ class _SearchPageState extends State<SearchPage> {
                       : SingleChildScrollView(
                           child: HomeList(
                               list: items,
-                              subtext: (item) => item.released,
+                              subtext: (item) => item.subtitle,
                               setState: setState)))
             ])));
   }

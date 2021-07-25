@@ -15,6 +15,7 @@ class _EmergencyViewState extends State<EmergencyView> {
 
   @override
   void initState() {
+    print("Fallback Mode: " + widget.url);
     super.initState();
   }
 

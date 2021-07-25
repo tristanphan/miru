@@ -2,9 +2,8 @@ import 'dart:convert';
 
 import 'package:miru/data/cache.dart';
 import 'package:miru/data/persistent_data/pinmark.dart';
+import 'package:miru/data/structures/anime_details.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../structures/anime_details.dart';
 
 class Storage {
   static SharedPreferences? sharedPreferences;
@@ -33,7 +32,7 @@ class Storage {
       sharedPreferences!.setString("pinned", "[]");
       pinned = [];
     }
-    print("Loaded Pinned: " + pinned.toString());
+    print("Loaded Pinned");
   }
 
   static void addPin(String url, String title, String image) {

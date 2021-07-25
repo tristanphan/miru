@@ -1,16 +1,16 @@
 import 'package:palette_generator/palette_generator.dart';
 
-class SearchItem {
+class Popular {
   String title;
-  String url;
   String image;
-  String subtitle;
+  String subtext;
+  String url;
   PaletteGenerator palette;
 
-  SearchItem(
+  Popular(
       {required this.title,
-      required this.url,
       required this.image,
-      required this.subtitle,
+      required this.subtext,
+      required this.url,
       required this.palette});
 }

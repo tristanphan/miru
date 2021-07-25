@@ -2,11 +2,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
+import 'package:miru/data/sources/sources.dart';
 import 'package:miru/data/structures/video_details.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share/share.dart';
-
-import '../data/anime.dart';
 
 class Download extends StatefulWidget {
   final String name;
@@ -88,7 +87,7 @@ class _DownloadState extends State<Download> {
     });
     String videoPath =
         (await getTemporaryDirectory()).path + "/" + widget.name + ".mp4";
-    VideoDetails? video = await Anime.getVideo(widget.url);
+    VideoDetails? video = await Sources.get().getVideo(widget.url);
     canCancel = true;
     if (video == null) {
       onError();

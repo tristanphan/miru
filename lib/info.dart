@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
-
-import 'data/persistent_data/data_storage.dart';
+import 'package:miru/data/persistent_data/data_storage.dart';
 
 void showInfo(
     {required BuildContext context,

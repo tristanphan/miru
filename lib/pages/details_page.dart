@@ -3,9 +3,9 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
-import 'package:miru/data/anime.dart';
 import 'package:miru/data/cache.dart';
 import 'package:miru/data/persistent_data/data_storage.dart';
+import 'package:miru/data/sources/sources.dart';
 import 'package:miru/data/structures/anime_details.dart';
 import 'package:miru/info.dart';
 import 'package:miru/pages/home_page/header_silver_builder.dart';
@@ -42,7 +42,7 @@ class _DetailsPageState extends State<DetailsPage> {
       if (Cache.loadedDetails.containsKey(widget.url))
         detailsFuture = (() async => Cache.loadedDetails[widget.url]!)();
       else {
-        detailsFuture = Anime.getDetails(widget.url);
+        detailsFuture = Sources.get().getDetails(widget.url);
         detailsFuture!.then((value) => Cache.loadedDetails[widget.url] = value);
       }
     }
@@ -97,10 +97,7 @@ class _DetailsPageState extends State<DetailsPage> {
                           : Colors.black),
               body: NestedScrollView(
                   headerSliverBuilder: (BuildContext context, bool scroll) =>
-                      headerSilverBuilder(
-                        context,
-                        widget.title,
-                      ),
+                      headerSilverBuilder(context, widget.title),
                   body: Container(
                       height: double.maxFinite,
                       child: RefreshIndicator(
@@ -203,8 +200,8 @@ class _DetailsPageState extends State<DetailsPage> {
                                                                     .end,
                                                             children: [
                                                               FloatingActionButton(
-                                                                  heroTag: Random()
-                                                                      .nextDouble(),
+                                                                  heroTag:
+                                                                      "moreInfoMini",
                                                                   mini: true,
                                                                   onPressed:
                                                                       () {
@@ -312,7 +309,9 @@ class _DetailsPageState extends State<DetailsPage> {
                                                                       },
                                                                       backgroundColor:
                                                                           Colors
-                                                                              .red)
+                                                                              .red,
+                                                                      heroTag:
+                                                                          "play")
                                                             ])
                                                       ])))
                                         ])))),
@@ -388,6 +387,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                                                             index]
                                                                         .url);
                                                               }));
+                                                              setState(() {});
                                                             },
                                                             child: Text("Yes")),
                                                         CupertinoActionSheetAction(

@@ -22,7 +22,7 @@ class Pin {
         'url': this.url,
         'title': this.title,
         'image': this.image,
-        'episodes': this.episodes,
+        'episodes': this.episodes
       };
 }
 
@@ -38,9 +38,6 @@ class Bookmark {
         this.position = json['position'],
         this.duration = json['duration'];
 
-  Map<String, dynamic> toJson() => {
-        'url': this.url,
-        'position': this.position,
-        'duration': this.duration,
-      };
+  Map<String, dynamic> toJson() =>
+      {'url': this.url, 'position': this.position, 'duration': this.duration};
 }

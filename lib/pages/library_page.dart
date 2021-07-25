@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:miru/data/persistent_data/data_storage.dart';
 import 'package:miru/data/persistent_data/pinmark.dart';
-import 'package:miru/data/structures/home.dart';
+import 'package:miru/data/structures/popular.dart';
 import 'package:palette_generator/palette_generator.dart';
 
 import 'home_page/header_silver_builder.dart';
@@ -82,11 +82,10 @@ class _LibraryPageState extends State<LibraryPage> {
                             index--)
                           Popular(
                               image: Storage.pinned[index].image,
-                              genres: "",
                               url: Storage.pinned[index].url,
                               title: Storage.pinned[index].title,
-                              latestEp: "",
-                              palette: snapshot.data![index])
+                              palette: snapshot.data![index],
+                              subtext: '')
                       ];
                       if (libraryItems.isEmpty)
                         return Center(
@@ -98,7 +97,7 @@ class _LibraryPageState extends State<LibraryPage> {
                           child: SingleChildScrollView(
                               child: HomeList(
                                   list: libraryItems,
-                                  subtext: (item) => item.genres,
+                                  subtext: (item) => item.subtext,
                                   setState: setState)));
                     }))));
   }

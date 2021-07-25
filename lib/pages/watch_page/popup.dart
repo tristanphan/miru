@@ -5,18 +5,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_xlider/flutter_xlider.dart';
+import 'package:miru/data/sources/gogoanime/get_video.dart';
 import 'package:miru/data/structures/anime_details.dart';
-import 'package:miru/functions/fetch_video.dart';
+import 'package:miru/pages/watch_page/emergency_view.dart';
 import 'package:miru/pages/watch_page/functions/controls.dart';
+import 'package:miru/pages/watch_page/functions/formatter.dart';
+import 'package:miru/pages/watch_page/loading.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share/share.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 import 'package:wakelock/wakelock.dart';
-
-import 'emergency_view.dart';
-import 'functions/formatter.dart';
-import 'loading.dart';
 
 class Popup extends StatefulWidget {
   final VideoPlayerController controller;
@@ -310,7 +309,7 @@ class _PopupState extends State<Popup> {
                                               name: widget.lastEpisode[0],
                                               url: widget.lastEpisode[1])));
                             },
-                      heroTag: Random().nextDouble(),
+                      heroTag: "lastEp",
                       backgroundColor: Colors.transparent,
                       icon: Icon(Icons.navigate_before_rounded),
                       label: Text("Last Episode")))),
@@ -365,7 +364,7 @@ class _PopupState extends State<Popup> {
                                               name: widget.nextEpisode[0],
                                               url: widget.nextEpisode[1])));
                             },
-                      heroTag: Random().nextDouble(),
+                      heroTag: "nextEp",
                       backgroundColor: Colors.transparent,
                       icon: Icon(Icons.navigate_next_rounded),
                       label: Text("Next Episode")))),

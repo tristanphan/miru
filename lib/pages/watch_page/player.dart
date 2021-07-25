@@ -5,14 +5,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:miru/data/persistent_data/data_storage.dart';
+import 'package:miru/data/sources/gogoanime/get_video.dart';
 import 'package:miru/data/structures/anime_details.dart';
-import 'package:miru/functions/fetch_video.dart';
+import 'package:miru/pages/watch_page/emergency_view.dart';
 import 'package:miru/pages/watch_page/functions/controls.dart';
 import 'package:miru/pages/watch_page/popup.dart';
 import 'package:video_player/video_player.dart';
 import 'package:wakelock/wakelock.dart';
-
-import 'emergency_view.dart';
 
 class Player extends StatefulWidget {
   final String name;
