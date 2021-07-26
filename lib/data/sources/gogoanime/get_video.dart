@@ -3,12 +3,8 @@ import 'dart:async';
 import 'package:miru/data/structures/video_details.dart';
 import 'package:web_scraper/web_scraper.dart';
 
-Completer<String> errorVideoUrl = Completer<String>();
-
 Future<VideoDetails?> getVideo(String url, Function changeProgress) async {
   int startTime = DateTime.now().millisecondsSinceEpoch;
-
-  errorVideoUrl = Completer<String>();
 
   print("Getting Video URL: " + url);
 
@@ -16,7 +12,7 @@ Future<VideoDetails?> getVideo(String url, Function changeProgress) async {
   WebScraper web = WebScraper("https://gogoanime.vc/");
   await web.loadFullURL(url);
 
-  String title = web.getElementTitle('div.title_name > h2')[0].trim();
+  String title = web.getElementTitle('div.title_name > h2')[0].replaceAll("English Subbed", "").replaceAll(" (Dub)", "").trim();
 
   // Get Last Episode
   List<String> lastEpisode = [];
@@ -53,7 +49,6 @@ Future<VideoDetails?> getVideo(String url, Function changeProgress) async {
 
   frameURL = "http:" + frameURL.replaceAll("streaming", "loadserver");
   changeProgress("Loading Video Player URL");
-  errorVideoUrl.complete(frameURL);
   await web.loadFullURL(frameURL);
 
   String videoURL;

@@ -14,7 +14,7 @@ Future<AnimeDetails> getDetails(String url) async {
   await web.loadFullURL(url);
 
   // Properties
-  String name = web.getElementTitle('h1')[0].trim();
+  String name = web.getElementTitle('h1')[0].replaceAll("(Dub)", "").trim();
   String summary = "";
   String type = "";
   String genre = "";

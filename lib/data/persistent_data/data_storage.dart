@@ -12,7 +12,7 @@ class Storage {
 
   static void save() {
     if (sharedPreferences == null) return;
-    print("Saving: " + jsonEncode(pinned));
+    print("Saving");
     sharedPreferences!.setString("pinned", jsonEncode(pinned));
   }
 

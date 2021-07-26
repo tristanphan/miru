@@ -110,11 +110,10 @@ class _SettingsPageState extends State<SettingsPage> {
                                 items: [
                                   DropdownMenuItem(
                                       child: Text("GoGoAnime"), value: 0),
-                                  DropdownMenuItem(
-                                      child: Text("AnimeSuge"), value: 1)
                                 ],
                                 value: server,
                                 onChanged: (int? i) {
+                                  if (server == i) return;
                                   setState(() {
                                     Sources.set(i!);
                                     server = i;

@@ -30,7 +30,7 @@ Future<List<Popular>> getPopular() async {
     String title = titles[item]!.trim();
     String url = "https://gogoanime.vc" + links[item]!.trim();
     String image = images[item]!.trim();
-    String released = releases[item].trim();
+    String released = releases[item].trim().replaceAll(": ", " in ");
 
     popular.add(Popular(
         title: title,

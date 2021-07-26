@@ -4,11 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
 import 'package:miru/data/cache.dart';
-import 'package:miru/data/sources/gogoanime/get_video.dart';
 import 'package:miru/data/sources/sources.dart';
 import 'package:miru/data/structures/anime_details.dart';
 import 'package:miru/data/structures/video_details.dart';
-import 'package:miru/pages/watch_page/emergency_view.dart';
 import 'package:miru/pages/watch_page/player.dart';
 
 class Loading extends StatefulWidget {
@@ -50,28 +48,18 @@ class _LoadingState extends State<Loading> {
     } else {
       Sources.get().getVideo(widget.url, changeProgress).then((video) {
         if (!mounted) return;
-        if (video == null) {
-          if (!errorVideoUrl.isCompleted) Navigator.of(context).pop();
-          errorVideoUrl.future.then((url) {
-            Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (BuildContext context) => EmergencyView(url)));
-            errorVideoUrl = Completer<String>();
-          });
-          return;
-        } else {
-          Cache.loadedVideos[widget.url] = video;
-          Navigator.of(context)
-              .pushReplacement(MaterialPageRoute(builder: (context) {
-            return Player(
-                name: video.title,
-                url: video.url,
-                sourceUrl: widget.url,
-                anime: widget.anime,
-                detailsState: widget.detailsState,
-                lastEpisode: video.last,
-                nextEpisode: video.next);
-          }));
-        }
+        Cache.loadedVideos[widget.url] = video!;
+        Navigator.of(context)
+            .pushReplacement(MaterialPageRoute(builder: (context) {
+          return Player(
+              name: video.title,
+              url: video.url,
+              sourceUrl: widget.url,
+              anime: widget.anime,
+              detailsState: widget.detailsState,
+              lastEpisode: video.last,
+              nextEpisode: video.next);
+        }));
       });
     }
     super.initState();
@@ -124,29 +112,6 @@ class _LoadingState extends State<Loading> {
                             style: TextStyle(fontSize: 20),
                             textAlign: TextAlign.center)
                       ]),
-                  Positioned(
-                      top: 40,
-                      right: 20,
-                      child: Opacity(
-                          opacity: fallback ? 0 : 1,
-                          child: FloatingActionButton.extended(
-                              heroTag: "fallback",
-                              backgroundColor: Colors.white12,
-                              foregroundColor: Colors.white,
-                              onPressed: () {
-                                setState(() {
-                                  fallback = true;
-                                  errorVideoUrl.future.then((url) {
-                                    Navigator.of(context).pushReplacement(
-                                        MaterialPageRoute(
-                                            builder: (BuildContext context) =>
-                                                EmergencyView(url)));
-                                    errorVideoUrl = Completer<String>();
-                                  });
-                                });
-                              },
-                              label: Text("Fallback"),
-                              icon: Icon(Icons.error_outline_rounded)))),
                   Positioned(
                       top: 40,
                       left: 20,

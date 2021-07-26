@@ -5,9 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_xlider/flutter_xlider.dart';
-import 'package:miru/data/sources/gogoanime/get_video.dart';
 import 'package:miru/data/structures/anime_details.dart';
-import 'package:miru/pages/watch_page/emergency_view.dart';
 import 'package:miru/pages/watch_page/functions/controls.dart';
 import 'package:miru/pages/watch_page/functions/formatter.dart';
 import 'package:miru/pages/watch_page/loading.dart';
@@ -316,34 +314,17 @@ class _PopupState extends State<Popup> {
           Expanded(
               child: Center(
                   child: (MediaQuery.of(context).size.height > 500)
-                      ? InkWell(
-                          borderRadius: BorderRadius.circular(15),
-                          onTap: () {
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                content: Text("Host: " +
-                                    Uri.parse(widget.url).host +
-                                    "\nPress and hold to enter Fallback Mode!"),
-                                duration: Duration(seconds: 2),
-                                behavior: SnackBarBehavior.floating));
-                          },
-                          onLongPress: () async {
-                            String url = await errorVideoUrl.future;
-                            widget.controller.pause();
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    EmergencyView(url)));
-                          },
-                          child: Container(
-                              decoration: BoxDecoration(
-                                  color: Colors.black.withOpacity(0.3),
-                                  borderRadius: BorderRadius.circular(15)),
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 12),
-                              child: Text(widget.name,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(color: Colors.white))))
+                      ? Container(
+                          decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.3),
+                              borderRadius: BorderRadius.circular(15)),
+                          padding: EdgeInsets.symmetric(
+                              vertical: 8, horizontal: 12),
+                          child: Text(widget.name,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: Colors.white)))
                       : Container())),
           IgnorePointer(
               ignoring: widget.nextEpisode.isEmpty,
