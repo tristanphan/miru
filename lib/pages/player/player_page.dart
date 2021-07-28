@@ -6,7 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:miru/data/persistent_data/data_storage.dart';
 import 'package:miru/data/structures/anime_details.dart';
-import 'package:miru/pages/player/functions/controls.dart';
+import 'package:miru/pages/player/functions/seek.dart';
+import 'package:miru/pages/player/functions/video.dart';
 import 'package:miru/pages/player/popup.dart';
 import 'package:video_player/video_player.dart';
 import 'package:wakelock/wakelock.dart';
@@ -38,42 +39,37 @@ class Player extends StatefulWidget {
 }
 
 class _PlayerState extends State<Player> {
-  VideoPlayerController? controller;
+  Video? video;
   Timer? close;
-  bool buffering = true;
+  bool isInitialized = false;
 
   FocusNode keyboardFocus = FocusNode();
 
   @override
   void initState() {
-    if (!Storage.isBookmarked(widget.anime.url, widget.sourceUrl))
+    if (!Storage.isBookmarked(widget.anime.url, widget.sourceUrl)) {
       Storage.addEpisode(widget.sourceUrl, widget.anime);
-    controller = VideoPlayerController.network(widget.url);
-    controller!.initialize().then((value) {
-      if (!mounted) return;
-      setState(() {
-        if (Storage.isBookmarked(widget.anime.url, widget.sourceUrl) &&
-            Storage.getEpisodePosition(widget.anime.url, widget.sourceUrl) !=
-                Storage.getEpisodeDuration(widget.anime.url, widget.sourceUrl))
-          controller!.seekTo(Duration(
-              milliseconds: Storage.getEpisodePosition(
-                  widget.anime.url, widget.sourceUrl)));
-        controller!.play();
-        Wakelock.enable();
-        setTimer();
-      });
-      controller!.addListener(() {
-        if (!mounted) return;
-        if (controller!.value.isBuffering != buffering) {
+    }
+    video = Video(
+        url: widget.url,
+        onInitialized: () {
+          if (!mounted) return;
           setState(() {
-            buffering = controller!.value.isBuffering;
+            if (Storage.isBookmarked(widget.anime.url, widget.sourceUrl) &&
+                Storage.getEpisodePosition(
+                        widget.anime.url, widget.sourceUrl) !=
+                    Storage.getEpisodeDuration(
+                        widget.anime.url, widget.sourceUrl))
+              video!.seekTo(Duration(
+                  milliseconds: Storage.getEpisodePosition(
+                      widget.anime.url, widget.sourceUrl)));
+            video!.play();
+            Wakelock.enable();
+            setTimer();
+            isInitialized = true;
           });
-        }
-        if (controller!.value.position == controller!.value.duration) {
-          Wakelock.disable();
-          setPopup(true);
-        }
-      });
+        }, setPopup: setPopup, setState: (void Function() function) {
+          if (mounted) setState(function);
     });
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
@@ -84,10 +80,6 @@ class _PlayerState extends State<Player> {
   @override
   void dispose() {
     Wakelock.disable();
-    if (controller != null) {
-      controller!.pause();
-      controller!.dispose();
-    }
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
@@ -96,20 +88,24 @@ class _PlayerState extends State<Player> {
     ]);
     SystemChrome.setEnabledSystemUIOverlays(
         [SystemUiOverlay.top, SystemUiOverlay.bottom]);
+    if (isInitialized) {
+      video!.pause();
+      video!.dispose();
+    }
     super.dispose();
   }
 
   @override
   void deactivate() {
-    controller!.pause();
-    if (Storage.isBookmarked(widget.anime.url, widget.sourceUrl) &&
-        controller != null &&
-        controller!.value.isInitialized) {
-      Storage.updateEpisodeTime(
-          widget.anime.url,
-          widget.sourceUrl,
-          controller!.value.position.inMilliseconds,
-          controller!.value.duration.inMilliseconds);
+    if (isInitialized) {
+      video!.pause();
+      if (Storage.isBookmarked(widget.anime.url, widget.sourceUrl)) {
+        Storage.updateEpisodeTime(
+            widget.anime.url,
+            widget.sourceUrl,
+            video!.getPosition().inMilliseconds,
+            video!.getDuration().inMilliseconds);
+      }
     }
     widget.detailsState(() {});
     unsetTimer();
@@ -118,7 +114,7 @@ class _PlayerState extends State<Player> {
 
   @override
   Widget build(BuildContext context) {
-    if (controller == null || !controller!.value.isInitialized) {
+    if (!isInitialized) {
       return Scaffold(
           backgroundColor: Colors.black,
           body: Stack(children: [
@@ -150,64 +146,55 @@ class _PlayerState extends State<Player> {
                 autofocus: true,
                 onKey: (RawKeyEvent e) {
                   if (!(e is RawKeyDownEvent)) return;
-                  if (e.physicalKey ==
-                      PhysicalKeyboardKey
-                          .space) if (controller!.value.isPlaying) {
-                    controller!.pause();
+                  if (e.physicalKey == PhysicalKeyboardKey.space) if (video!
+                      .isPlaying()) {
+                    video!.pause();
                     Wakelock.disable();
                     setPopup(true);
                   } else {
-                    controller!.play();
+                    video!.play();
                     Wakelock.enable();
                     setPopup(false);
                   }
 
                   if (e.physicalKey == PhysicalKeyboardKey.arrowLeft) {
                     if (e.isShiftPressed)
-                      Seek.seek(
-                          controller!, SeekDirection.BACKWARDS, 83, setState);
+                      Seek.seek(video!, SeekDirection.BACKWARDS, 83, setState);
                     else
-                      Seek.seek(
-                          controller!, SeekDirection.BACKWARDS, 5, setState);
+                      Seek.seek(video!, SeekDirection.BACKWARDS, 5, setState);
                     Seek.animation(SeekDirection.BACKWARDS, setState);
                   }
 
                   if (e.physicalKey == PhysicalKeyboardKey.arrowRight) {
                     if (e.isShiftPressed)
-                      Seek.seek(
-                          controller!, SeekDirection.FORWARDS, 83, setState);
+                      Seek.seek(video!, SeekDirection.FORWARDS, 83, setState);
                     else
-                      Seek.seek(
-                          controller!, SeekDirection.FORWARDS, 5, setState);
+                      Seek.seek(video!, SeekDirection.FORWARDS, 5, setState);
                     Seek.animation(SeekDirection.FORWARDS, setState);
                   }
 
                   if (e.physicalKey == PhysicalKeyboardKey.arrowUp) {
                     if (e.isShiftPressed) {
-                      controller!.setPlaybackSpeed(
-                          min(2, controller!.value.playbackSpeed + 0.25));
+                      video!.setSpeed(min(2, video!.getSpeed() + 0.25));
                     } else {
-                      controller!
-                          .setVolume(min(1, controller!.value.volume + 0.1));
-                      Popup.volume = min(1, controller!.value.volume + 0.1);
+                      video!.setVolume(min(1, video!.getVolume() + 0.1));
+                      Popup.volume = min(1, video!.getVolume() + 0.1);
                     }
                   }
 
                   if (e.physicalKey == PhysicalKeyboardKey.arrowDown) {
                     if (e.isShiftPressed) {
-                      controller!.setPlaybackSpeed(
-                          max(0.25, controller!.value.playbackSpeed - 0.25));
+                      video!.setSpeed(max(0.25, video!.getSpeed() - 0.25));
                     } else {
-                      controller!
-                          .setVolume(max(0, controller!.value.volume - 0.1));
+                      video!.setVolume(max(0, video!.getVolume() - 0.1));
                     }
-                    Popup.volume = max(0, controller!.value.volume - 0.1);
+                    Popup.volume = max(0, video!.getVolume() - 0.1);
                   }
                 },
                 child: Stack(alignment: Alignment.center, children: [
                   AspectRatio(
-                      aspectRatio: controller!.value.aspectRatio,
-                      child: VideoPlayer(controller!)),
+                      aspectRatio: video!.getDetails().value.aspectRatio,
+                      child: VideoPlayer(video!.getDetails())),
                   AnimatedOpacity(
                       duration: Duration(milliseconds: 200),
                       opacity: Player.showPopup
@@ -238,7 +225,7 @@ class _PlayerState extends State<Player> {
                             Padding(padding: EdgeInsets.all(48))
                           ])),
                   Opacity(
-                      opacity: buffering && Player.showPopup ? 1 : 0,
+                      opacity: video!.buffering && Player.showPopup ? 1 : 0,
                       child: SizedBox(
                           height: 70,
                           width: 70,
@@ -255,8 +242,8 @@ class _PlayerState extends State<Player> {
                                 onTap: showHidePopup,
                                 onLongPress: null,
                                 onDoubleTap: () {
-                                  Seek.seek(controller!,
-                                      SeekDirection.BACKWARDS, 5, setState);
+                                  Seek.seek(video!, SeekDirection.BACKWARDS, 5,
+                                      setState);
                                   Seek.animation(
                                       SeekDirection.BACKWARDS, setState);
                                 })),
@@ -270,12 +257,12 @@ class _PlayerState extends State<Player> {
                                 onLongPress: null,
                                 onDoubleTap: () {
                                   setState(() {
-                                    if (controller!.value.isPlaying) {
-                                      controller!.pause();
+                                    if (video!.isPlaying()) {
+                                      video!.pause();
                                       Wakelock.disable();
                                       setPopup(true);
                                     } else {
-                                      controller!.play();
+                                      video!.play();
                                       Wakelock.enable();
                                       setPopup(false);
                                     }
@@ -290,8 +277,8 @@ class _PlayerState extends State<Player> {
                                 onTap: showHidePopup,
                                 onLongPress: null,
                                 onDoubleTap: () {
-                                  Seek.seek(controller!, SeekDirection.FORWARDS,
-                                      5, setState);
+                                  Seek.seek(video!, SeekDirection.FORWARDS, 5,
+                                      setState);
                                   Seek.animation(
                                       SeekDirection.FORWARDS, setState);
                                 }))
@@ -302,7 +289,7 @@ class _PlayerState extends State<Player> {
                       child: IgnorePointer(
                           ignoring: !Player.showPopup,
                           child: Popup(
-                              controller: controller!,
+                              video: video!,
                               name: widget.name,
                               url: widget.url,
                               sourceUrl: widget.sourceUrl,
@@ -332,7 +319,7 @@ class _PlayerState extends State<Player> {
     if (close != null && close!.isActive) close!.cancel();
     close = Timer(Duration(seconds: 2), () {
       if (!mounted) return;
-      if (controller!.value.isPlaying) {
+      if (video!.isPlaying()) {
         setPopup(false);
       }
     });

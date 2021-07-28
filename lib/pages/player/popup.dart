@@ -6,9 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_xlider/flutter_xlider.dart';
 import 'package:miru/data/structures/anime_details.dart';
-import 'package:miru/pages/player/functions/controls.dart';
 import 'package:miru/pages/player/functions/formatter.dart';
-import 'package:miru/pages/player/loading.dart';
+import 'package:miru/pages/player/functions/seek.dart';
+import 'package:miru/pages/player/functions/video.dart';
+import 'package:miru/pages/player/player_loading_page.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share/share.dart';
 import 'package:video_player/video_player.dart';
@@ -16,7 +17,7 @@ import 'package:video_thumbnail/video_thumbnail.dart';
 import 'package:wakelock/wakelock.dart';
 
 class Popup extends StatefulWidget {
-  final VideoPlayerController controller;
+  final Video video;
   final String name;
   final String url;
   final String sourceUrl;
@@ -31,7 +32,7 @@ class Popup extends StatefulWidget {
   static double volume = 1;
 
   const Popup(
-      {required this.controller,
+      {required this.video,
       required this.name,
       required this.url,
       required this.sourceUrl,
@@ -72,7 +73,7 @@ class _PopupState extends State<Popup> {
   @override
   Widget build(BuildContext context) {
     Duration? buffered;
-    List<DurationRange> bufferedList = widget.controller.value.buffered;
+    List<DurationRange> bufferedList = widget.video.getBuffered();
     for (DurationRange i in bufferedList) {
       if (buffered == null)
         buffered = i.end;
@@ -96,12 +97,12 @@ class _PopupState extends State<Popup> {
                         color: Colors.white, size: 30)),
                 onTap: () {
                   Seek.seek(
-                      widget.controller, SeekDirection.BACKWARDS, 10, setState);
+                      widget.video, SeekDirection.BACKWARDS, 10, setState);
                   widget.setTimer();
                 },
                 onLongPress: () {
                   Seek.seek(
-                      widget.controller, SeekDirection.BACKWARDS, 83, setState);
+                      widget.video, SeekDirection.BACKWARDS, 83, setState);
                   widget.setTimer();
                 })),
         Padding(padding: EdgeInsets.all(24)),
@@ -114,19 +115,19 @@ class _PopupState extends State<Popup> {
                       height: 80,
                       width: 80,
                       child: Icon(
-                          widget.controller.value.isPlaying
+                          widget.video.isPlaying()
                               ? Icons.pause_rounded
                               : Icons.play_arrow_rounded,
                           color: Colors.white,
                           size: 60)),
                   onTap: () {
                     setState(() {
-                      if (widget.controller.value.isPlaying) {
-                        widget.controller.pause();
+                      if (widget.video.isPlaying()) {
+                        widget.video.pause();
                         Wakelock.disable();
                         widget.unsetTimer();
                       } else {
-                        widget.controller.play();
+                        widget.video.play();
                         Wakelock.enable();
                         widget.setPopup(false);
                       }
@@ -144,13 +145,11 @@ class _PopupState extends State<Popup> {
                     child: Icon(CupertinoIcons.goforward_10,
                         color: Colors.white, size: 30)),
                 onTap: () {
-                  Seek.seek(
-                      widget.controller, SeekDirection.FORWARDS, 10, setState);
+                  Seek.seek(widget.video, SeekDirection.FORWARDS, 10, setState);
                   widget.setTimer();
                 },
                 onLongPress: () {
-                  Seek.seek(
-                      widget.controller, SeekDirection.FORWARDS, 83, setState);
+                  Seek.seek(widget.video, SeekDirection.FORWARDS, 83, setState);
                   widget.setTimer();
                 }))
       ]),
@@ -159,21 +158,21 @@ class _PopupState extends State<Popup> {
         Row(children: [
           Padding(padding: EdgeInsets.all(8)),
           Container(
-              width: widget.controller.value.duration.inHours > 0 ? 90 : 60,
+              width: widget.video.getDuration().inHours > 0 ? 90 : 60,
               child: Center(
                   child: Text(
-                      formatDuration(widget.controller.value.position,
-                          widget.controller.value.duration),
+                      formatDuration(widget.video.getPosition(),
+                          widget.video.getDuration()),
                       style: TextStyle(color: Colors.white)))),
           Expanded(child: Container()),
           Container(
-              width: widget.controller.value.duration.inHours > 0 ? 90 : 60,
+              width: widget.video.getDuration().inHours > 0 ? 90 : 60,
               child: Center(
                   child: Text(
                       formatDuration(
-                          widget.controller.value.duration -
-                              widget.controller.value.position,
-                          widget.controller.value.duration),
+                          widget.video.getDuration() -
+                              widget.video.getPosition(),
+                          widget.video.getDuration()),
                       style: TextStyle(color: Colors.white)))),
           Padding(padding: EdgeInsets.all(8))
         ]),
@@ -189,7 +188,9 @@ class _PopupState extends State<Popup> {
                           selectByTap: false,
                           values: [
                             min(
-                                widget.controller.value.duration.inMicroseconds
+                                widget.video
+                                    .getDuration()
+                                    .inMicroseconds
                                     .toDouble(),
                                 max(
                                     0,
@@ -198,7 +199,9 @@ class _PopupState extends State<Popup> {
                                         : buffered.inMicroseconds.toDouble()))
                           ],
                           min: 0,
-                          max: widget.controller.value.duration.inMicroseconds
+                          max: widget.video
+                              .getDuration()
+                              .inMicroseconds
                               .toDouble(),
                           trackBar: FlutterSliderTrackBar(
                               activeTrackBar: BoxDecoration(
@@ -218,14 +221,15 @@ class _PopupState extends State<Popup> {
                       height: 25,
                       child: FlutterSlider(
                           values: [
-                            widget.controller.value.position.inMicroseconds
-                                .toDouble()
+                            widget.video.getPosition().inMicroseconds.toDouble()
                           ],
                           selectByTap: false,
                           handlerWidth: 20,
                           handlerHeight: 20,
                           min: 0,
-                          max: widget.controller.value.duration.inMicroseconds
+                          max: widget.video
+                              .getDuration()
+                              .inMicroseconds
                               .toDouble(),
                           onDragStarted: (handlerIndex, firstValue, secondValue) {
                             widget.unsetTimer();
@@ -236,7 +240,7 @@ class _PopupState extends State<Popup> {
                           },
                           onDragging:
                               (handlerIndex, firstValue, secondValue) async {
-                            await widget.controller.seekTo(
+                            await widget.video.seekTo(
                                 Duration(microseconds: firstValue.floor()));
                             setState(() {});
                           },
@@ -246,7 +250,7 @@ class _PopupState extends State<Popup> {
                               format: (text) => formatDuration(
                                   Duration(
                                       microseconds: double.parse(text).floor()),
-                                  widget.controller.value.duration),
+                                  widget.video.getDuration()),
                               boxStyle: FlutterSliderTooltipBox(
                                   decoration: BoxDecoration(
                                       color: Colors.white,
@@ -362,7 +366,7 @@ class _PopupState extends State<Popup> {
                           child: Icon(Icons.add_photo_alternate_outlined,
                               color: Colors.white, size: 30))),
                   onTap: () async {
-                    widget.controller.pause();
+                    widget.video.pause();
                     Wakelock.disable();
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         behavior: SnackBarBehavior.floating,
@@ -374,7 +378,7 @@ class _PopupState extends State<Popup> {
                         maxHeight: 0,
                         maxWidth: 0,
                         quality: 100,
-                        timeMs: widget.controller.value.position.inMilliseconds,
+                        timeMs: widget.video.getPosition().inMilliseconds,
                         thumbnailPath: (await getTemporaryDirectory()).path);
                     if (fileName != null)
                       Share.shareFiles([fileName]);
@@ -397,17 +401,17 @@ class _PopupState extends State<Popup> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   IconButton(
-                      icon: Icon(widget.controller.value.volume != 0
+                      icon: Icon(widget.video.getVolume() != 0
                           ? Icons.volume_up_rounded
                           : Icons.volume_off_rounded),
                       tooltip: "Volume",
                       iconSize: 30,
                       onPressed: () {
-                        if (widget.controller.value.volume == 0) {
-                          widget.controller.setVolume(
+                        if (widget.video.getVolume() == 0) {
+                          widget.video.setVolume(
                               Popup.volume == 0 ? 0.5 : Popup.volume);
                         } else {
-                          widget.controller.setVolume(0);
+                          widget.video.setVolume(0);
                         }
                       }),
                   SizedBox(
@@ -455,14 +459,13 @@ class _PopupState extends State<Popup> {
                               },
                               onDragging:
                                   (handlerIndex, lowerValue, upperValue) {
-                                widget.controller.setVolume(lowerValue / 100);
+                                widget.video.setVolume(lowerValue / 100);
                                 Popup.volume = lowerValue / 100;
                               },
                               axis: Axis.vertical,
                               rtl: true,
                               values: [
-                                max(min(widget.controller.value.volume, 1), 0) *
-                                    100
+                                max(min(widget.video.getVolume(), 1), 0) * 100
                               ])))
                 ])),
       if (MediaQuery.of(context).size.height > 500)
@@ -478,7 +481,7 @@ class _PopupState extends State<Popup> {
                       disabledColor: Colors.white,
                       tooltip: "Playback Speed",
                       onPressed: () {
-                        widget.controller.setPlaybackSpeed(1);
+                        widget.video.setSpeed(1);
                       }),
                   SizedBox(
                       height: 200,
@@ -524,15 +527,12 @@ class _PopupState extends State<Popup> {
                               },
                               onDragging:
                                   (handlerIndex, lowerValue, upperValue) {
-                                widget.controller.setPlaybackSpeed(lowerValue);
+                                widget.video.setSpeed(lowerValue);
                               },
                               axis: Axis.vertical,
                               rtl: true,
                               values: [
-                                max(
-                                    min(widget.controller.value.playbackSpeed,
-                                        2),
-                                    0.25)
+                                max(min(widget.video.getSpeed(), 2), 0.25)
                               ])))
                 ]))
     ]));

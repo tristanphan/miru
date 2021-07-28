@@ -49,10 +49,11 @@ Future<VideoDetails?> getVideo(String url, Function changeProgress) async {
 
   // Get URL of iframe and load it
   String? frameURL =
-      web.getElementAttribute('div.play-video > iframe', 'src')[0];
+      web.getElementAttribute('li.vidcdn > a', 'data-video')[0];
   if (frameURL == null) return null;
 
-  frameURL = "http:" + frameURL.replaceAll("streaming", "loadserver");
+  frameURL = "http:" + frameURL;
+  print("Frame URL: " + frameURL);
   changeProgress("Loading Video Player URL", 25);
   await web.loadFullURL(frameURL);
 

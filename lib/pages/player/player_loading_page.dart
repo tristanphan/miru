@@ -4,7 +4,7 @@ import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.da
 import 'package:miru/data/sources/sources.dart';
 import 'package:miru/data/structures/anime_details.dart';
 import 'package:miru/pages/home/home_card.dart';
-import 'package:miru/pages/player/player.dart';
+import 'package:miru/pages/player/player_page.dart';
 
 class Loading extends StatefulWidget {
   final String name;

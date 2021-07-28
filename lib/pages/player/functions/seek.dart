@@ -1,4 +1,4 @@
-import 'package:video_player/video_player.dart';
+import 'package:miru/pages/player/functions/video.dart';
 
 enum SeekDirection { FORWARDS, BACKWARDS }
 
@@ -6,17 +6,17 @@ class Seek {
   static bool darkenLeft = false;
   static bool darkenRight = false;
 
-  static void seek(VideoPlayerController controller, SeekDirection direction,
+  static void seek(Video video, SeekDirection direction,
       int seconds, Function setState) async {
-    bool play = controller.value.isPlaying;
-    await controller.pause();
+    bool play = video.isPlaying();
+    await video.pause();
     Duration newDuration;
     if (direction == SeekDirection.BACKWARDS)
-      newDuration = controller.value.position - Duration(seconds: seconds);
+      newDuration = video.getPosition() - Duration(seconds: seconds);
     else
-      newDuration = controller.value.position + Duration(seconds: seconds);
-    await controller.seekTo(newDuration);
-    if (play) await controller.play();
+      newDuration = video.getPosition() + Duration(seconds: seconds);
+    await video.seekTo(newDuration);
+    if (play) await video.play();
   }
 
   static void animation(SeekDirection direction, setState) {

@@ -11,7 +11,7 @@ import 'package:miru/pages/download_page.dart';
 import 'package:miru/pages/home/header_silver_builder.dart';
 import 'package:miru/pages/home/home_card.dart';
 import 'package:miru/pages/player/functions/formatter.dart';
-import 'package:miru/pages/player/loading.dart';
+import 'package:miru/pages/player/player_loading_page.dart';
 import 'package:palette_generator/palette_generator.dart';
 
 class DetailsPage2 extends StatefulWidget {
