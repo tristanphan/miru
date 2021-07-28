@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:miru/pages/home_page/homecard.dart';
+import 'package:miru/pages/home/home_card.dart';
 
 class HomeList extends StatefulWidget {
   final List<dynamic> list;

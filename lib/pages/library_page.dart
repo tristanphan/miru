@@ -1,12 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:miru/data/persistent_data/data_storage.dart';
-import 'package:miru/data/persistent_data/pinmark.dart';
+import 'package:miru/data/persistent_data/pin.dart';
 import 'package:miru/data/structures/popular.dart';
+import 'package:miru/pages/home/header_silver_builder.dart';
+import 'package:miru/pages/home/home_list.dart';
 import 'package:palette_generator/palette_generator.dart';
-
-import 'home_page/header_silver_builder.dart';
-import 'home_page/homelist.dart';
 
 class LibraryPage extends StatefulWidget {
   const LibraryPage({Key? key}) : super(key: key);
@@ -85,7 +84,7 @@ class _LibraryPageState extends State<LibraryPage> {
                               url: Storage.pinned[index].url,
                               title: Storage.pinned[index].title,
                               palette: snapshot.data![index],
-                              subtext: '')
+                              subtext: Storage.pinned[index].source)
                       ];
                       if (libraryItems.isEmpty)
                         return Center(

@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:miru/data/persistent_data/data_storage.dart';
 import 'package:miru/data/structures/anime_details.dart';
-import 'package:miru/pages/watch_page/functions/controls.dart';
-import 'package:miru/pages/watch_page/popup.dart';
+import 'package:miru/pages/player/functions/controls.dart';
+import 'package:miru/pages/player/popup.dart';
 import 'package:video_player/video_player.dart';
 import 'package:wakelock/wakelock.dart';
 
@@ -40,6 +40,7 @@ class Player extends StatefulWidget {
 class _PlayerState extends State<Player> {
   VideoPlayerController? controller;
   Timer? close;
+  bool buffering = true;
 
   FocusNode keyboardFocus = FocusNode();
 
@@ -49,6 +50,7 @@ class _PlayerState extends State<Player> {
       Storage.addEpisode(widget.sourceUrl, widget.anime);
     controller = VideoPlayerController.network(widget.url);
     controller!.initialize().then((value) {
+      if (!mounted) return;
       setState(() {
         if (Storage.isBookmarked(widget.anime.url, widget.sourceUrl) &&
             Storage.getEpisodePosition(widget.anime.url, widget.sourceUrl) !=
@@ -59,6 +61,18 @@ class _PlayerState extends State<Player> {
         controller!.play();
         Wakelock.enable();
         setTimer();
+      });
+      controller!.addListener(() {
+        if (!mounted) return;
+        if (controller!.value.isBuffering != buffering) {
+          setState(() {
+            buffering = controller!.value.isBuffering;
+          });
+        }
+        if (controller!.value.position == controller!.value.duration) {
+          Wakelock.disable();
+          setPopup(true);
+        }
       });
     });
     SystemChrome.setPreferredOrientations(
@@ -80,7 +94,8 @@ class _PlayerState extends State<Player> {
       DeviceOrientation.portraitDown,
       DeviceOrientation.portraitUp
     ]);
-    SystemChrome.restoreSystemUIOverlays();
+    SystemChrome.setEnabledSystemUIOverlays(
+        [SystemUiOverlay.top, SystemUiOverlay.bottom]);
     super.dispose();
   }
 
@@ -223,9 +238,7 @@ class _PlayerState extends State<Player> {
                             Padding(padding: EdgeInsets.all(48))
                           ])),
                   Opacity(
-                      opacity: controller!.value.isBuffering && Player.showPopup
-                          ? 1
-                          : 0,
+                      opacity: buffering && Player.showPopup ? 1 : 0,
                       child: SizedBox(
                           height: 70,
                           width: 70,
@@ -304,6 +317,7 @@ class _PlayerState extends State<Player> {
   }
 
   void setPopup(bool set) {
+    if (!mounted) return;
     setState(() {
       Player.showPopup = set;
     });

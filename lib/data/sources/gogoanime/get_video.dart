@@ -8,11 +8,16 @@ Future<VideoDetails?> getVideo(String url, Function changeProgress) async {
 
   print("Getting Video URL: " + url);
 
-  changeProgress("Loading Episode URL");
+  changeProgress("Loading Episode URL", 25);
   WebScraper web = WebScraper("https://gogoanime.vc/");
   await web.loadFullURL(url);
 
-  String title = web.getElementTitle('div.title_name > h2')[0].replaceAll("English Subbed", "").replaceAll(" (Dub)", "").trim();
+  changeProgress("Fetching Data", 25);
+  String title = web
+      .getElementTitle('div.title_name > h2')[0]
+      .replaceAll("English Subbed", "")
+      .replaceAll(" (Dub)", "")
+      .trim();
 
   // Get Last Episode
   List<String> lastEpisode = [];
@@ -48,20 +53,16 @@ Future<VideoDetails?> getVideo(String url, Function changeProgress) async {
   if (frameURL == null) return null;
 
   frameURL = "http:" + frameURL.replaceAll("streaming", "loadserver");
-  changeProgress("Loading Video Player URL");
+  changeProgress("Loading Video Player URL", 25);
   await web.loadFullURL(frameURL);
 
   String videoURL;
-  try {
-    videoURL = web.getPageContent();
-    videoURL = videoURL.split("sources:[{file: '")[1];
-    videoURL = videoURL.split("',")[0];
-    changeProgress("Preparing Video Player");
-    print("Video URL: " + videoURL);
-    if (!videoURL.startsWith("ht")) return null;
-  } catch (error) {
-    return null;
-  }
+  videoURL = web.getPageContent();
+  videoURL = videoURL.split("sources:[{file: '")[1];
+  videoURL = videoURL.split("',")[0];
+  changeProgress("Preparing Video Player", 25);
+  print("Video URL: " + videoURL);
+  if (!videoURL.startsWith("ht")) return null;
 
   print("Video Loading Time: " +
       ((DateTime.now().millisecondsSinceEpoch - startTime) / 1000)

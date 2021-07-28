@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_xlider/flutter_xlider.dart';
 import 'package:miru/data/structures/anime_details.dart';
-import 'package:miru/pages/watch_page/functions/controls.dart';
-import 'package:miru/pages/watch_page/functions/formatter.dart';
-import 'package:miru/pages/watch_page/loading.dart';
+import 'package:miru/pages/player/functions/controls.dart';
+import 'package:miru/pages/player/functions/formatter.dart';
+import 'package:miru/pages/player/loading.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share/share.dart';
 import 'package:video_player/video_player.dart';
@@ -73,7 +73,7 @@ class _PopupState extends State<Popup> {
   Widget build(BuildContext context) {
     Duration? buffered;
     List<DurationRange> bufferedList = widget.controller.value.buffered;
-    for (var i in bufferedList) {
+    for (DurationRange i in bufferedList) {
       if (buffered == null)
         buffered = i.end;
       else {
@@ -318,8 +318,8 @@ class _PopupState extends State<Popup> {
                           decoration: BoxDecoration(
                               color: Colors.black.withOpacity(0.3),
                               borderRadius: BorderRadius.circular(15)),
-                          padding: EdgeInsets.symmetric(
-                              vertical: 8, horizontal: 12),
+                          padding:
+                              EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                           child: Text(widget.name,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,

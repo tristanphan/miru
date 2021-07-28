@@ -1,13 +1,10 @@
-import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
-import 'package:miru/data/cache.dart';
 import 'package:miru/data/sources/sources.dart';
 import 'package:miru/data/structures/anime_details.dart';
-import 'package:miru/data/structures/video_details.dart';
-import 'package:miru/pages/watch_page/player.dart';
+import 'package:miru/pages/home/home_card.dart';
+import 'package:miru/pages/player/player.dart';
 
 class Loading extends StatefulWidget {
   final String name;
@@ -30,38 +27,23 @@ class Loading extends StatefulWidget {
 class _LoadingState extends State<Loading> {
   String loadingProgress = "";
   int progress = 0;
-  bool fallback = false;
 
   @override
   void initState() {
-    if (Cache.loadedVideos.containsKey(widget.url)) {
-      VideoDetails video = Cache.loadedVideos[widget.url]!;
-      Future(() => Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) => Player(
-              name: video.title,
-              url: video.url,
-              sourceUrl: widget.url,
-              anime: widget.anime,
-              detailsState: widget.detailsState,
-              lastEpisode: video.last,
-              nextEpisode: video.next))));
-    } else {
-      Sources.get().getVideo(widget.url, changeProgress).then((video) {
-        if (!mounted) return;
-        Cache.loadedVideos[widget.url] = video!;
-        Navigator.of(context)
-            .pushReplacement(MaterialPageRoute(builder: (context) {
-          return Player(
-              name: video.title,
-              url: video.url,
-              sourceUrl: widget.url,
-              anime: widget.anime,
-              detailsState: widget.detailsState,
-              lastEpisode: video.last,
-              nextEpisode: video.next);
-        }));
-      });
-    }
+    Sources.get().getVideo(widget.url, changeProgress).then((video) {
+      if (!mounted) return;
+      Navigator.of(context)
+          .pushReplacement(MaterialPageRoute(builder: (context) {
+        return Player(
+            name: video!.title,
+            url: video.url,
+            sourceUrl: widget.url,
+            anime: widget.anime,
+            detailsState: widget.detailsState,
+            lastEpisode: video.last,
+            nextEpisode: video.next);
+      }));
+    });
     super.initState();
   }
 
@@ -70,9 +52,10 @@ class _LoadingState extends State<Loading> {
     super.dispose();
   }
 
-  void changeProgress(String newProgress) {
+  void changeProgress(String newProgress, int percent) {
+    if (!mounted) return;
     setState(() {
-      progress += 34;
+      progress += percent;
       loadingProgress = newProgress;
     });
   }
@@ -82,7 +65,6 @@ class _LoadingState extends State<Loading> {
     return Theme(
         data: ThemeData.dark(),
         child: Scaffold(
-            backgroundColor: Colors.black,
             body: Container(
                 width: double.maxFinite,
                 height: double.maxFinite,
@@ -92,10 +74,15 @@ class _LoadingState extends State<Loading> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text((fallback ? "Fallback: " : "") + loadingProgress,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold)),
+                        HomeCard(
+                            title: widget.anime.name,
+                            setState: setState,
+                            width: 350,
+                            img: widget.anime.image,
+                            url: '',
+                            palette: widget.anime.palette,
+                            subtext:
+                                "Episode " + widget.name.split('Episode ')[1]),
                         Padding(padding: EdgeInsets.all(4)),
                         Container(
                             width: 300,
@@ -108,16 +95,17 @@ class _LoadingState extends State<Loading> {
                                 progressColor: Colors.white,
                                 currentValue: progress)),
                         Padding(padding: EdgeInsets.all(4)),
-                        Text(widget.name,
-                            style: TextStyle(fontSize: 20),
-                            textAlign: TextAlign.center)
+                        Text(loadingProgress,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold))
                       ]),
                   Positioned(
                       top: 40,
                       left: 20,
                       child: FloatingActionButton.extended(
                           heroTag: "back",
-                          backgroundColor: Colors.white12,
+                          backgroundColor: Colors.black,
                           foregroundColor: Colors.white,
                           onPressed: () {
                             Navigator.of(context).pop();

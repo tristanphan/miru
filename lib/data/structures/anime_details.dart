@@ -1,6 +1,5 @@
+import 'package:miru/data/structures/episode.dart';
 import 'package:palette_generator/palette_generator.dart';
-
-import 'episode.dart';
 
 class AnimeDetails {
   String name;

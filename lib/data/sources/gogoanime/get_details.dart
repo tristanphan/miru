@@ -46,14 +46,14 @@ Future<AnimeDetails> getDetails(String url) async {
   List<Episode> episodes = [];
 
   await (() async {
-    var id = web.getElementAttribute('input#movie_id.movie_id', 'value')[0]!;
-    var defaultEp =
+    String id = web.getElementAttribute('input#movie_id.movie_id', 'value')[0]!;
+    String defaultEp =
         web.getElementAttribute('input#default_ep.default_ep', 'value')[0]!;
-    var alias =
+    String alias =
         web.getElementAttribute('input#alias_anime.alias_anime', 'value')[0]!;
-    var start = web.getElementAttribute(
+    String start = web.getElementAttribute(
         'ul#episode_page > li:first-child > a', 'ep_start')[0]!;
-    var end = web.getElementAttribute(
+    String end = web.getElementAttribute(
         'ul#episode_page > li:last-child > a', 'ep_end')[0]!;
 
     await web.loadFullURL(

@@ -83,18 +83,18 @@ class _DownloadState extends State<Download> {
 
   void download() async {
     setState(() {
-      progress = "Getting Video Path (1/2)";
+      progress = "Getting Video Path";
     });
     String videoPath =
         (await getTemporaryDirectory()).path + "/" + widget.name + ".mp4";
-    VideoDetails? video = await Sources.get().getVideo(widget.url);
+    VideoDetails? video = await Sources.get().getVideo(widget.url, (a, b) {});
     canCancel = true;
     if (video == null) {
       onError();
       return;
     }
     setState(() {
-      progress = "Downloading Video (2/2)";
+      progress = "Downloading Video";
     });
     bool error = false;
     await Dio().download(video.url, videoPath, cancelToken: cancelToken,

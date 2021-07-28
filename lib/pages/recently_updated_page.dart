@@ -1,16 +1,11 @@
-import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:miru/data/sources/sources.dart';
 import 'package:miru/data/structures/recent_release.dart';
+import 'package:miru/main.dart';
+import 'package:miru/pages/home/header_silver_builder.dart';
+import 'package:miru/pages/home/home_list.dart';
 import 'package:miru/pages/search_page.dart';
-
-import 'home_page/header_silver_builder.dart';
-import 'home_page/homelist.dart';
-
-Future<List<RecentRelease>> recentlyUpdatedFuture =
-    Sources.get().getRecentReleases();
 
 class RecentlyUpdatedPage extends StatefulWidget {
   const RecentlyUpdatedPage({Key? key}) : super(key: key);

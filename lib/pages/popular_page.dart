@@ -1,14 +1,11 @@
-import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:miru/data/sources/sources.dart';
 import 'package:miru/data/structures/popular.dart';
-import 'package:miru/pages/home_page/header_silver_builder.dart';
-import 'package:miru/pages/home_page/homelist.dart';
+import 'package:miru/main.dart';
+import 'package:miru/pages/home/header_silver_builder.dart';
+import 'package:miru/pages/home/home_list.dart';
 import 'package:miru/pages/search_page.dart';
-
-Future<List<Popular>> popularFuture = Sources.get().getPopular();
 
 class PopularPage extends StatefulWidget {
   const PopularPage({Key? key}) : super(key: key);

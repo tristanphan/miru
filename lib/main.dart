@@ -2,13 +2,21 @@ import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:miru/data/persistent_data/data_storage.dart';
 import 'package:miru/data/persistent_data/theme.dart';
+import 'package:miru/data/sources/sources.dart';
+import 'package:miru/data/structures/popular.dart';
+import 'package:miru/data/structures/recent_release.dart';
 import 'package:miru/navigator.dart';
+
+Future<List<RecentRelease>>? recentlyUpdatedFuture;
+Future<List<Popular>>? popularFuture;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Storage.initialize();
   Storage.load();
   AppTheme.load();
+  recentlyUpdatedFuture = Sources.get().getRecentReleases();
+  popularFuture = Sources.get().getPopular();
   runApp(
       EasyDynamicThemeWidget(child: MyApp(), initialThemeMode: AppTheme.theme));
 }

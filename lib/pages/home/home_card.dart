@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:miru/info.dart';
-import 'package:miru/pages/details_page.dart';
+import 'package:miru/pages/details_loading_page.dart';
 import 'package:palette_generator/palette_generator.dart';
 
 class HomeCard extends StatefulWidget {
@@ -34,13 +34,13 @@ class _HomeCardState extends State<HomeCard> {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
     double imageHeight = 130;
     Color backgroundColor;
-    PaletteColor? colorset =
+    PaletteColor? colorSet =
         isDark ? widget.palette.vibrantColor : widget.palette.lightVibrantColor;
-    if (colorset == null) {
+    if (colorSet == null) {
       backgroundColor =
           isDark ? Colors.blueGrey : Colors.lightBlueAccent.shade100;
     } else {
-      backgroundColor = colorset.color;
+      backgroundColor = colorSet.color;
     }
     Color textColor = isDark ? Colors.white : Colors.black;
 
@@ -58,14 +58,23 @@ class _HomeCardState extends State<HomeCard> {
                       : Colors.black.withOpacity(0.05),
                   borderRadius: BorderRadius.circular(20),
                   onTap: () async {
+                    if (widget.url.isEmpty) return;
                     await Navigator.of(context).push(MaterialPageRoute(
-                        builder: (BuildContext context) => DetailsPage(
+                        builder: (BuildContext context) => DetailsLoadingPage(
                             title: widget.title,
                             url: widget.url,
-                            homeCard: widget)));
+                            homeCard: HomeCard(
+                                palette: widget.palette,
+                                url: '',
+                                img: widget.img,
+                                title: widget.title,
+                                width: 350,
+                                setState: setState,
+                                subtext: widget.subtext))));
                     widget.setState(() {});
                   },
                   onLongPress: () {
+                    if (widget.url.isEmpty) return;
                     showInfo(
                         context: context,
                         setState: widget.setState,

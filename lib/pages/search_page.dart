@@ -4,9 +4,8 @@ import 'package:flutter/widgets.dart';
 import 'package:miru/data/anime.dart';
 import 'package:miru/data/sources/sources.dart';
 import 'package:miru/data/structures/search_item.dart';
-
-import 'home_page/header_silver_builder.dart';
-import 'home_page/homelist.dart';
+import 'package:miru/pages/home/header_silver_builder.dart';
+import 'package:miru/pages/home/home_list.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);

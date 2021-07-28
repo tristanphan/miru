@@ -3,9 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:miru/data/persistent_data/theme.dart';
 import 'package:miru/data/sources/sources.dart';
-import 'package:miru/pages/home_page/header_silver_builder.dart';
-import 'package:miru/pages/popular_page.dart';
-import 'package:miru/pages/recently_updated_page.dart';
+import 'package:miru/main.dart';
+import 'package:miru/pages/home/header_silver_builder.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -109,7 +108,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             DropdownButton(
                                 items: [
                                   DropdownMenuItem(
-                                      child: Text("GoGoAnime"), value: 0),
+                                      child: Text("GoGoAnime"), value: 0)
                                 ],
                                 value: server,
                                 onChanged: (int? i) {

@@ -12,7 +12,7 @@ import 'package:miru/data/structures/recent_release.dart';
 import 'package:miru/data/structures/search_item.dart';
 import 'package:miru/data/structures/video_details.dart';
 
-class GoGoAnime implements Anime {
+class Gogoanime implements Anime {
   // GoGoAnime Home Page
   Future<List<RecentRelease>> getRecentReleases() => Data.getRecentReleases();
 

@@ -16,7 +16,7 @@ Future<List<SearchItem>> search(String keyword, Language language) async {
   List<SearchItem> items = [];
 
   // Get number of search entries
-  var numberOfEntries = web.getElementAttribute('div.img > a', 'title').length;
+  int numberOfEntries = web.getElementAttribute('div.img > a', 'title').length;
 
   print("Search Time: " +
       ((DateTime.now().millisecondsSinceEpoch - startTime) / 1000)

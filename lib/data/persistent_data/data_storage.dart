@@ -1,7 +1,8 @@
 import 'dart:convert';
 
-import 'package:miru/data/cache.dart';
-import 'package:miru/data/persistent_data/pinmark.dart';
+import 'package:miru/data/persistent_data/bookmark.dart';
+import 'package:miru/data/persistent_data/pin.dart';
+import 'package:miru/data/sources/sources.dart';
 import 'package:miru/data/structures/anime_details.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -11,7 +12,6 @@ class Storage {
   static List<Pin> pinned = [];
 
   static void save() {
-    if (sharedPreferences == null) return;
     print("Saving");
     sharedPreferences!.setString("pinned", jsonEncode(pinned));
   }
@@ -21,7 +21,6 @@ class Storage {
   }
 
   static void load() {
-    if (sharedPreferences == null) return;
     String? pref = sharedPreferences!.getString("pinned");
     try {
       List<dynamic> data = jsonDecode(pref!) as List<dynamic>;
@@ -40,7 +39,8 @@ class Storage {
         url: url,
         title: title,
         image: image,
-        episodes: List.empty(growable: true)));
+        episodes: List.empty(growable: true),
+        source: Sources.getName()));
     while (pinned.length > 50) {
       pinned.removeAt(0);
     }
@@ -134,7 +134,5 @@ class Storage {
   static void clearAll() {
     pinned.clear();
     save();
-    Cache.loadedDetails.clear();
-    Cache.loadedVideos.clear();
   }
 }
