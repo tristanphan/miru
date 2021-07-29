@@ -6,15 +6,19 @@ import 'package:miru/data/sources/sources.dart';
 import 'package:miru/data/structures/popular.dart';
 import 'package:miru/data/structures/recent_release.dart';
 import 'package:miru/navigator.dart';
+import 'package:miru/pages/player/functions/video.dart';
+import 'package:window_size/window_size.dart';
 
 Future<List<RecentRelease>>? recentlyUpdatedFuture;
 Future<List<Popular>>? popularFuture;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  setWindowTitle("Miru");
   await Storage.initialize();
   Storage.load();
   AppTheme.load();
+  Video.onAppStart();
   recentlyUpdatedFuture = Sources.get().getRecentReleases();
   popularFuture = Sources.get().getPopular();
   runApp(

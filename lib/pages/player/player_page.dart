@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 
+import 'package:dart_vlc/dart_vlc.dart' as Vlc;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -52,25 +54,28 @@ class _PlayerState extends State<Player> {
     }
     video = Video(
         url: widget.url,
-        onInitialized: () {
+        onInitialized: (Video video) {
           if (!mounted) return;
           setState(() {
-            if (Storage.isBookmarked(widget.anime.url, widget.sourceUrl) &&
-                Storage.getEpisodePosition(
-                        widget.anime.url, widget.sourceUrl) !=
-                    Storage.getEpisodeDuration(
-                        widget.anime.url, widget.sourceUrl))
-              video!.seekTo(Duration(
+            int position =
+                Storage.getEpisodePosition(widget.anime.url, widget.sourceUrl);
+            int duration =
+                Storage.getEpisodeDuration(widget.anime.url, widget.sourceUrl);
+            if (position != duration && position != 0) {
+              video.seekTo(Duration(
                   milliseconds: Storage.getEpisodePosition(
                       widget.anime.url, widget.sourceUrl)));
-            video!.play();
+            }
+            video.play();
             Wakelock.enable();
             setTimer();
             isInitialized = true;
           });
-        }, setPopup: setPopup, setState: (void Function() function) {
+        },
+        setPopup: setPopup,
+        setState: (void Function() function) {
           if (mounted) setState(function);
-    });
+        });
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
     SystemChrome.setEnabledSystemUIOverlays([]);
@@ -192,9 +197,12 @@ class _PlayerState extends State<Player> {
                   }
                 },
                 child: Stack(alignment: Alignment.center, children: [
-                  AspectRatio(
-                      aspectRatio: video!.getDetails().value.aspectRatio,
-                      child: VideoPlayer(video!.getDetails())),
+                  if (Platform.isIOS || Platform.isAndroid)
+                    AspectRatio(
+                        aspectRatio: video!.getDetails().value.aspectRatio,
+                        child: VideoPlayer(video!.getDetails())),
+                  if (Platform.isWindows || Platform.isLinux)
+                    Vlc.Video(playerId: 1, width: 1920, height: 1080),
                   AnimatedOpacity(
                       duration: Duration(milliseconds: 200),
                       opacity: Player.showPopup

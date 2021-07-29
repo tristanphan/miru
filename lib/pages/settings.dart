@@ -119,7 +119,6 @@ class _SettingsPageState extends State<SettingsPage> {
                                   });
                                   recentlyUpdatedFuture =
                                       Sources.get().getRecentReleases();
-                                  ;
                                   popularFuture = Sources.get().getPopular();
                                 })
                           ]))),

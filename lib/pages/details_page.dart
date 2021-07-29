@@ -329,7 +329,7 @@ class _DetailsPage2State extends State<DetailsPage2> {
                               shrinkWrap: true,
                               itemBuilder: (BuildContext context, int index) {
                                 int episodeTime = 0;
-                                int totalTime = 0;
+                                int totalTime = 1;
                                 bool bookmarked = pinned &&
                                     Storage.isBookmarked(details.url,
                                         details.episodes[index].url);
@@ -436,11 +436,11 @@ class _DetailsPage2State extends State<DetailsPage2> {
                                                                             totalTime,
                                                                         size: 5,
                                                                         backgroundColor:
-                                                                            Colors
-                                                                                .white24,
+                                                                        (isDark) ? Colors
+                                                                                .white24 : Colors.black12,
                                                                         progressColor:
-                                                                            Colors
-                                                                                .white,
+                                                                        (isDark) ? Colors
+                                                                                .white : Colors.black38,
                                                                         currentValue:
                                                                             episodeTime))
                                                               ]))

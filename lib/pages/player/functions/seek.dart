@@ -6,8 +6,8 @@ class Seek {
   static bool darkenLeft = false;
   static bool darkenRight = false;
 
-  static void seek(Video video, SeekDirection direction,
-      int seconds, Function setState) async {
+  static void seek(Video video, SeekDirection direction, int seconds,
+      Function setState) async {
     bool play = video.isPlaying();
     await video.pause();
     Duration newDuration;

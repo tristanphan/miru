@@ -22,12 +22,13 @@ class DetailsLoadingPage extends StatefulWidget {
 
 class _DetailsLoadingPageState extends State<DetailsLoadingPage> {
   Future<AnimeDetails>? detailsFuture;
+  bool popped = false;
 
   @override
   void initState() {
     super.initState();
     Sources.get().getDetails(widget.url).then((details) {
-      if (!mounted) return;
+      if (!mounted || popped) return;
       Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (BuildContext context) => DetailsPage2(
               details: details,
@@ -49,6 +50,7 @@ class _DetailsLoadingPageState extends State<DetailsLoadingPage> {
               backgroundColor: Colors.black,
               foregroundColor: Colors.white,
               onPressed: () {
+                popped = true;
                 Navigator.of(context).pop();
               },
               label: Text("Back"),

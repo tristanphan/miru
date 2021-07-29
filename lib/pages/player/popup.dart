@@ -12,7 +12,6 @@ import 'package:miru/pages/player/functions/video.dart';
 import 'package:miru/pages/player/player_loading_page.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share/share.dart';
-import 'package:video_player/video_player.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 import 'package:wakelock/wakelock.dart';
 
@@ -52,6 +51,9 @@ class Popup extends StatefulWidget {
 
 class _PopupState extends State<Popup> {
   Timer? timer;
+  Duration position = Duration();
+  bool _lockPosition = false;
+  bool _isPlayingBeforeScrub = false;
 
   @override
   void initState() {
@@ -64,6 +66,14 @@ class _PopupState extends State<Popup> {
   }
 
   @override
+  void setState(VoidCallback fn) {
+    if (!_lockPosition) {
+      position = widget.video.getPosition();
+    }
+    super.setState(fn);
+  }
+
+  @override
   void deactivate() {
     if (timer != null) timer!.cancel();
     timer = null;
@@ -73,14 +83,7 @@ class _PopupState extends State<Popup> {
   @override
   Widget build(BuildContext context) {
     Duration? buffered;
-    List<DurationRange> bufferedList = widget.video.getBuffered();
-    for (DurationRange i in bufferedList) {
-      if (buffered == null)
-        buffered = i.end;
-      else {
-        if (buffered.inMilliseconds < i.end.inMilliseconds) buffered = i.end;
-      }
-    }
+    buffered = widget.video.getBuffered();
 
     return Container(
         child: Stack(alignment: Alignment.center, children: [
@@ -161,17 +164,14 @@ class _PopupState extends State<Popup> {
               width: widget.video.getDuration().inHours > 0 ? 90 : 60,
               child: Center(
                   child: Text(
-                      formatDuration(widget.video.getPosition(),
-                          widget.video.getDuration()),
+                      formatDuration(position, widget.video.getDuration()),
                       style: TextStyle(color: Colors.white)))),
           Expanded(child: Container()),
           Container(
               width: widget.video.getDuration().inHours > 0 ? 90 : 60,
               child: Center(
                   child: Text(
-                      formatDuration(
-                          widget.video.getDuration() -
-                              widget.video.getPosition(),
+                      formatDuration(widget.video.getDuration() - position,
                           widget.video.getDuration()),
                       style: TextStyle(color: Colors.white)))),
           Padding(padding: EdgeInsets.all(8))
@@ -184,6 +184,7 @@ class _PopupState extends State<Popup> {
                   right: 10,
                   child: SizedBox(
                       height: 25,
+                      width: MediaQuery.of(context).size.width,
                       child: FlutterSlider(
                           selectByTap: false,
                           values: [
@@ -192,11 +193,7 @@ class _PopupState extends State<Popup> {
                                     .getDuration()
                                     .inMicroseconds
                                     .toDouble(),
-                                max(
-                                    0,
-                                    buffered == null
-                                        ? 0
-                                        : buffered.inMicroseconds.toDouble()))
+                                max(0, buffered.inMicroseconds.toDouble()))
                           ],
                           min: 0,
                           max: widget.video
@@ -219,10 +216,9 @@ class _PopupState extends State<Popup> {
                   right: 10,
                   child: SizedBox(
                       height: 25,
+                      width: MediaQuery.of(context).size.width,
                       child: FlutterSlider(
-                          values: [
-                            widget.video.getPosition().inMicroseconds.toDouble()
-                          ],
+                          values: [position.inMicroseconds.toDouble()],
                           selectByTap: false,
                           handlerWidth: 20,
                           handlerHeight: 20,
@@ -232,17 +228,34 @@ class _PopupState extends State<Popup> {
                               .inMicroseconds
                               .toDouble(),
                           onDragStarted: (handlerIndex, firstValue, secondValue) {
+                            _lockPosition = true;
+                            _isPlayingBeforeScrub = widget.video.isPlaying();
+                            if (_isPlayingBeforeScrub) {
+                              widget.video.pause();
+                            }
                             widget.unsetTimer();
                           },
                           onDragCompleted:
-                              (handlerIndex, firstValue, secondValue) {
-                            widget.setTimer();
-                          },
-                          onDragging:
                               (handlerIndex, firstValue, secondValue) async {
                             await widget.video.seekTo(
                                 Duration(microseconds: firstValue.floor()));
+                            if (_isPlayingBeforeScrub) {
+                              widget.video.play();
+                            }
                             setState(() {});
+                            widget.setTimer();
+                            while ((widget.video.getPosition() -
+                                        Duration(
+                                            microseconds: firstValue.floor()))
+                                    .abs() >
+                                Duration(milliseconds: 500)) {
+                              await Future.delayed(Duration(milliseconds: 10));
+                            }
+                            _lockPosition = false;
+                          },
+                          onDragging: (handlerIndex, firstValue, secondValue) {
+                            position =
+                                Duration(microseconds: firstValue.floor());
                           },
                           tooltip: FlutterSliderTooltip(
                               direction: FlutterSliderTooltipDirection.top,
@@ -266,7 +279,9 @@ class _PopupState extends State<Popup> {
                                   color: Colors.white24,
                                   borderRadius: BorderRadius.circular(15))),
                           handler: FlutterSliderHandler(
-                              decoration: BoxDecoration(color: Colors.tealAccent, shape: BoxShape.circle),
+                              decoration: BoxDecoration(
+                                  color: Colors.tealAccent,
+                                  shape: BoxShape.circle),
                               child: Container()))))
             ])),
         Padding(padding: EdgeInsets.all(8))
@@ -289,6 +304,7 @@ class _PopupState extends State<Popup> {
                           child: Icon(Icons.close_rounded,
                               color: Colors.white, size: 30))),
                   onTap: () {
+                    widget.unsetTimer();
                     Navigator.of(context).pop();
                   })),
           Padding(padding: EdgeInsets.all(20)),
@@ -296,9 +312,7 @@ class _PopupState extends State<Popup> {
               ignoring: widget.lastEpisode.isEmpty,
               child: Opacity(
                   opacity: widget.lastEpisode.isEmpty ? 0 : 1,
-                  child: FloatingActionButton.extended(
-                      elevation: 0,
-                      foregroundColor: Colors.white,
+                  child: ElevatedButton.icon(
                       onPressed: widget.lastEpisode.isEmpty
                           ? null
                           : () {
@@ -311,8 +325,15 @@ class _PopupState extends State<Popup> {
                                               name: widget.lastEpisode[0],
                                               url: widget.lastEpisode[1])));
                             },
-                      heroTag: "lastEp",
-                      backgroundColor: Colors.transparent,
+                      style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all(Colors.transparent),
+                          foregroundColor:
+                              MaterialStateProperty.all(Colors.white),
+                          elevation: MaterialStateProperty.all(0),
+                          shape: MaterialStateProperty.all(
+                              RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15)))),
                       icon: Icon(Icons.navigate_before_rounded),
                       label: Text("Last Episode")))),
           Expanded(
@@ -334,9 +355,7 @@ class _PopupState extends State<Popup> {
               ignoring: widget.nextEpisode.isEmpty,
               child: Opacity(
                   opacity: widget.nextEpisode.isEmpty ? 0 : 1,
-                  child: FloatingActionButton.extended(
-                      elevation: 0,
-                      foregroundColor: Colors.white,
+                  child: ElevatedButton.icon(
                       onPressed: widget.nextEpisode.isEmpty
                           ? null
                           : () {
@@ -349,8 +368,15 @@ class _PopupState extends State<Popup> {
                                               name: widget.nextEpisode[0],
                                               url: widget.nextEpisode[1])));
                             },
-                      heroTag: "nextEp",
-                      backgroundColor: Colors.transparent,
+                      style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all(Colors.transparent),
+                          foregroundColor:
+                              MaterialStateProperty.all(Colors.white),
+                          elevation: MaterialStateProperty.all(0),
+                          shape: MaterialStateProperty.all(
+                              RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15)))),
                       icon: Icon(Icons.navigate_next_rounded),
                       label: Text("Next Episode")))),
           Padding(padding: EdgeInsets.all(10)),
@@ -378,7 +404,7 @@ class _PopupState extends State<Popup> {
                         maxHeight: 0,
                         maxWidth: 0,
                         quality: 100,
-                        timeMs: widget.video.getPosition().inMilliseconds,
+                        timeMs: position.inMilliseconds,
                         thumbnailPath: (await getTemporaryDirectory()).path);
                     if (fileName != null)
                       Share.shareFiles([fileName]);
