@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:miru/data/sources/sources.dart';
 import 'package:miru/data/structures/anime_details.dart';
-import 'package:miru/pages/details_page.dart';
+import 'package:miru/pages/details/details_page.dart';
 import 'package:miru/pages/home/home_card.dart';
 
 class DetailsLoadingPage extends StatefulWidget {

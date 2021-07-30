@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:miru/info.dart';
-import 'package:miru/pages/details_loading_page.dart';
+import 'package:miru/pages/details/details_loading_page.dart';
 import 'package:palette_generator/palette_generator.dart';
 
 class HomeCard extends StatefulWidget {

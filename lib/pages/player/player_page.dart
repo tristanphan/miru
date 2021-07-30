@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:dart_vlc/dart_vlc.dart' as Vlc;
 import 'package:flutter/cupertino.dart';
@@ -8,11 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:miru/data/persistent_data/data_storage.dart';
 import 'package:miru/data/structures/anime_details.dart';
-import 'package:miru/pages/player/functions/seek.dart';
+import 'package:miru/pages/player/functions/keyboard_events.dart';
 import 'package:miru/pages/player/functions/video.dart';
-import 'package:miru/pages/player/popup.dart';
+import 'package:miru/pages/player/widgets/popup.dart';
+import 'package:miru/pages/player/widgets/seek_targets_layer.dart';
 import 'package:video_player/video_player.dart';
 import 'package:wakelock/wakelock.dart';
+
+import 'widgets/darken_layer.dart';
 
 class Player extends StatefulWidget {
   final String name;
@@ -149,89 +151,20 @@ class _PlayerState extends State<Player> {
             body: RawKeyboardListener(
                 focusNode: keyboardFocus,
                 autofocus: true,
-                onKey: (RawKeyEvent e) {
-                  if (!(e is RawKeyDownEvent)) return;
-                  if (e.physicalKey == PhysicalKeyboardKey.space) if (video!
-                      .isPlaying()) {
-                    video!.pause();
-                    Wakelock.disable();
-                    setPopup(true);
-                  } else {
-                    video!.play();
-                    Wakelock.enable();
-                    setPopup(false);
-                  }
-
-                  if (e.physicalKey == PhysicalKeyboardKey.arrowLeft) {
-                    if (e.isShiftPressed)
-                      Seek.seek(video!, SeekDirection.BACKWARDS, 83, setState);
-                    else
-                      Seek.seek(video!, SeekDirection.BACKWARDS, 5, setState);
-                    Seek.animation(SeekDirection.BACKWARDS, setState);
-                  }
-
-                  if (e.physicalKey == PhysicalKeyboardKey.arrowRight) {
-                    if (e.isShiftPressed)
-                      Seek.seek(video!, SeekDirection.FORWARDS, 83, setState);
-                    else
-                      Seek.seek(video!, SeekDirection.FORWARDS, 5, setState);
-                    Seek.animation(SeekDirection.FORWARDS, setState);
-                  }
-
-                  if (e.physicalKey == PhysicalKeyboardKey.arrowUp) {
-                    if (e.isShiftPressed) {
-                      video!.setSpeed(min(2, video!.getSpeed() + 0.25));
-                    } else {
-                      video!.setVolume(min(1, video!.getVolume() + 0.1));
-                      Popup.volume = min(1, video!.getVolume() + 0.1);
-                    }
-                  }
-
-                  if (e.physicalKey == PhysicalKeyboardKey.arrowDown) {
-                    if (e.isShiftPressed) {
-                      video!.setSpeed(max(0.25, video!.getSpeed() - 0.25));
-                    } else {
-                      video!.setVolume(max(0, video!.getVolume() - 0.1));
-                    }
-                    Popup.volume = max(0, video!.getVolume() - 0.1);
-                  }
-                },
+                onKey: (RawKeyEvent e) =>
+                    keyboardEvents(e, video!, setPopup, setState),
                 child: Stack(alignment: Alignment.center, children: [
+                  // Video
                   if (Platform.isIOS || Platform.isAndroid)
                     AspectRatio(
                         aspectRatio: video!.getDetails().value.aspectRatio,
                         child: VideoPlayer(video!.getDetails())),
                   if (Platform.isWindows || Platform.isLinux)
                     Vlc.Video(playerId: 1, width: 1920, height: 1080),
-                  AnimatedOpacity(
-                      duration: Duration(milliseconds: 200),
-                      opacity: Player.showPopup
-                          ? 1
-                          : Seek.darkenLeft || Seek.darkenRight
-                              ? 0.5
-                              : 0,
-                      child: Container(color: Color.fromRGBO(0, 0, 0, 0.4))),
-                  // Seek Icons, shows on double tap only
-                  AnimatedOpacity(
-                      duration: Duration(milliseconds: 200),
-                      opacity: Seek.darkenLeft ? 1 : 0,
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Padding(padding: EdgeInsets.all(48)),
-                            Icon(CupertinoIcons.gobackward,
-                                color: Colors.white, size: 90)
-                          ])),
-                  AnimatedOpacity(
-                      duration: Duration(milliseconds: 200),
-                      opacity: Seek.darkenRight ? 1 : 0,
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Icon(CupertinoIcons.goforward,
-                                color: Colors.white, size: 90),
-                            Padding(padding: EdgeInsets.all(48))
-                          ])),
+
+                  for (var i in darkenLayer()) i,
+
+                  // Buffering Indicator
                   Opacity(
                       opacity: video!.buffering && Player.showPopup ? 1 : 0,
                       child: SizedBox(
@@ -239,58 +172,10 @@ class _PlayerState extends State<Player> {
                           width: 70,
                           child:
                               CircularProgressIndicator(color: Colors.white))),
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        SizedBox(
-                            height: MediaQuery.of(context).size.height,
-                            width: MediaQuery.of(context).size.width * 0.3,
-                            // Left Seek
-                            child: GestureDetector(
-                                onTap: showHidePopup,
-                                onLongPress: null,
-                                onDoubleTap: () {
-                                  Seek.seek(video!, SeekDirection.BACKWARDS, 5,
-                                      setState);
-                                  Seek.animation(
-                                      SeekDirection.BACKWARDS, setState);
-                                })),
-                        // Play Double Tap
-                        SizedBox(
-                            height: MediaQuery.of(context).size.height,
-                            width: MediaQuery.of(context).size.width * 0.4,
-                            // Left Seek
-                            child: GestureDetector(
-                                onTap: showHidePopup,
-                                onLongPress: null,
-                                onDoubleTap: () {
-                                  setState(() {
-                                    if (video!.isPlaying()) {
-                                      video!.pause();
-                                      Wakelock.disable();
-                                      setPopup(true);
-                                    } else {
-                                      video!.play();
-                                      Wakelock.enable();
-                                      setPopup(false);
-                                    }
-                                    unsetTimer();
-                                  });
-                                })),
-                        SizedBox(
-                            height: MediaQuery.of(context).size.height,
-                            width: MediaQuery.of(context).size.width * 0.3,
-                            // Right Seek
-                            child: GestureDetector(
-                                onTap: showHidePopup,
-                                onLongPress: null,
-                                onDoubleTap: () {
-                                  Seek.seek(video!, SeekDirection.FORWARDS, 5,
-                                      setState);
-                                  Seek.animation(
-                                      SeekDirection.FORWARDS, setState);
-                                }))
-                      ]),
+
+                  seekTargetsLayer(context, togglePopup, video!, setPopup,
+                      setState, unsetTimer),
+
                   AnimatedOpacity(
                       duration: Duration(milliseconds: 200),
                       opacity: Player.showPopup ? 1 : 0,
@@ -318,6 +203,14 @@ class _PlayerState extends State<Player> {
     });
   }
 
+  void togglePopup() {
+    setPopup(!Player.showPopup);
+    if (Player.showPopup)
+      setTimer();
+    else
+      unsetTimer();
+  }
+
   void unsetTimer() {
     if (close != null && close!.isActive) close!.cancel();
     close = null;
@@ -331,13 +224,5 @@ class _PlayerState extends State<Player> {
         setPopup(false);
       }
     });
-  }
-
-  void showHidePopup() {
-    setPopup(!Player.showPopup);
-    if (Player.showPopup)
-      setTimer();
-    else
-      unsetTimer();
   }
 }
