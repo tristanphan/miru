@@ -5,6 +5,7 @@ import 'package:miru/data/persistent_data/pin.dart';
 import 'package:miru/data/structures/popular.dart';
 import 'package:miru/pages/home/header_silver_builder.dart';
 import 'package:miru/pages/home/home_list.dart';
+import 'package:miru/pages/search_page.dart';
 import 'package:palette_generator/palette_generator.dart';
 
 class LibraryPage extends StatefulWidget {
@@ -32,33 +33,11 @@ class _LibraryPageState extends State<LibraryPage> {
     return Scaffold(
         floatingActionButton: FloatingActionButton.extended(
             onPressed: () {
-              showCupertinoModalPopup(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return CupertinoAlertDialog(
-                        title: Text("Reset Watch Progress"),
-                        content: Text(
-                            "This will reset all cached timestamps, including pinned shows and marked episodes!"),
-                        actions: [
-                          CupertinoActionSheetAction(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                                setState(() {
-                                  Storage.clearAll();
-                                });
-                              },
-                              isDestructiveAction: true,
-                              child: Text("Reset All")),
-                          CupertinoActionSheetAction(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: Text("Cancel"))
-                        ]);
-                  });
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => SearchPage()));
             },
-            label: Text("Clear All"),
-            icon: Icon(Icons.clear_all)),
+            label: Text("Search"),
+            icon: Icon(Icons.search)),
         body: NestedScrollView(
             headerSliverBuilder: (BuildContext context, bool scroll) =>
                 headerSilverBuilder(context, "Library"),

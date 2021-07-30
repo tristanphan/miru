@@ -1,6 +1,7 @@
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:miru/data/persistent_data/data_storage.dart';
 import 'package:miru/data/persistent_data/theme.dart';
 import 'package:miru/data/sources/sources.dart';
 import 'package:miru/main.dart';
@@ -23,53 +24,135 @@ class _SettingsPageState extends State<SettingsPage> {
         body: NestedScrollView(
             headerSliverBuilder: (BuildContext context, bool scroll) =>
                 headerSilverBuilder(context, "Settings"),
-            body: Column(children: [
-              Divider(height: 0),
-              Container(
-                  height: 60,
-                  child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text("Theme", style: TextStyle(fontSize: 20)),
-                            Expanded(child: Container()),
-                            ToggleSwitch(
-                                totalSwitches: 3,
-                                labels: ["System", "Light", "Dark"],
-                                dividerColor:
-                                    isDark ? Colors.white30 : Colors.black26,
-                                activeBgColor: [
-                                  isDark ? Colors.white : Colors.black
-                                ],
-                                inactiveBgColor:
-                                    isDark ? Colors.white10 : Colors.black12,
-                                activeFgColor:
-                                    isDark ? Colors.black : Colors.white,
-                                changeOnTap: true,
-                                initialLabelIndex: [
-                                  ThemeMode.system,
-                                  ThemeMode.light,
-                                  ThemeMode.dark
-                                ].indexOf(AppTheme.theme),
-                                onToggle: (int setting) {
-                                  AppTheme.setTheme(
-                                      context,
-                                      [
-                                        ThemeMode.system,
-                                        ThemeMode.light,
-                                        ThemeMode.dark
-                                      ][setting]);
-                                  setState(() {});
-                                })
-                          ]))),
-              Divider(height: 0),
-              InkWell(
-                  onTap: () async {
-                    Color? color = await pickColor(
-                        isDark, (AppTheme.color == null) ? "Cancel" : "Reset");
-                    AppTheme.setColor(context, color);
-                    setState(() {});
+            body: SingleChildScrollView(
+              child: Column(children: [
+                Divider(height: 0),
+                Container(
+                    height: 60,
+                    child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text("Theme", style: TextStyle(fontSize: 20)),
+                              Expanded(child: Container()),
+                              ToggleSwitch(
+                                  totalSwitches: 3,
+                                  labels: ["System", "Light", "Dark"],
+                                  dividerColor:
+                                      isDark ? Colors.white30 : Colors.black26,
+                                  activeBgColor: [
+                                    isDark ? Colors.white : Colors.black
+                                  ],
+                                  inactiveBgColor:
+                                      isDark ? Colors.white10 : Colors.black12,
+                                  activeFgColor:
+                                      isDark ? Colors.black : Colors.white,
+                                  changeOnTap: true,
+                                  initialLabelIndex: [
+                                    ThemeMode.system,
+                                    ThemeMode.light,
+                                    ThemeMode.dark
+                                  ].indexOf(AppTheme.theme),
+                                  onToggle: (int setting) {
+                                    AppTheme.setTheme(
+                                        context,
+                                        [
+                                          ThemeMode.system,
+                                          ThemeMode.light,
+                                          ThemeMode.dark
+                                        ][setting]);
+                                    setState(() {});
+                                  })
+                            ]))),
+                Divider(height: 0),
+                InkWell(
+                    onTap: () async {
+                      Color? color = await pickColor(
+                          isDark, (AppTheme.color == null) ? "Cancel" : "Reset");
+                      AppTheme.setColor(context, color);
+                      setState(() {});
+                    },
+                    child: Container(
+                        height: 60,
+                        child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text("Accent Color",
+                                      style: TextStyle(fontSize: 20)),
+                                  Expanded(child: Container()),
+                                  if (AppTheme.color != null)
+                                    IconButton(
+                                        onPressed: () {
+                                          AppTheme.setColor(context, null);
+                                        },
+                                        icon: Icon(Icons.refresh),
+                                        tooltip: "Reset Color"),
+                                  Padding(padding: EdgeInsets.all(4)),
+                                  ColorIndicator(
+                                      color: AppTheme.color ??
+                                          (isDark
+                                              ? Colors.tealAccent
+                                              : Colors.blueAccent))
+                                ])))),
+                Divider(height: 0),
+                Container(
+                    height: 60,
+                    child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text("Server", style: TextStyle(fontSize: 20)),
+                              Expanded(child: Container()),
+                              DropdownButton(
+                                  items: [
+                                    DropdownMenuItem(
+                                        child: Text("GoGoAnime"), value: 0)
+                                  ],
+                                  value: server,
+                                  onChanged: (int? i) {
+                                    if (server == i) return;
+                                    setState(() {
+                                      Sources.set(i!);
+                                      server = i;
+                                    });
+                                    recentlyUpdatedFuture =
+                                        Sources.get().getRecentReleases();
+                                    popularFuture = Sources.get().getPopular();
+                                  })
+                            ]))),
+                Divider(height: 0),
+                Container(height: 80,),
+                Divider(height: 0),
+                InkWell(
+                  onTap: () {
+                    showCupertinoModalPopup(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return CupertinoAlertDialog(
+                              title: Text("Reset Watch Progress"),
+                              content: Text(
+                                  "This will reset all cached timestamps, including pinned shows and marked episodes!"),
+                              actions: [
+                                CupertinoActionSheetAction(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                      setState(() {
+                                        Storage.clearAll();
+                                      });
+                                    },
+                                    isDestructiveAction: true,
+                                    child: Text("Reset")),
+                                CupertinoActionSheetAction(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text("Cancel"))
+                              ]);
+                        });
                   },
                   child: Container(
                       height: 60,
@@ -78,52 +161,54 @@ class _SettingsPageState extends State<SettingsPage> {
                           child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Text("Accent Color",
-                                    style: TextStyle(fontSize: 20)),
-                                Expanded(child: Container()),
-                                if (AppTheme.color != null)
-                                  IconButton(
-                                      onPressed: () {
-                                        AppTheme.setColor(context, null);
-                                      },
-                                      icon: Icon(Icons.refresh),
-                                      tooltip: "Reset Color"),
-                                Padding(padding: EdgeInsets.all(4)),
-                                ColorIndicator(
-                                    color: AppTheme.color ??
-                                        (isDark
-                                            ? Colors.tealAccent
-                                            : Colors.blueAccent))
-                              ])))),
-              Divider(height: 0),
-              Container(
-                  height: 60,
-                  child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text("Server", style: TextStyle(fontSize: 20)),
-                            Expanded(child: Container()),
-                            DropdownButton(
-                                items: [
-                                  DropdownMenuItem(
-                                      child: Text("GoGoAnime"), value: 0)
-                                ],
-                                value: server,
-                                onChanged: (int? i) {
-                                  if (server == i) return;
-                                  setState(() {
-                                    Sources.set(i!);
-                                    server = i;
-                                  });
-                                  recentlyUpdatedFuture =
-                                      Sources.get().getRecentReleases();
-                                  popularFuture = Sources.get().getPopular();
-                                })
-                          ]))),
-              Divider(height: 0)
-            ])));
+                                Text("Clear All Pinned",
+                                    style: TextStyle(
+                                        fontSize: 20, color: Colors.red)),
+                              ]))),
+                ),
+                Divider(height: 0),
+                InkWell(
+                  onTap: () {
+                    showCupertinoModalPopup(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return CupertinoAlertDialog(
+                              title: Text("Reset All"),
+                              content: Text(
+                                  "This will reset all preferences and saved data!"),
+                              actions: [
+                                CupertinoActionSheetAction(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                      setState(() {
+                                        Storage.reset();
+                                      });
+                                    },
+                                    isDestructiveAction: true,
+                                    child: Text("Reset All")),
+                                CupertinoActionSheetAction(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text("Cancel"))
+                              ]);
+                        });
+                  },
+                  child: Container(
+                      height: 60,
+                      child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text("Reset App Data",
+                                    style: TextStyle(
+                                        fontSize: 20, color: Colors.red)),
+                              ]))),
+                ),
+                Divider(height: 0),
+              ]),
+            )));
   }
 
   Future<Color?> pickColor(bool isDark, String dismissText) async {

@@ -1,7 +1,9 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:miru/data/persistent_data/bookmark.dart';
 import 'package:miru/data/persistent_data/pin.dart';
+import 'package:miru/data/persistent_data/theme.dart';
 import 'package:miru/data/sources/sources.dart';
 import 'package:miru/data/structures/anime_details.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -134,5 +136,12 @@ class Storage {
   static void clearAll() {
     pinned.clear();
     save();
+  }
+
+  static Future<void> reset() async {
+    pinned.clear();
+    AppTheme.theme = ThemeMode.system;
+    AppTheme.color = null;
+    await sharedPreferences!.clear();
   }
 }

@@ -20,6 +20,7 @@ class _SearchPageState extends State<SearchPage> {
   String query = "";
   FocusNode searchFocusNode = FocusNode();
   ScrollController _controller = ScrollController();
+  bool loading = false;
 
   @override
   void initState() {
@@ -41,11 +42,7 @@ class _SearchPageState extends State<SearchPage> {
               else if (language == Language.SUB)
                 language = Language.DUB;
               else if (language == Language.DUB) language = Language.ALL;
-              setState(() {
-                items.clear();
-              });
-              items = await Sources.get().search(query, language);
-              setState(() {});
+              load(query);
             },
             label: Text(() {
               if (language == Language.ALL)
@@ -70,23 +67,36 @@ class _SearchPageState extends State<SearchPage> {
                       borderRadius: BorderRadius.circular(15),
                       onSubmitted: (String keyword) async {
                         query = keyword;
-                        setState(() {
-                          items.clear();
-                        });
-                        items = await Sources.get().search(query, language);
+                        load(query);
                         FocusScope.of(context).requestFocus(FocusNode());
-                        setState(() {});
                       })),
               Expanded(
                   child: items.length == 0
-                      ? query.isEmpty
-                          ? Container()
-                          : Center(child: CupertinoActivityIndicator())
+                      ? loading
+                          ? Center(child: CupertinoActivityIndicator())
+                          : Center(
+                              child: Text(query.isEmpty
+                                  ? "Type something to begin"
+                                  : "No results found"),
+                            )
                       : SingleChildScrollView(
                           child: HomeList(
                               list: items,
                               subtext: (item) => item.subtitle,
                               setState: setState)))
             ])));
+  }
+
+  void load(String query) async {
+    setState(() {
+      loading = true;
+      items.clear();
+    });
+    if (query.isNotEmpty) {
+      items = await Sources.get().search(query, language);
+    }
+    setState(() {
+      loading = false;
+    });
   }
 }
