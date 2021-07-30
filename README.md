@@ -61,6 +61,8 @@ Shows are added here automatically to keep track of what you are watching. They 
 | ----- | ---- |
 | ![Search (Light)](assets/screenshots/search_l.png) | ![Search (Dark)](assets/screenshots/search_d.png) |
 
+The Globe icon indicates that the show is dubbed.
+
 ### Details 
 | Light | Dark |
 | ----- | ---- |
