@@ -42,6 +42,17 @@ class _DetailsLoadingPageState extends State<DetailsLoadingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Stack(alignment: Alignment.center, children: [
+      Center(
+          child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+            widget.homeCard,
+            Padding(padding: EdgeInsets.all(4)),
+            Text("Loading...",
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold))
+          ])),
       Positioned(
           top: 40,
           left: 20,
@@ -54,18 +65,7 @@ class _DetailsLoadingPageState extends State<DetailsLoadingPage> {
                 Navigator.of(context).pop();
               },
               label: Text("Back"),
-              icon: Icon(Icons.navigate_before_rounded))),
-      Center(
-          child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-            widget.homeCard,
-            Padding(padding: EdgeInsets.all(4)),
-            Text("Loading...",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold))
-          ]))
+              icon: Icon(Icons.navigate_before_rounded)))
     ]));
   }
 }

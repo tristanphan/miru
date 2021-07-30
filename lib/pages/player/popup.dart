@@ -7,12 +7,10 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_xlider/flutter_xlider.dart';
 import 'package:miru/data/structures/anime_details.dart';
 import 'package:miru/pages/player/functions/formatter.dart';
+import 'package:miru/pages/player/functions/frame.dart';
 import 'package:miru/pages/player/functions/seek.dart';
 import 'package:miru/pages/player/functions/video.dart';
 import 'package:miru/pages/player/player_loading_page.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:share/share.dart';
-import 'package:video_thumbnail/video_thumbnail.dart';
 import 'package:wakelock/wakelock.dart';
 
 class Popup extends StatefulWidget {
@@ -304,7 +302,6 @@ class _PopupState extends State<Popup> {
                           child: Icon(Icons.close_rounded,
                               color: Colors.white, size: 30))),
                   onTap: () {
-                    widget.unsetTimer();
                     Navigator.of(context).pop();
                   })),
           Padding(padding: EdgeInsets.all(20)),
@@ -391,29 +388,14 @@ class _PopupState extends State<Popup> {
                           width: 50,
                           child: Icon(Icons.add_photo_alternate_outlined,
                               color: Colors.white, size: 30))),
-                  onTap: () async {
+                  onTap: () {
                     widget.video.pause();
                     Wakelock.disable();
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         behavior: SnackBarBehavior.floating,
                         content: Text("Saving Frame..."),
                         duration: Duration(seconds: 2)));
-                    String? fileName = await VideoThumbnail.thumbnailFile(
-                        video: widget.url,
-                        imageFormat: ImageFormat.PNG,
-                        maxHeight: 0,
-                        maxWidth: 0,
-                        quality: 100,
-                        timeMs: position.inMilliseconds,
-                        thumbnailPath: (await getTemporaryDirectory()).path);
-                    if (fileName != null)
-                      Share.shareFiles([fileName]);
-                    else {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          behavior: SnackBarBehavior.floating,
-                          content: Text("Failed to save frame"),
-                          duration: Duration(seconds: 3)));
-                    }
+                    saveFrame(context, widget.url, position);
                   })),
           Padding(padding: EdgeInsets.all(8))
         ])

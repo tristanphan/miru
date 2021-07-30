@@ -90,234 +90,227 @@ class _DetailsPage2State extends State<DetailsPage2> {
                       Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 16.0, vertical: 16),
-                          child: Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: cardColor
-                                      .withOpacity(isDark ? 0.2 : 0.2)),
-                              child: Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Row(children: [
-                                    ClipRRect(
-                                        child: Image.network(details.image,
-                                            height: min(
+                          child: InkWell(
+                              borderRadius: BorderRadius.circular(20),
+                              onTap: () {
+                                showDialog(
+                                    barrierDismissible: false,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                          title: Text("More Info"),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(15)),
+                                          content: SingleChildScrollView(
+                                              child: Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                SelectableText.rich(
+                                                    TextSpan(children: [
+                                                      TextSpan(
+                                                          text: "Type: ",
+                                                          style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold)),
+                                                      TextSpan(
+                                                          text:
+                                                              "${details.type}\n\n"),
+                                                      TextSpan(
+                                                          text: "Genre: ",
+                                                          style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold)),
+                                                      TextSpan(
+                                                          text:
+                                                              "${details.genre}\n\n"),
+                                                      TextSpan(
+                                                          text: "Released: ",
+                                                          style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold)),
+                                                      TextSpan(
+                                                          text:
+                                                              "${details.released}\n\n"),
+                                                      TextSpan(
+                                                          text: "Status: ",
+                                                          style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold)),
+                                                      TextSpan(
+                                                          text:
+                                                              "${details.status}\n\n"),
+                                                      TextSpan(
+                                                          text: "Alias: ",
+                                                          style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold)),
+                                                      TextSpan(
+                                                          text: details.alias)
+                                                    ]),
+                                                    textAlign: TextAlign.start),
+                                                Padding(
+                                                    padding: EdgeInsets.all(8)),
+                                                CupertinoButton(
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                    color: Colors.red,
+                                                    child: Text("Dismiss"))
+                                              ])));
+                                    },
+                                    context: context);
+                              },
+                              onLongPress: () {
+                                showDialog(
+                                    barrierDismissible: false,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                          title: Text("Selectable Summary"),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(15)),
+                                          content: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Flexible(
+                                                    child: SingleChildScrollView(
+                                                        child: SelectableText(
+                                                            details.summary))),
+                                                Padding(
+                                                    padding: EdgeInsets.all(8)),
+                                                CupertinoButton(
+                                                    child: Text("Dismiss"),
+                                                    color: Colors.red,
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    })
+                                              ]));
+                                    },
+                                    context: context);
+                              },
+                              child: Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      color: cardColor
+                                          .withOpacity(isDark ? 0.2 : 0.2)),
+                                  child: Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: Row(children: [
+                                        ClipRRect(
+                                            child: Image.network(details.image,
+                                                height: min(
+                                                        200,
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width /
+                                                            3) *
+                                                    1.5,
+                                                width: min(
                                                     200,
                                                     MediaQuery.of(context)
                                                             .size
                                                             .width /
-                                                        3) *
-                                                1.5,
-                                            width: min(
-                                                200,
-                                                MediaQuery.of(context)
-                                                        .size
-                                                        .width /
-                                                    3),
-                                            fit: BoxFit.cover,
-                                            alignment: Alignment.center),
-                                        borderRadius:
-                                            BorderRadius.circular(15)),
-                                    Padding(padding: EdgeInsets.all(8)),
-                                    Expanded(
-                                        child: SizedBox(
-                                            height: min(
-                                                    200,
-                                                    MediaQuery.of(context)
-                                                            .size
-                                                            .width /
-                                                        3) *
-                                                1.5,
-                                            child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.end,
-                                                children: [
-                                                  Expanded(
-                                                      child: GestureDetector(
-                                                          onTap: () {
-                                                            showDialog(
-                                                                barrierDismissible:
-                                                                    false,
-                                                                builder:
-                                                                    (BuildContext
-                                                                        context) {
-                                                                  return AlertDialog(
-                                                                      title: Text(
-                                                                          "Selectable Summary"),
-                                                                      shape: RoundedRectangleBorder(
-                                                                          borderRadius: BorderRadius.circular(
-                                                                              15)),
-                                                                      content: Column(
-                                                                          mainAxisSize:
-                                                                              MainAxisSize.min,
-                                                                          children: [
-                                                                            Flexible(child: SingleChildScrollView(child: SelectableText(details.summary))),
-                                                                            Padding(padding: EdgeInsets.all(8)),
-                                                                            CupertinoButton(
-                                                                                child: Text("Dismiss"),
-                                                                                color: Colors.red,
-                                                                                onPressed: () {
-                                                                                  Navigator.of(context).pop();
-                                                                                })
-                                                                          ]));
-                                                                },
-                                                                context:
-                                                                    context);
-                                                          },
+                                                        3),
+                                                fit: BoxFit.cover,
+                                                alignment: Alignment.center),
+                                            borderRadius:
+                                                BorderRadius.circular(15)),
+                                        Padding(padding: EdgeInsets.all(8)),
+                                        Expanded(
+                                            child: SizedBox(
+                                                height: min(
+                                                        200,
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width /
+                                                            3) *
+                                                    1.5,
+                                                child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment.end,
+                                                    children: [
+                                                      Expanded(
                                                           child: Center(
                                                               child: Text(
                                                                   details
                                                                       .summary,
                                                                   overflow:
                                                                       TextOverflow
-                                                                          .fade)))),
-                                                  Padding(
-                                                      padding:
-                                                          EdgeInsets.all(8)),
-                                                  Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment.end,
-                                                      children: [
-                                                        FloatingActionButton(
-                                                            heroTag:
-                                                                "moreInfoMini",
-                                                            mini: true,
-                                                            onPressed: () {
-                                                              showDialog(
-                                                                  barrierDismissible:
-                                                                      false,
-                                                                  builder:
-                                                                      (BuildContext
-                                                                          context) {
-                                                                    return AlertDialog(
-                                                                        title: Text(
-                                                                            "More Info"),
-                                                                        shape: RoundedRectangleBorder(
-                                                                            borderRadius:
-                                                                                BorderRadius.circular(15)),
-                                                                        content: SingleChildScrollView(
-                                                                            child: Column(mainAxisSize: MainAxisSize.min, children: [
-                                                                          SelectableText.rich(
-                                                                              TextSpan(children: [
-                                                                                TextSpan(text: "Type: ", style: TextStyle(fontWeight: FontWeight.bold)),
-                                                                                TextSpan(text: "${details.type}\n\n"),
-                                                                                TextSpan(text: "Genre: ", style: TextStyle(fontWeight: FontWeight.bold)),
-                                                                                TextSpan(text: "${details.genre}\n\n"),
-                                                                                TextSpan(text: "Released: ", style: TextStyle(fontWeight: FontWeight.bold)),
-                                                                                TextSpan(text: "${details.released}\n\n"),
-                                                                                TextSpan(text: "Status: ", style: TextStyle(fontWeight: FontWeight.bold)),
-                                                                                TextSpan(text: "${details.status}\n\n"),
-                                                                                TextSpan(text: "Alias: ", style: TextStyle(fontWeight: FontWeight.bold)),
-                                                                                TextSpan(text: details.alias)
-                                                                              ]),
-                                                                              textAlign: TextAlign.start),
-                                                                          Padding(
-                                                                              padding: EdgeInsets.all(8)),
-                                                                          CupertinoButton(
-                                                                              onPressed: () {
-                                                                                Navigator.of(context).pop();
-                                                                              },
-                                                                              color: Colors.red,
-                                                                              child: Text("Dismiss"))
-                                                                        ])));
-                                                                  },
-                                                                  context:
-                                                                      context);
-                                                            },
-                                                            backgroundColor:
-                                                                isDark
-                                                                    ? Colors
-                                                                        .white
-                                                                    : Colors
-                                                                        .black,
-                                                            foregroundColor:
-                                                                isDark
-                                                                    ? Colors
-                                                                        .black
-                                                                    : Colors
-                                                                        .white,
-                                                            child: Icon(
-                                                                Icons.info),
-                                                            tooltip:
-                                                                "More Info"),
-                                                        Padding(
-                                                            padding:
-                                                                EdgeInsets.all(
-                                                                    4)),
-                                                        FloatingActionButton
-                                                            .extended(
-                                                                label: Text(
-                                                                    "Play"),
-                                                                icon: Icon(Icons
-                                                                    .play_arrow_rounded),
-                                                                foregroundColor:
-                                                                    Colors
-                                                                        .white,
-                                                                onPressed:
-                                                                    () async {
-                                                                  int epNum = details
-                                                                          .episodes
-                                                                          .length -
-                                                                      1;
-                                                                  while (epNum >=
-                                                                          0 &&
-                                                                      !Storage.isBookmarked(
+                                                                          .fade))),
+                                                      Padding(
+                                                          padding:
+                                                              EdgeInsets.all(
+                                                                  8)),
+                                                      Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .end,
+                                                          children: [
+                                                            FloatingActionButton
+                                                                .extended(
+                                                                    label: Text(
+                                                                        "Play"),
+                                                                    icon: Icon(Icons
+                                                                        .play_arrow_rounded),
+                                                                    foregroundColor:
+                                                                        Colors
+                                                                            .white,
+                                                                    onPressed:
+                                                                        () async {
+                                                                      int epNum =
+                                                                          details.episodes.length -
+                                                                              1;
+                                                                      while (epNum >=
+                                                                              0 &&
+                                                                          !Storage.isBookmarked(
+                                                                              details.url,
+                                                                              details.episodes[epNum].url)) {
+                                                                        epNum--;
+                                                                      }
+                                                                      if (epNum <
+                                                                          0)
+                                                                        epNum =
+                                                                            0;
+                                                                      if (Storage.isBookmarked(details.url, details.episodes[epNum].url) &&
+                                                                          Storage.getEpisodeDuration(details.url, details.episodes[epNum].url) ==
+                                                                              Storage.getEpisodePosition(details.url, details.episodes[epNum].url))
+                                                                        epNum++;
+                                                                      if (epNum >=
                                                                           details
-                                                                              .url,
-                                                                          details
-                                                                              .episodes[epNum]
-                                                                              .url)) {
-                                                                    epNum--;
-                                                                  }
-                                                                  if (epNum < 0)
-                                                                    epNum = 0;
-                                                                  if (Storage.isBookmarked(
-                                                                          details
-                                                                              .url,
-                                                                          details
-                                                                              .episodes[
-                                                                                  epNum]
-                                                                              .url) &&
-                                                                      Storage.getEpisodeDuration(details.url, details.episodes[epNum].url) ==
-                                                                          Storage.getEpisodePosition(
-                                                                              details
-                                                                                  .url,
-                                                                              details.episodes[epNum].url))
-                                                                    epNum++;
-                                                                  if (epNum >=
-                                                                      details
-                                                                          .episodes
-                                                                          .length)
-                                                                    epNum = 0;
-                                                                  await Navigator.of(
-                                                                          context)
-                                                                      .push(MaterialPageRoute(builder:
-                                                                          (BuildContext
-                                                                              context) {
-                                                                    return Loading(
-                                                                        url: details
-                                                                            .episodes[
-                                                                                epNum]
-                                                                            .url,
-                                                                        name: details.name +
-                                                                            " " +
-                                                                            details
-                                                                                .episodes[
-                                                                                    epNum]
-                                                                                .name,
-                                                                        anime:
-                                                                            details,
-                                                                        detailsState:
-                                                                            setState);
-                                                                  }));
-                                                                  setState(
-                                                                      () {});
-                                                                },
-                                                                backgroundColor:
-                                                                    Colors.red,
-                                                                heroTag: "play")
-                                                      ])
-                                                ])))
-                                  ])))),
+                                                                              .episodes
+                                                                              .length)
+                                                                        epNum =
+                                                                            0;
+                                                                      await Navigator.of(
+                                                                              context)
+                                                                          .push(MaterialPageRoute(builder:
+                                                                              (BuildContext context) {
+                                                                        return Loading(
+                                                                            url:
+                                                                                details.episodes[epNum].url,
+                                                                            name: details.name + " " + details.episodes[epNum].name,
+                                                                            anime: details,
+                                                                            detailsState: setState);
+                                                                      }));
+                                                                      setState(
+                                                                          () {});
+                                                                    },
+                                                                    backgroundColor:
+                                                                        Colors
+                                                                            .red,
+                                                                    heroTag:
+                                                                        "play")
+                                                          ])
+                                                    ])))
+                                      ]))))),
                       Padding(padding: EdgeInsets.all(4)),
                       Divider(height: 0),
                       MediaQuery.removePadding(
@@ -364,109 +357,100 @@ class _DetailsPage2State extends State<DetailsPage2> {
                                           Padding(padding: EdgeInsets.all(8)),
                                           Text(details.episodes[index].name,
                                               style: TextStyle(fontSize: 20)),
-                                          bookmarked
-                                              ? Expanded(
-                                                  child: Column(
-                                                      mainAxisSize:
-                                                          MainAxisSize.min,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .end,
-                                                      children: [
-                                                      if (episodeTime == 0)
-                                                        Text("Not Started",
-                                                            style: TextStyle(
-                                                                fontSize: 20)),
-                                                      if (episodeTime ==
-                                                          totalTime)
-                                                        Text("Finished",
-                                                            style: TextStyle(
-                                                                fontSize: 20)),
-                                                      if (episodeTime != 0 &&
-                                                          episodeTime !=
-                                                              totalTime)
-                                                        Text(
+                                          if (bookmarked)
+                                            Expanded(
+                                                child: Column(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment.end,
+                                                    children: [
+                                                  if (episodeTime == totalTime)
+                                                    Text("Finished",
+                                                        style: TextStyle(
+                                                            fontSize: 20)),
+                                                  if (episodeTime != totalTime)
+                                                    Text(
+                                                        formatDuration(
+                                                                Duration(
+                                                                    milliseconds:
+                                                                        episodeTime),
+                                                                Duration(
+                                                                    milliseconds:
+                                                                        episodeTime)) +
+                                                            " / " +
                                                             formatDuration(
-                                                                    Duration(
-                                                                        milliseconds:
-                                                                            episodeTime),
-                                                                    Duration(
-                                                                        milliseconds:
-                                                                            episodeTime)) +
-                                                                " / " +
-                                                                formatDuration(
-                                                                    Duration(
-                                                                        milliseconds:
-                                                                            totalTime),
-                                                                    Duration(
-                                                                        milliseconds:
-                                                                            totalTime)),
-                                                            style: TextStyle(
-                                                                fontSize: 20)),
-                                                      ConstrainedBox(
-                                                          constraints:
-                                                              BoxConstraints(
-                                                                  maxWidth:
-                                                                      200),
-                                                          child: Row(
-                                                              mainAxisSize:
-                                                                  MainAxisSize
-                                                                      .min,
-                                                              children: [
-                                                                Padding(
-                                                                    padding: EdgeInsets.only(
+                                                                Duration(
+                                                                    milliseconds:
+                                                                        totalTime),
+                                                                Duration(
+                                                                    milliseconds:
+                                                                        totalTime)),
+                                                        style: TextStyle(
+                                                            fontSize: 20)),
+                                                  ConstrainedBox(
+                                                      constraints:
+                                                          BoxConstraints(
+                                                              maxWidth: 200),
+                                                      child: Row(
+                                                          mainAxisSize:
+                                                              MainAxisSize.min,
+                                                          children: [
+                                                            Padding(
+                                                                padding: EdgeInsets
+                                                                    .only(
                                                                         right:
                                                                             16)),
-                                                                Text(((episodeTime / totalTime * 10000).floor() /
-                                                                            100)
-                                                                        .toString() +
-                                                                    "%"),
-                                                                Padding(
-                                                                    padding: EdgeInsets.only(
+                                                            Text(((episodeTime /
+                                                                                totalTime *
+                                                                                10000)
+                                                                            .floor() /
+                                                                        100)
+                                                                    .toString() +
+                                                                "%"),
+                                                            Padding(
+                                                                padding: EdgeInsets
+                                                                    .only(
                                                                         right:
                                                                             8)),
-                                                                Expanded(
-                                                                    child: FAProgressBar(
-                                                                        borderRadius: BorderRadius.circular(
+                                                            Expanded(
+                                                                child: FAProgressBar(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
                                                                             15),
-                                                                        animatedDuration: Duration(
-                                                                            milliseconds:
-                                                                                100),
-                                                                        maxValue:
-                                                                            totalTime,
-                                                                        size: 5,
-                                                                        backgroundColor:
-                                                                        (isDark) ? Colors
-                                                                                .white24 : Colors.black12,
-                                                                        progressColor:
-                                                                        (isDark) ? Colors
-                                                                                .white : Colors.black38,
-                                                                        currentValue:
-                                                                            episodeTime))
-                                                              ]))
-                                                    ]))
-                                              : Expanded(child: Container()),
+                                                                    animatedDuration: Duration(
+                                                                        milliseconds:
+                                                                            100),
+                                                                    maxValue:
+                                                                        totalTime,
+                                                                    size: 5,
+                                                                    backgroundColor: (isDark)
+                                                                        ? Colors
+                                                                            .white24
+                                                                        : Colors
+                                                                            .black12,
+                                                                    progressColor: (isDark)
+                                                                        ? Colors
+                                                                            .white
+                                                                        : Colors
+                                                                            .black38,
+                                                                    currentValue:
+                                                                        episodeTime))
+                                                          ]))
+                                                ]))
+                                          else
+                                            Expanded(child: Container()),
                                           Padding(padding: EdgeInsets.all(4)),
-                                          if (bookmarked)
-                                            IconButton(
-                                                tooltip: "Remove Bookmark",
-                                                icon: Icon(() {
-                                                  if (bookmarked)
-                                                    return Icons.bookmark_added;
-                                                  else
-                                                    return Icons
-                                                        .bookmark_add_outlined;
-                                                }()),
-                                                onPressed: () {
-                                                  Storage.toggleEpisode(
-                                                      details
-                                                          .episodes[index].url,
-                                                      details);
-                                                  setState(() {});
-                                                }),
-                                          Padding(padding: EdgeInsets.all(4)),
-                                          Icon(Icons.navigate_next),
-                                          Padding(padding: EdgeInsets.all(8))
+                                          GestureDetector(
+                                              onLongPress: () {
+                                                Storage.removeEpisode(
+                                                    details.url,
+                                                    details
+                                                        .episodes[index].url);
+                                                setState(() {});
+                                              },
+                                              child: Icon(Icons.navigate_next)),
+                                          Padding(padding: EdgeInsets.all(4))
                                         ])));
                               },
                               separatorBuilder:

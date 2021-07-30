@@ -104,7 +104,7 @@ class _PlayerState extends State<Player> {
   void deactivate() {
     if (isInitialized) {
       video!.pause();
-      if (Storage.isBookmarked(widget.anime.url, widget.sourceUrl)) {
+      if (video!.getPosition().inSeconds != 0) {
         Storage.updateEpisodeTime(
             widget.anime.url,
             widget.sourceUrl,

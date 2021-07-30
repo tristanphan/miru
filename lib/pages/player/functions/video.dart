@@ -9,10 +9,10 @@ class Video {
   bool buffering = true;
 
   // iOS and Android
-  VideoPlayerController? _controller;
+  VideoPlayerController? _videoPlayerController;
 
   // Windows and Linux
-  Vlc.Player? _player;
+  Vlc.Player? _vlcPlayer;
 
   Video(
       {required String url,
@@ -21,16 +21,17 @@ class Video {
       required Function setState})
       : _url = url {
     if (Platform.isIOS || Platform.isAndroid) {
-      _controller = VideoPlayerController.network(_url);
-      _controller!.initialize().then((value) {
+      _videoPlayerController = VideoPlayerController.network(_url);
+      _videoPlayerController!.initialize().then((value) {
         onInitialized(this);
-        _controller!.addListener(() {
-          if (_controller!.value.isBuffering != buffering) {
+        _videoPlayerController!.addListener(() {
+          if (_videoPlayerController!.value.isBuffering != buffering) {
             setState(() {
-              buffering = _controller!.value.isBuffering;
+              buffering = _videoPlayerController!.value.isBuffering;
             });
           }
-          if (_controller!.value.position == _controller!.value.duration) {
+          if (_videoPlayerController!.value.position ==
+              _videoPlayerController!.value.duration) {
             Wakelock.disable();
             setPopup(true);
           }
@@ -38,8 +39,8 @@ class Video {
       });
     }
     if (Platform.isWindows || Platform.isLinux) {
-      _player = Vlc.Player(id: 1, videoHeight: 1080, videoWidth: 1920);
-      _player!.open(Vlc.Media.network(url), autoStart: false);
+      _vlcPlayer = Vlc.Player(id: 1, videoHeight: 1080, videoWidth: 1920);
+      _vlcPlayer!.open(Vlc.Media.network(url), autoStart: false);
       (() async {
         // Ensure initialized
         while (getDuration() == Duration(milliseconds: 1)) {
@@ -55,87 +56,87 @@ class Video {
 
   Future<void> seekTo(Duration duration) async {
     if (Platform.isIOS || Platform.isAndroid) {
-      await _controller!.seekTo(duration);
+      await _videoPlayerController!.seekTo(duration);
     }
     if (Platform.isWindows || Platform.isLinux) {
-      _player!.seek(duration);
+      _vlcPlayer!.seek(duration);
     }
   }
 
   Future<void> play() async {
     if (Platform.isIOS || Platform.isAndroid) {
-      await _controller!.play();
+      await _videoPlayerController!.play();
     }
     if (Platform.isWindows || Platform.isLinux) {
-      _player!.play();
+      _vlcPlayer!.play();
     }
   }
 
   Future<void> pause() async {
     if (Platform.isIOS || Platform.isAndroid) {
-      await _controller!.pause();
+      await _videoPlayerController!.pause();
     }
     if (Platform.isWindows || Platform.isLinux) {
-      _player!.pause();
+      _vlcPlayer!.pause();
     }
   }
 
   Future<void> setSpeed(double speed) async {
     if (Platform.isIOS || Platform.isAndroid) {
-      await _controller!.setPlaybackSpeed(speed);
+      await _videoPlayerController!.setPlaybackSpeed(speed);
     }
     if (Platform.isWindows || Platform.isLinux) {
-      _player!.setRate(speed);
+      _vlcPlayer!.setRate(speed);
     }
   }
 
   double getSpeed() {
     if (Platform.isIOS || Platform.isAndroid) {
-      return _controller!.value.playbackSpeed;
+      return _videoPlayerController!.value.playbackSpeed;
     }
     if (Platform.isWindows || Platform.isLinux) {
-      return _player!.general.rate;
+      return _vlcPlayer!.general.rate;
     }
     return 1.0;
   }
 
   Future<void> setVolume(double volume) async {
     if (Platform.isIOS || Platform.isAndroid) {
-      await _controller!.setVolume(volume);
+      await _videoPlayerController!.setVolume(volume);
     }
     if (Platform.isWindows || Platform.isLinux) {
-      _player!.setVolume(volume);
+      _vlcPlayer!.setVolume(volume);
     }
   }
 
   double getVolume() {
     if (Platform.isIOS || Platform.isAndroid) {
-      return _controller!.value.volume;
+      return _videoPlayerController!.value.volume;
     }
     if (Platform.isWindows || Platform.isLinux) {
-      return _player!.general.volume;
+      return _vlcPlayer!.general.volume;
     }
     return 1.0;
   }
 
   Duration getPosition() {
     if (Platform.isIOS || Platform.isAndroid) {
-      return _controller!.value.position;
+      return _videoPlayerController!.value.position;
     }
     if (Platform.isWindows || Platform.isLinux) {
-      return _player!.position.position ?? Duration();
+      return _vlcPlayer!.position.position ?? Duration();
     }
     return Duration();
   }
 
   Duration getDuration() {
     if (Platform.isIOS || Platform.isAndroid) {
-      return _controller!.value.duration;
+      return _videoPlayerController!.value.duration;
     }
     if (Platform.isWindows || Platform.isLinux) {
       // To avoid divide by zero
       Duration duration =
-          _player!.position.duration ?? Duration(milliseconds: 1);
+          _vlcPlayer!.position.duration ?? Duration(milliseconds: 1);
       if (duration.isNegative || duration.inMicroseconds == 0) {
         duration = Duration(milliseconds: 1);
       }
@@ -146,26 +147,26 @@ class Video {
 
   bool isPlaying() {
     if (Platform.isIOS || Platform.isAndroid) {
-      return _controller!.value.isPlaying;
+      return _videoPlayerController!.value.isPlaying;
     }
     if (Platform.isWindows || Platform.isLinux) {
-      return _player!.playback.isPlaying;
+      return _vlcPlayer!.playback.isPlaying;
     }
     return false;
   }
 
   Future<void> dispose() async {
     if (Platform.isIOS || Platform.isAndroid) {
-      await _controller!.dispose();
+      await _videoPlayerController!.dispose();
     }
     if (Platform.isWindows || Platform.isLinux) {
-      _player!.dispose();
+      _vlcPlayer!.dispose();
     }
   }
 
   Duration getBuffered() {
     if (Platform.isIOS || Platform.isAndroid) {
-      List<DurationRange> bufferedList = _controller!.value.buffered;
+      List<DurationRange> bufferedList = _videoPlayerController!.value.buffered;
       Duration? buffered;
       for (DurationRange i in bufferedList) {
         if (buffered == null) {
@@ -184,7 +185,7 @@ class Video {
 
   dynamic getDetails() {
     if (Platform.isIOS || Platform.isAndroid) {
-      return _controller;
+      return _videoPlayerController;
     }
   }
 

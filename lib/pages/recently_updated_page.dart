@@ -42,7 +42,7 @@ class _RecentlyUpdatedPageState extends State<RecentlyUpdatedPage> {
             backgroundColor: isDark ? Colors.white : Colors.black,
             child: NestedScrollView(
                 headerSliverBuilder: (BuildContext context, bool scroll) =>
-                    headerSilverBuilder(context, "Recently Updated"),
+                    headerSilverBuilder(context, "Updated"),
                 body: FutureBuilder(
                     future: recentlyUpdatedFuture,
                     builder: (BuildContext context,
