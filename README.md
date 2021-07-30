@@ -53,6 +53,7 @@
 | Light | Dark |
 | ----- | ---- |
 | ![Library (Light)](assets/screenshots/library_l.png) | ![Library (Dark)](assets/screenshots/library_d.png) |
+
 Shows are added here automatically to keep track of what you are watching. They can be removed with a long press.
 
 ### Search
