@@ -53,12 +53,15 @@
 | Light | Dark |
 | ----- | ---- |
 | ![Library (Light)](assets/screenshots/library_l.png) | ![Library (Dark)](assets/screenshots/library_d.png) |
+
 Shows are added here automatically to keep track of what you are watching. They can be removed with a long press.
 
 ### Search
 | Light | Dark |
 | ----- | ---- |
 | ![Search (Light)](assets/screenshots/search_l.png) | ![Search (Dark)](assets/screenshots/search_d.png) |
+
+The Globe icon indicates that the show is dubbed.
 
 ### Details 
 | Light | Dark |
