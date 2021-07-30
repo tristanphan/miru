@@ -10,62 +10,65 @@
 1. [Install](#install)
     1. [iOS](#ios)
     1. [Android](#android)
+    1. [Windows](#windows-install)
     1. [Apple Silicon Macs](#apple-silicon-macs)
 1. [Build](#build)
     1. [Get an IPA File](#to-get-an-ipa-file)
+    1. [Windows Application](#to-get-windows-application)
     1. [Compile for Apple Silicon Macs](#to-compile-for-apple-silicon-macs)
-1. [Android Notes](#android-notes)
-1. [Apple Silicon Mac Notes](#apple-silicon-mac-notes)
-1. [Resources](#resources)
-    1. [Pub Packages](#pub-packages)
+1. [Desktop Support](#desktop-support)
+   1. [Windows](#windows-notes)
+   1. [macOS](#macos)
+   1. [Linux](#linux)
 1. [Licensing](#licensing)
 
 ## Features
 
 - No Ads, Free
-- Works on iOS, Apple Silicon Macs, and Android (experimentally)
-- Episode Downloading
+- Works on iOS, Android, and Windows (experimental support)
+  - Supports phone, tablet, and desktop form factors
 - Search shows and read descriptions
-- <details>
-  <summary>Automatic Progress Saving</summary>
-
-    - Shows that are pinned are placed at the top of the home screen
-    - Episodes that are marked have their progress saved automatically
-    - Shows and episodes are automatically pinned as you watch
-  </details>
-- <details> 
-  <summary>Fallback Mode (in case IFrame scraping fails)</summary>
-
-    - Possible ads (controlled by GoGoAnime/video source, not me!)
-    - On iOS, the system video player is used in fullscreen (see Android Support below)
-  </details>
-
-- Cached Loading
+- Automatic Progress Saving
+- Episode Downloading
 - Keyboard Shortcuts
-- Scrapes from [GoGoAnime](https://gogoanime.vc/)
+- Scrapes from [GoGoAnime](https://gogoanime.vc/) (more sources to be added)
 
 ### Video Player Features
 
 - Skip Openings & Endings (skip by 1:23) by pressing and holding the Skip Forwards 10s button
-- The Save Frame Button (top right) saves the current frame and opens the share menu
+- Save current frame
 - Next and Last Episode buttons
-- Volume and Playback Speed controls
-- Double tap sides to skip 5 seconds, double tap center to pause
+- Volume and Playback Speed controls (iPad and Desktop only)
+- Double tap sides to skip 5 seconds
+- Double tap center to pause
 
 ## Screenshots
 
-| Home | Home w/ Pin |
-| ---- | ---- |
-| ![Home Page](assets/screenshots/home.png) | ![Home Page with Pin](assets/screenshots/home_pin.png) |
+### Recently Updated
+| Light | Dark |
+| ----- | ---- |
+| ![Updated (Light)](assets/screenshots/updated_l.png) | ![Updated (Dark)](assets/screenshots/updated_d.png) |
 
-| Details | Search |
-| ---- | ---- |
-| ![Details](assets/screenshots/details.png) | ![Search](assets/screenshots/search.png) |
+### Library
+| Light | Dark |
+| ----- | ---- |
+| ![Library (Light)](assets/screenshots/library_l.png) | ![Library (Dark)](assets/screenshots/library_d.png) |
+Shows are added here automatically to keep track of what you are watching. They can be removed with a long press.
 
+### Search
+| Light | Dark |
+| ----- | ---- |
+| ![Search (Light)](assets/screenshots/search_l.png) | ![Search (Dark)](assets/screenshots/search_d.png) |
 
-| Video Player |
-| ---- |
-| ![Video Player](assets/screenshots/player.png) |
+### Details 
+| Light | Dark |
+| ----- | ---- |
+| ![Details (Light)](assets/screenshots/details_l.png) | ![Details (Dark)](assets/screenshots/details_d.png) |
+
+### Player 
+| iPad / Desktop | Phone |
+| ------------- | ----- |
+| ![Details (Light)](assets/screenshots/player.png) | ![Details (Dark)](assets/screenshots/player_phone.png) |
 
 
 ## Install
@@ -88,6 +91,10 @@ Drawback: You need to refresh the app every seven days
 Download the APK from Releases and open it<br>
 Allow app to install APKs if asked
 
+<h3 id="windows-install">Windows</h3>
+
+Download the ZIP file from Releases, extract it, and run miru.exe
+
 ### Apple Silicon Macs
 
 Because
@@ -95,10 +102,11 @@ of Apple's security and my lack of a paid developer license, please compile the 
 
 ## Build
 
-To build for iOS or Apple Silicon Macs, you need to have macOS and Xcode. To build for Android, you need
-the [Android SDK](https://developer.android.com/studio).
+To build for iOS or Apple Silicon Macs, you need to have macOS and Xcode set up. To build for Android, you need
+the [Android SDK](https://developer.android.com/studio) set up. To build for Windows, you must have [Visual Studios](https://visualstudio.microsoft.com/downloads/) (not VS Code)
+installed and set up.
 
-1. Install [Flutter](https://flutter.dev/docs/get-started/install)
+1. Install [Flutter](https://flutter.dev/docs/get-started/install) and git
     - Use `flutter doctor -v` to make sure everything works
 2. Clone this repository and enter the directory - `git clone && cd`
 3. Get Dependencies with `flutter pub get`
@@ -106,12 +114,20 @@ the [Android SDK](https://developer.android.com/studio).
     - iOS: `flutter build ipa`
     - Android: `flutter build apk`
         - APK File: `build/app/outputs/flutter-apk/app-debug.apk` or `app-release.apk`
-    - Run with `flutter run`
+   - Windows: `flutter build windows`
+   - Run with `flutter run`
 
 ### To get an IPA file:
 
 5. Copy `Runner.app` from `build/ios/archive/Runner.xcarchive/Products/Applications` to a folder named `Payload`
 6. Compress the Payload folder and change the extension to `.ipa`
+
+### To get Windows application:
+
+5. Go to `build\windows\runner\Release` or `build\windows\runner\Debug`
+6. You can copy this folder anywhere
+
+To see packaging options, look at [Flutter's documentation](https://flutter.dev/desktop#windows)
 
 ### To compile for Apple Silicon Macs:
 
@@ -121,35 +137,17 @@ the [Android SDK](https://developer.android.com/studio).
 8. When the app opens, ⌘-click the app in the dock to get the Miru.app file
 9. Copy Miru.app to /Applications/
 
-## Android Notes
+## Desktop Support
+<h3 id="windows-notes">Windows</h3>
+This application supports Windows. However, Flutter's own Windows support is still in beta, so expect bugs!
 
-While this application compiles for Android, many of its features are untested. Here are some things to look out for:
+### macOS
+Currently, finding a video player that supports macOS is the biggest challenge, so it remains unsupported.
+However, if you have an Apple Sillicon Mac, you can compile the iOS version for your mac [here](#to-compile-for-apple-silicon-macs).
 
-- A page may buffer forever (usually fixable with the reload button)
-- Fallback Mode's ads are harder to avoid since:
-    1. Fullscreen is not entered automatically
-    2. The player is the IFrame's player, even in fullscreen
-    
-## Apple Silicon Mac Notes
-
-The only issue that I have noticed that is unique to Apple Silicon Macs is finicky persistent storage
-
-## Resources
-
-- Dart v2.13.4
-- Flutter v2.2.3
-
-### Pub Packages
-- flutter_inappwebview v5.3.2
-- video_player v2.1.6
-- video_thumbnail v0.3.3
-- path_provider v2.0.2
-- share v2.0.4
-- shared_preferences v2.0.6
-- dio v4.0.0
-- flutter_animation_progress_bar v2.0.0
-- wakelock v0.5.2
-- flutter_xlider v3.5.0
+### Linux
+Adding Linux support does not seem too difficult since almost all of the dependencies seem to support it,
+but I do not have a testing environment set up for it, so this will have to wait.
 
 ## Licensing
 ### Miru is licensed under the terms of the GNU GPLv3 license.
