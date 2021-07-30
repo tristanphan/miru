@@ -8,7 +8,8 @@ Widget seekTargetsLayer(
     void Function() togglePopup,
     Video video,
     void Function(bool set) setPopup,
-    void Function(VoidCallback fn) setState, void Function() unsetTimer) {
+    void Function(VoidCallback fn) setState,
+    void Function() unsetTimer) {
   return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
     SizedBox(
         height: MediaQuery.of(context).size.height,

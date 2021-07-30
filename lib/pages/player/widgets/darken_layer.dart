@@ -31,6 +31,6 @@ List<Widget> darkenLayer() {
         child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
           Icon(CupertinoIcons.goforward, color: Colors.white, size: 90),
           Padding(padding: EdgeInsets.all(48))
-        ])),
+        ]))
   ];
 }

@@ -6,7 +6,8 @@ import 'package:miru/data/persistent_data/data_storage.dart';
 import 'package:miru/data/structures/anime_details.dart';
 import 'package:miru/pages/player/player_loading_page.dart';
 
-Widget detailsCard(BuildContext context, AnimeDetails details, Color cardColor, bool isDark, void Function(VoidCallback fn) setState) {
+Widget detailsCard(BuildContext context, AnimeDetails details, Color cardColor,
+    bool isDark, void Function(VoidCallback fn) setState) {
   return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
       child: InkWell(

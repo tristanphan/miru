@@ -6,7 +6,8 @@ import 'package:miru/pages/details/download_popup.dart';
 import 'package:miru/pages/player/functions/formatter.dart';
 import 'package:miru/pages/player/player_loading_page.dart';
 
-Widget episodeCard(BuildContext context, AnimeDetails details, int index, bool pinned, bool isDark, void Function(VoidCallback fn) setState) {
+Widget episodeCard(BuildContext context, AnimeDetails details, int index,
+    bool pinned, bool isDark, void Function(VoidCallback fn) setState) {
   int episodeTime = 0;
   int totalTime = 1;
   bool bookmarked =

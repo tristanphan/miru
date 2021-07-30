@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:miru/pages/library_page.dart';
 import 'package:miru/pages/home/popular_page.dart';
 import 'package:miru/pages/home/recently_updated_page.dart';
+import 'package:miru/pages/library_page.dart';
 import 'package:miru/pages/settings.dart';
 
 class Navigation extends StatefulWidget {

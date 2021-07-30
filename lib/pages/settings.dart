@@ -25,109 +25,109 @@ class _SettingsPageState extends State<SettingsPage> {
             headerSliverBuilder: (BuildContext context, bool scroll) =>
                 headerSilverBuilder(context, "Settings"),
             body: SingleChildScrollView(
-              child: Column(children: [
-                Divider(height: 0),
-                Container(
-                    height: 60,
-                    child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text("Theme", style: TextStyle(fontSize: 20)),
-                              Expanded(child: Container()),
-                              ToggleSwitch(
-                                  totalSwitches: 3,
-                                  labels: ["System", "Light", "Dark"],
-                                  dividerColor:
-                                      isDark ? Colors.white30 : Colors.black26,
-                                  activeBgColor: [
-                                    isDark ? Colors.white : Colors.black
-                                  ],
-                                  inactiveBgColor:
-                                      isDark ? Colors.white10 : Colors.black12,
-                                  activeFgColor:
-                                      isDark ? Colors.black : Colors.white,
-                                  changeOnTap: true,
-                                  initialLabelIndex: [
-                                    ThemeMode.system,
-                                    ThemeMode.light,
-                                    ThemeMode.dark
-                                  ].indexOf(AppTheme.theme),
-                                  onToggle: (int setting) {
-                                    AppTheme.setTheme(
-                                        context,
-                                        [
-                                          ThemeMode.system,
-                                          ThemeMode.light,
-                                          ThemeMode.dark
-                                        ][setting]);
-                                    setState(() {});
-                                  })
-                            ]))),
-                Divider(height: 0),
-                InkWell(
-                    onTap: () async {
-                      Color? color = await pickColor(
-                          isDark, (AppTheme.color == null) ? "Cancel" : "Reset");
-                      AppTheme.setColor(context, color);
-                      setState(() {});
-                    },
-                    child: Container(
-                        height: 60,
-                        child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                            child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text("Accent Color",
-                                      style: TextStyle(fontSize: 20)),
-                                  Expanded(child: Container()),
-                                  if (AppTheme.color != null)
-                                    IconButton(
-                                        onPressed: () {
-                                          AppTheme.setColor(context, null);
-                                        },
-                                        icon: Icon(Icons.refresh),
-                                        tooltip: "Reset Color"),
-                                  Padding(padding: EdgeInsets.all(4)),
-                                  ColorIndicator(
-                                      color: AppTheme.color ??
-                                          (isDark
-                                              ? Colors.tealAccent
-                                              : Colors.blueAccent))
-                                ])))),
-                Divider(height: 0),
-                Container(
-                    height: 60,
-                    child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text("Server", style: TextStyle(fontSize: 20)),
-                              Expanded(child: Container()),
-                              DropdownButton(
-                                  items: [
-                                    DropdownMenuItem(
-                                        child: Text("GoGoAnime"), value: 0)
-                                  ],
-                                  value: server,
-                                  onChanged: (int? i) {
-                                    if (server == i) return;
-                                    setState(() {
-                                      Sources.set(i!);
-                                      server = i;
-                                    });
-                                    recentlyUpdatedFuture =
-                                        Sources.get().getRecentReleases();
-                                    popularFuture = Sources.get().getPopular();
-                                  })
-                            ]))),
-                Divider(height: 0),
-                Container(height: 80,),
-                Divider(height: 0),
-                InkWell(
+                child: Column(children: [
+              Divider(height: 0),
+              Container(
+                  height: 60,
+                  child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text("Theme", style: TextStyle(fontSize: 20)),
+                            Expanded(child: Container()),
+                            ToggleSwitch(
+                                totalSwitches: 3,
+                                labels: ["System", "Light", "Dark"],
+                                dividerColor:
+                                    isDark ? Colors.white30 : Colors.black26,
+                                activeBgColor: [
+                                  isDark ? Colors.white : Colors.black
+                                ],
+                                inactiveBgColor:
+                                    isDark ? Colors.white10 : Colors.black12,
+                                activeFgColor:
+                                    isDark ? Colors.black : Colors.white,
+                                changeOnTap: true,
+                                initialLabelIndex: [
+                                  ThemeMode.system,
+                                  ThemeMode.light,
+                                  ThemeMode.dark
+                                ].indexOf(AppTheme.theme),
+                                onToggle: (int setting) {
+                                  AppTheme.setTheme(
+                                      context,
+                                      [
+                                        ThemeMode.system,
+                                        ThemeMode.light,
+                                        ThemeMode.dark
+                                      ][setting]);
+                                  setState(() {});
+                                })
+                          ]))),
+              Divider(height: 0),
+              InkWell(
+                  onTap: () async {
+                    Color? color = await pickColor(
+                        isDark, (AppTheme.color == null) ? "Cancel" : "Reset");
+                    AppTheme.setColor(context, color);
+                    setState(() {});
+                  },
+                  child: Container(
+                      height: 60,
+                      child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text("Accent Color",
+                                    style: TextStyle(fontSize: 20)),
+                                Expanded(child: Container()),
+                                if (AppTheme.color != null)
+                                  IconButton(
+                                      onPressed: () {
+                                        AppTheme.setColor(context, null);
+                                      },
+                                      icon: Icon(Icons.refresh),
+                                      tooltip: "Reset Color"),
+                                Padding(padding: EdgeInsets.all(4)),
+                                ColorIndicator(
+                                    color: AppTheme.color ??
+                                        (isDark
+                                            ? Colors.tealAccent
+                                            : Colors.blueAccent))
+                              ])))),
+              Divider(height: 0),
+              Container(
+                  height: 60,
+                  child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text("Server", style: TextStyle(fontSize: 20)),
+                            Expanded(child: Container()),
+                            DropdownButton(
+                                items: [
+                                  DropdownMenuItem(
+                                      child: Text("GoGoAnime"), value: 0)
+                                ],
+                                value: server,
+                                onChanged: (int? i) {
+                                  if (server == i) return;
+                                  setState(() {
+                                    Sources.set(i!);
+                                    server = i;
+                                  });
+                                  recentlyUpdatedFuture =
+                                      Sources.get().getRecentReleases();
+                                  popularFuture = Sources.get().getPopular();
+                                })
+                          ]))),
+              Divider(height: 0),
+              Container(height: 80),
+              Divider(height: 0),
+              InkWell(
                   onTap: () {
                     showCupertinoModalPopup(
                         context: context,
@@ -163,11 +163,10 @@ class _SettingsPageState extends State<SettingsPage> {
                               children: [
                                 Text("Clear All Pinned",
                                     style: TextStyle(
-                                        fontSize: 20, color: Colors.red)),
-                              ]))),
-                ),
-                Divider(height: 0),
-                InkWell(
+                                        fontSize: 20, color: Colors.red))
+                              ])))),
+              Divider(height: 0),
+              InkWell(
                   onTap: () {
                     showCupertinoModalPopup(
                         context: context,
@@ -203,12 +202,10 @@ class _SettingsPageState extends State<SettingsPage> {
                               children: [
                                 Text("Reset App Data",
                                     style: TextStyle(
-                                        fontSize: 20, color: Colors.red)),
-                              ]))),
-                ),
-                Divider(height: 0),
-              ]),
-            )));
+                                        fontSize: 20, color: Colors.red))
+                              ])))),
+              Divider(height: 0)
+            ]))));
   }
 
   Future<Color?> pickColor(bool isDark, String dismissText) async {

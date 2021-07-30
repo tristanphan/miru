@@ -77,8 +77,7 @@ class _SearchPageState extends State<SearchPage> {
                           : Center(
                               child: Text(query.isEmpty
                                   ? "Type something to begin"
-                                  : "No results found"),
-                            )
+                                  : "No results found"))
                       : SingleChildScrollView(
                           child: HomeList(
                               list: items,

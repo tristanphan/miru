@@ -40,7 +40,7 @@ void saveFrame(BuildContext context, String videoUrl, Duration position) async {
         frame.videoWidth,
         frame.videoHeight,
         ui.PixelFormat.bgra8888,
-            (ui.Image _image) => imageCompleter.complete(_image),
+        (ui.Image _image) => imageCompleter.complete(_image),
         rowBytes: 4 * frame.videoWidth,
         targetWidth: frame.videoWidth,
         targetHeight: frame.videoHeight);

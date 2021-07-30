@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:miru/data/structures/anime_details.dart';
 import 'package:miru/pages/download_page.dart';
 
-void downloadPopup(AnimeDetails details, int index, BuildContext context, void Function(VoidCallback fn) setState) {
+void downloadPopup(AnimeDetails details, int index, BuildContext context,
+    void Function(VoidCallback fn) setState) {
   showCupertinoModalPopup(
       context: context,
       builder: (BuildContext context) {

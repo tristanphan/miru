@@ -7,7 +7,8 @@ import 'package:miru/pages/player/functions/video.dart';
 import 'package:miru/pages/player/widgets/popup.dart';
 import 'package:wakelock/wakelock.dart';
 
-void keyboardEvents(RawKeyEvent e, Video video, void Function(bool set) setPopup, void Function(VoidCallback fn) setState) {
+void keyboardEvents(RawKeyEvent e, Video video,
+    void Function(bool set) setPopup, void Function(VoidCallback fn) setState) {
   if (!(e is RawKeyDownEvent)) return;
   if (e.physicalKey == PhysicalKeyboardKey.space) if (video.isPlaying()) {
     video.pause();
