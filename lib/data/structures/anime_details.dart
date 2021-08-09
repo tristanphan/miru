@@ -9,6 +9,8 @@ class AnimeDetails {
   String genre;
   String released;
   String status;
+  int malID;
+  String score;
   String alias;
   List<Episode> episodes;
   String url;
@@ -22,6 +24,8 @@ class AnimeDetails {
       required this.genre,
       required this.released,
       required this.status,
+      required this.malID,
+      required this.score,
       required this.alias,
       required this.episodes,
       required this.url,

@@ -5,7 +5,7 @@ import 'package:video_player/video_player.dart';
 import 'package:wakelock/wakelock.dart';
 
 class Video {
-  String _url;
+  String url;
   bool buffering = true;
 
   // iOS and Android
@@ -19,9 +19,9 @@ class Video {
       required Function onInitialized,
       required Function setPopup,
       required Function setState})
-      : _url = url {
+      : this.url = url {
     if (Platform.isIOS || Platform.isAndroid) {
-      _videoPlayerController = VideoPlayerController.network(_url);
+      _videoPlayerController = VideoPlayerController.network(this.url);
       _videoPlayerController!.initialize().then((value) {
         onInitialized(this);
         _videoPlayerController!.addListener(() {
@@ -64,11 +64,13 @@ class Video {
   }
 
   Future<void> play() async {
-    if (Platform.isIOS || Platform.isAndroid) {
-      await _videoPlayerController!.play();
-    }
-    if (Platform.isWindows || Platform.isLinux) {
-      _vlcPlayer!.play();
+    if (getPosition().inSeconds.toInt() < getDuration().inSeconds.toInt()) {
+      if (Platform.isIOS || Platform.isAndroid) {
+        await _videoPlayerController!.play();
+      }
+      if (Platform.isWindows || Platform.isLinux) {
+        _vlcPlayer!.play();
+      }
     }
   }
 

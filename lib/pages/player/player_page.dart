@@ -152,7 +152,7 @@ class _PlayerState extends State<Player> {
                 focusNode: keyboardFocus,
                 autofocus: true,
                 onKey: (RawKeyEvent e) =>
-                    keyboardEvents(e, video!, setPopup, setState),
+                    keyboardEvents(context, e, video!, setPopup, setState),
                 child: Stack(alignment: Alignment.center, children: [
                   // Video
                   if (Platform.isIOS || Platform.isAndroid)
@@ -174,7 +174,7 @@ class _PlayerState extends State<Player> {
                               CircularProgressIndicator(color: Colors.white))),
 
                   seekTargetsLayer(context, togglePopup, video!, setPopup,
-                      setState, unsetTimer),
+                      setState, setTimer, unsetTimer),
 
                   AnimatedOpacity(
                       duration: Duration(milliseconds: 200),
@@ -192,7 +192,8 @@ class _PlayerState extends State<Player> {
                               unsetTimer: unsetTimer,
                               lastEpisode: widget.lastEpisode,
                               nextEpisode: widget.nextEpisode,
-                              detailsState: widget.detailsState)))
+                              detailsState: widget.detailsState,
+                              setState: setState)))
                 ]))));
   }
 

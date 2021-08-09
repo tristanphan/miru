@@ -10,13 +10,13 @@ import 'package:miru/pages/home/header_silver_builder.dart';
 import 'package:miru/pages/home/home_card.dart';
 import 'package:palette_generator/palette_generator.dart';
 
-class DetailsPage2 extends StatefulWidget {
+class DetailsPage extends StatefulWidget {
   final AnimeDetails details;
   final String title;
   final String url;
   final HomeCard homeCard;
 
-  const DetailsPage2(
+  const DetailsPage(
       {Key? key,
       required this.details,
       required this.title,
@@ -25,10 +25,10 @@ class DetailsPage2 extends StatefulWidget {
       : super(key: key);
 
   @override
-  _DetailsPage2State createState() => _DetailsPage2State();
+  _DetailsPageState createState() => _DetailsPageState();
 }
 
-class _DetailsPage2State extends State<DetailsPage2> {
+class _DetailsPageState extends State<DetailsPage> {
   @override
   Widget build(BuildContext context) {
     AnimeDetails details = widget.details;
@@ -67,7 +67,8 @@ class _DetailsPage2State extends State<DetailsPage2> {
                     : Colors.black),
         body: NestedScrollView(
             headerSliverBuilder: (BuildContext context, bool scroll) =>
-                headerSilverBuilder(context, widget.title),
+                headerSilverBuilder(
+                    context, widget.title.replaceAll(' (Dub)', '')),
             body: Container(
                 height: double.maxFinite,
                 child: RefreshIndicator(

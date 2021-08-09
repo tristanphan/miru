@@ -1,9 +1,10 @@
 import 'package:miru/data/anime.dart';
+import 'package:miru/data/sources/animesuge/animesuge.dart';
 import 'package:miru/data/sources/gogoanime/gogoanime.dart';
 
 class Sources {
   static int _selected = 0;
-  static List<Anime> list = [Gogoanime()];
+  static List<Anime> list = [AnimeSuge(), Gogoanime()];
 
   static Anime get() => list[_selected];
 

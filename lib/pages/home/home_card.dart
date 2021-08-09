@@ -49,6 +49,7 @@ class _HomeCardState extends State<HomeCard> {
           width: widget.width.toDouble(),
           padding: EdgeInsets.all(8.0),
           child: Material(
+              color: Colors.transparent,
               child: InkWell(
                   splashColor: isDark
                       ? Colors.white.withOpacity(0.1)
@@ -86,7 +87,7 @@ class _HomeCardState extends State<HomeCard> {
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
                           color:
-                              backgroundColor.withOpacity(isDark ? 0.2 : 0.3)),
+                              backgroundColor.withOpacity(isDark ? 0.4 : 0.3)),
                       child: Padding(
                           padding: const EdgeInsets.all(12.0),
                           child: Row(children: [

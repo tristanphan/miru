@@ -11,13 +11,24 @@ Future<List<SearchItem>> search(String keyword, Language language) async {
   int startTime = DateTime.now().millisecondsSinceEpoch;
 
   print("Searching: " + keyword);
-  WebScraper web = WebScraper('https://gogoanime.vc/');
-  await web.loadFullURL("https://gogoanime.vc//search.html?keyword=" + keyword);
+  WebScraper web = WebScraper('https://animesuge.io');
+
+  if (language == Language.SUB) {
+    await web.loadFullURL(
+        "https://animesuge.io/filter?language%5B%5D=subbed&keyword=" + keyword);
+  } else if (language == Language.DUB) {
+    await web.loadFullURL(
+        "https://animesuge.io/filter?language%5B%5D=dubbed&keyword=" + keyword);
+  } else {
+    await web.loadFullURL("https://animesuge.io/search?keyword=" + keyword);
+  }
 
   List<SearchItem> items = [];
 
   // Get number of search entries
-  int numberOfEntries = web.getElementAttribute('div.img > a', 'title').length;
+  int numberOfEntries = web
+      .getElementTitle('ul.itemlist > li > div.info > div.name > h3 > a')
+      .length;
 
   print("Search Time: " +
       ((DateTime.now().millisecondsSinceEpoch - startTime) / 1000)
@@ -26,33 +37,30 @@ Future<List<SearchItem>> search(String keyword, Language language) async {
 
   // Loop through entries
   for (int entry = 0; entry < numberOfEntries; entry++) {
-    String title =
-        web.getElementTitle('ul.items > li > p.name > a')[entry].trim();
-
-    // Filter by Language
-    if (language != Language.ALL) {
-      if (title.endsWith("(Dub)")) {
-        if (language == Language.SUB) continue;
-      } else if (language == Language.DUB) continue;
-    }
+    String title = web
+        .getElementTitle(
+            'ul.itemlist > li > div.info > div.name > h3 > a')[entry]
+        .trim();
 
     // Get the rest of the attributes
     String image = web
-        .getElementAttribute('ul.items > li > div.img > a > img', 'src')[entry]!
+        .getElementAttribute('ul.itemlist > li > a.poster > img', 'src')[entry]!
         .trim();
-    String url = ("https://gogoanime.vc" +
+    String url = ("https://animesuge.io" +
             web.getElementAttribute(
-                'ul.items > li > p.name > a', 'href')[entry]!)
+                'ul.itemlist > li > div.info > div.name > h3 > a',
+                'href')[entry]!)
         .trim();
-    String released = web
-        .getElement('ul.items > li > p.released', [''])[entry]['title']
-        .replaceAll('Released: ', '')
+    String status = web
+        .getElementTitle('ul.itemlist > li > div.info > div.status')[entry]
+        .replaceAll("Ep ", "Episode ")
+        .replaceAll("dub", '')
         .trim();
     items.add(SearchItem(
         title: title,
         image: image,
         url: url,
-        subtitle: released,
+        subtitle: status,
         palette:
             await PaletteGenerator.fromImageProvider(NetworkImage(image))));
   }

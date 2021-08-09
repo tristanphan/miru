@@ -59,7 +59,7 @@ Widget episodeCard(BuildContext context, AnimeDetails details, int index,
                         constraints: BoxConstraints(maxWidth: 200),
                         child: Row(mainAxisSize: MainAxisSize.min, children: [
                           Padding(padding: EdgeInsets.only(right: 16)),
-                          Text(((episodeTime / totalTime * 10000).floor() / 100)
+                          Text(((episodeTime / totalTime * 100).floor())
                                   .toString() +
                               "%"),
                           Padding(padding: EdgeInsets.only(right: 8)),

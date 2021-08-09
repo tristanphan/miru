@@ -30,7 +30,7 @@ class _DetailsLoadingPageState extends State<DetailsLoadingPage> {
     Sources.get().getDetails(widget.url).then((details) {
       if (!mounted || popped) return;
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (BuildContext context) => DetailsPage2(
+          builder: (BuildContext context) => DetailsPage(
               details: details,
               url: widget.url,
               title: widget.title,

@@ -11,6 +11,7 @@ import 'package:miru/pages/player/functions/frame.dart';
 import 'package:miru/pages/player/functions/seek.dart';
 import 'package:miru/pages/player/functions/video.dart';
 import 'package:miru/pages/player/player_loading_page.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:wakelock/wakelock.dart';
 
 class Popup extends StatefulWidget {
@@ -25,6 +26,7 @@ class Popup extends StatefulWidget {
   final List<String> lastEpisode;
   final List<String> nextEpisode;
   final Function detailsState;
+  final Function setState;
 
   static double volume = 1;
 
@@ -40,6 +42,7 @@ class Popup extends StatefulWidget {
       required this.lastEpisode,
       required this.nextEpisode,
       required this.detailsState,
+      required this.setState,
       Key? key})
       : super(key: key);
 
@@ -52,6 +55,7 @@ class _PopupState extends State<Popup> {
   Duration position = Duration();
   bool _lockPosition = false;
   bool _isPlayingBeforeScrub = false;
+  double speed = 1.0;
 
   @override
   void initState() {
@@ -94,16 +98,16 @@ class _PopupState extends State<Popup> {
                 child: Container(
                     height: 80,
                     width: 80,
-                    child: Icon(CupertinoIcons.gobackward_10,
-                        color: Colors.white, size: 30)),
+                    child:
+                        Icon(Icons.fast_rewind, color: Colors.white, size: 40)),
                 onTap: () {
-                  Seek.seek(
-                      widget.video, SeekDirection.BACKWARDS, 10, setState);
+                  Seek.seek(widget.video, SeekDirection.BACKWARDS, 5,
+                      widget.setState);
                   widget.setTimer();
                 },
                 onLongPress: () {
-                  Seek.seek(
-                      widget.video, SeekDirection.BACKWARDS, 83, setState);
+                  Seek.seek(widget.video, SeekDirection.BACKWARDS, 83,
+                      widget.setState);
                   widget.setTimer();
                 })),
         Padding(padding: EdgeInsets.all(24)),
@@ -117,8 +121,8 @@ class _PopupState extends State<Popup> {
                       width: 80,
                       child: Icon(
                           widget.video.isPlaying()
-                              ? Icons.pause_rounded
-                              : Icons.play_arrow_rounded,
+                              ? Icons.pause
+                              : Icons.play_arrow,
                           color: Colors.white,
                           size: 60)),
                   onTap: () {
@@ -143,14 +147,16 @@ class _PopupState extends State<Popup> {
                 child: Container(
                     height: 80,
                     width: 80,
-                    child: Icon(CupertinoIcons.goforward_10,
-                        color: Colors.white, size: 30)),
+                    child: Icon(Icons.fast_forward,
+                        color: Colors.white, size: 40)),
                 onTap: () {
-                  Seek.seek(widget.video, SeekDirection.FORWARDS, 10, setState);
+                  Seek.seek(
+                      widget.video, SeekDirection.FORWARDS, 5, widget.setState);
                   widget.setTimer();
                 },
                 onLongPress: () {
-                  Seek.seek(widget.video, SeekDirection.FORWARDS, 83, setState);
+                  Seek.seek(widget.video, SeekDirection.FORWARDS, 83,
+                      widget.setState);
                   widget.setTimer();
                 }))
       ]),
@@ -217,7 +223,7 @@ class _PopupState extends State<Popup> {
                       width: MediaQuery.of(context).size.width,
                       child: FlutterSlider(
                           values: [position.inMicroseconds.toDouble()],
-                          selectByTap: false,
+                          selectByTap: true,
                           handlerWidth: 20,
                           handlerHeight: 20,
                           min: 0,
@@ -299,7 +305,7 @@ class _PopupState extends State<Popup> {
                       child: Container(
                           height: 50,
                           width: 50,
-                          child: Icon(Icons.close_rounded,
+                          child: Icon(Icons.close,
                               color: Colors.white, size: 30))),
                   onTap: () {
                     Navigator.of(context).pop();
@@ -331,22 +337,31 @@ class _PopupState extends State<Popup> {
                           shape: MaterialStateProperty.all(
                               RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15)))),
-                      icon: Icon(Icons.navigate_before_rounded),
+                      icon: Icon(Icons.skip_previous),
                       label: Text("Last Episode")))),
           Expanded(
               child: Center(
                   child: (MediaQuery.of(context).size.height > 500)
-                      ? Container(
-                          decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0.3),
-                              borderRadius: BorderRadius.circular(15)),
-                          padding:
-                              EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                          child: Text(widget.name,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(color: Colors.white)))
+                      ? InkWell(
+                          borderRadius: BorderRadius.circular(15),
+                          onTap: (widget.anime.score == "N/A")
+                              ? null
+                              : () {
+                                  widget.video.pause();
+                                  launch(
+                                      'https://myanimelist.net/anime/${widget.anime.malID}');
+                                },
+                          child: Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.black.withOpacity(0.3),
+                                  borderRadius: BorderRadius.circular(15)),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 12),
+                              child: Text(widget.name,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(color: Colors.white))))
                       : Container())),
           IgnorePointer(
               ignoring: widget.nextEpisode.isEmpty,
@@ -374,7 +389,7 @@ class _PopupState extends State<Popup> {
                           shape: MaterialStateProperty.all(
                               RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15)))),
-                      icon: Icon(Icons.navigate_next_rounded),
+                      icon: Icon(Icons.skip_next),
                       label: Text("Next Episode")))),
           Padding(padding: EdgeInsets.all(10)),
           Material(
@@ -410,8 +425,8 @@ class _PopupState extends State<Popup> {
                 children: [
                   IconButton(
                       icon: Icon(widget.video.getVolume() != 0
-                          ? Icons.volume_up_rounded
-                          : Icons.volume_off_rounded),
+                          ? Icons.volume_up
+                          : Icons.volume_off),
                       tooltip: "Volume",
                       iconSize: 30,
                       onPressed: () {
@@ -431,7 +446,7 @@ class _PopupState extends State<Popup> {
                               max: 100,
                               handlerWidth: 20,
                               handlerHeight: 20,
-                              selectByTap: false,
+                              selectByTap: true,
                               tooltip: FlutterSliderTooltip(
                                   direction:
                                       FlutterSliderTooltipDirection.right,
@@ -485,10 +500,11 @@ class _PopupState extends State<Popup> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   IconButton(
-                      icon: Icon(Icons.speed_rounded),
+                      icon: Icon(Icons.timer),
                       disabledColor: Colors.white,
                       tooltip: "Playback Speed",
                       onPressed: () {
+                        speed = 1;
                         widget.video.setSpeed(1);
                       }),
                   SizedBox(
@@ -500,7 +516,7 @@ class _PopupState extends State<Popup> {
                               max: 1.75,
                               handlerWidth: 20,
                               handlerHeight: 20,
-                              selectByTap: false,
+                              selectByTap: true,
                               step: FlutterSliderStep(step: 0.25),
                               tooltip: FlutterSliderTooltip(
                                   direction: FlutterSliderTooltipDirection.left,
@@ -532,16 +548,15 @@ class _PopupState extends State<Popup> {
                               onDragCompleted:
                                   (handlerIndex, firstValue, secondValue) {
                                 widget.setTimer();
+                                widget.video.setSpeed(speed);
                               },
                               onDragging:
-                                  (handlerIndex, lowerValue, upperValue) {
-                                widget.video.setSpeed(lowerValue);
+                                  (handlerIndex, firstValue, secondValue) {
+                                speed = firstValue;
                               },
                               axis: Axis.vertical,
                               rtl: true,
-                              values: [
-                                max(min(widget.video.getSpeed(), 2), 0.25)
-                              ])))
+                              values: [max(min(speed, 1.75), 0.25)])))
                 ]))
     ]));
   }

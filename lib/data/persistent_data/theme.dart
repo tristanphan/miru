@@ -6,6 +6,7 @@ import 'package:miru/data/persistent_data/data_storage.dart';
 class AppTheme {
   static ThemeMode theme = ThemeMode.system;
   static Color? color;
+  static bool fullBlack = false;
 
   static void load() {
     if (Storage.sharedPreferences == null) return;
@@ -21,6 +22,13 @@ class AppTheme {
       theme = ThemeMode.system;
     if (Storage.sharedPreferences!.containsKey("color")) {
       color = Color(Storage.sharedPreferences!.getInt("color")!);
+    }
+
+    bool? black = Storage.sharedPreferences!.getBool("full_black");
+    if (black == null) {
+      Storage.sharedPreferences!.setBool('full_black', false);
+    } else {
+      fullBlack = black;
     }
   }
 
@@ -49,6 +57,13 @@ class AppTheme {
       Storage.sharedPreferences!.setInt("color", newColor.value);
     }
     color = newColor;
+    _theme(context);
+  }
+
+  static void setFullBlack(BuildContext context, bool newBlack) {
+    if (Storage.sharedPreferences == null) return;
+    Storage.sharedPreferences!.setBool("full_black", newBlack);
+    fullBlack = newBlack;
     _theme(context);
   }
 

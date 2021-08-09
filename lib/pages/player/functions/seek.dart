@@ -2,6 +2,8 @@ import 'package:miru/pages/player/functions/video.dart';
 
 enum SeekDirection { FORWARDS, BACKWARDS }
 
+int seekAmount = 0;
+
 class Seek {
   static bool darkenLeft = false;
   static bool darkenRight = false;
@@ -10,6 +12,8 @@ class Seek {
       Function setState) async {
     bool play = video.isPlaying();
     await video.pause();
+    seekAmount = seconds;
+    Seek.animation(direction, setState);
     Duration newDuration;
     if (direction == SeekDirection.BACKWARDS)
       newDuration = video.getPosition() - Duration(seconds: seconds);

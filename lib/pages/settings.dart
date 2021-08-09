@@ -23,10 +23,9 @@ class _SettingsPageState extends State<SettingsPage> {
     return Scaffold(
         body: NestedScrollView(
             headerSliverBuilder: (BuildContext context, bool scroll) =>
-                headerSilverBuilder(context, "Settings"),
+                headerSilverBuilder(context, "Setings"),
             body: SingleChildScrollView(
                 child: Column(children: [
-              Divider(height: 0),
               Container(
                   height: 60,
                   child: Padding(
@@ -65,6 +64,34 @@ class _SettingsPageState extends State<SettingsPage> {
                                   setState(() {});
                                 })
                           ]))),
+              if (Theme.of(context).brightness == Brightness.dark)
+                Divider(height: 0),
+              if (Theme.of(context).brightness == Brightness.dark)
+                Container(
+                    height: 60,
+                    child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("Full Black",
+                                        style: TextStyle(fontSize: 20)),
+                                    Opacity(
+                                        opacity: 0.7,
+                                        child: Text("For AMOLED Screens",
+                                            style: TextStyle(fontSize: 15)))
+                                  ]),
+                              Expanded(child: Container()),
+                              Switch(
+                                  value: AppTheme.fullBlack,
+                                  onChanged: (bool newValue) {
+                                    AppTheme.setFullBlack(context, newValue);
+                                  })
+                            ]))),
               Divider(height: 0),
               InkWell(
                   onTap: () async {
@@ -110,7 +137,9 @@ class _SettingsPageState extends State<SettingsPage> {
                             DropdownButton(
                                 items: [
                                   DropdownMenuItem(
-                                      child: Text("GoGoAnime"), value: 0)
+                                      child: Text("AnimeSuge"), value: 0),
+                                  DropdownMenuItem(
+                                      child: Text("GoGoAnime"), value: 1)
                                 ],
                                 value: server,
                                 onChanged: (int? i) {

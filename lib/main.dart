@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:miru/data/persistent_data/data_storage.dart';
 import 'package:miru/data/persistent_data/theme.dart';
@@ -34,8 +35,16 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: "Miru",
         theme: ThemeData(accentColor: AppTheme.color),
-        darkTheme:
-            ThemeData(brightness: Brightness.dark, accentColor: AppTheme.color),
+        darkTheme: AppTheme.fullBlack
+            ? ThemeData(
+                brightness: Brightness.dark,
+                accentColor: AppTheme.color,
+                scaffoldBackgroundColor: Colors.black,
+                bottomNavigationBarTheme:
+                    BottomNavigationBarThemeData(backgroundColor: Colors.black),
+                dividerColor: Colors.white38)
+            : ThemeData(
+                accentColor: AppTheme.color, brightness: Brightness.dark),
         themeMode: EasyDynamicTheme.of(context).themeMode,
         home: Navigation());
   }
