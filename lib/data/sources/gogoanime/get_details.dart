@@ -17,7 +17,7 @@ Future<AnimeDetails> getDetails(String url) async {
   await web.loadFullURL(url);
 
   // Properties
-  String name = web.getElementTitle('h1')[0].replaceAll("(Dub)", "").trim();
+  String name = web.getElementTitle('h1')[0].trim();
   String summary = "";
   String type = "";
   String genre = "";
@@ -29,7 +29,8 @@ Future<AnimeDetails> getDetails(String url) async {
 
   try {
     Response jikanSearch = await get(Uri.parse(
-        "https://api.jikan.moe/v3/search/anime?q=${name.replaceAll(' (Dub)', '')}"));
+            "https://api.jikan.moe/v3/search/anime?q=${name.replaceAll(' (Dub)', '')}"))
+        .timeout(Duration(seconds: 5));
     var jikanBody = jsonDecode(jikanSearch.body);
 
     // Fuzzy Matching for Title
@@ -41,7 +42,8 @@ Future<AnimeDetails> getDetails(String url) async {
         jikanBody['results'][0]['mal_id'];
 
     Response jikanStr =
-        await get(Uri.parse('https://api.jikan.moe/v3/anime/$malID'));
+        await get(Uri.parse('https://api.jikan.moe/v3/anime/$malID'))
+            .timeout(Duration(seconds: 5));
     score = (jsonDecode(jikanStr.body)['score'] ?? score).toString();
   } catch (e) {}
 

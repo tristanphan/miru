@@ -8,12 +8,14 @@ class HomeList extends StatefulWidget {
   final List<dynamic> list;
   final String Function(dynamic item) subtext;
   final Function(VoidCallback fn) setState;
+  final bool? useCustomCrawler;
 
   const HomeList(
       {Key? key,
       required this.list,
       required this.subtext,
-      required this.setState})
+      required this.setState,
+      this.useCustomCrawler})
       : super(key: key);
 
   @override
@@ -41,7 +43,8 @@ class _HomeListState extends State<HomeList> {
                     palette: item.palette,
                     width: width,
                     url: item.url,
-                    setState: widget.setState)
+                    setState: widget.setState,
+                    useCustomCrawler: widget.useCustomCrawler)
             ]));
   }
 }

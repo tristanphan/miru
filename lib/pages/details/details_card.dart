@@ -183,24 +183,30 @@ Widget detailsCard(BuildContext context, AnimeDetails details, Color cardColor,
                                         ])
                                   ])))
                     ]))))),
-    if (details.score != "N/A")
+    if (double.tryParse(details.score) != null)
       Positioned(
-          top: 8,
-          right: 8,
-          child: InkWell(
-              borderRadius: BorderRadius.circular(15),
-              onTap: () =>
-                  launch('https://myanimelist.net/anime/${details.malID}'),
-              child: Container(
-                  decoration: BoxDecoration(
-                      color: cardColor,
-                      borderRadius: BorderRadius.circular(15)),
-                  padding: EdgeInsets.all(8),
-                  child: Row(children: [
-                    Icon(Icons.star),
-                    Padding(padding: EdgeInsets.all(2)),
-                    Text(details.score, style: TextStyle(fontSize: 20)),
-                    Padding(padding: EdgeInsets.all(2))
-                  ]))))
+          top: 5,
+          right: 5,
+          child: Tooltip(
+              message: "Open MyAnimeList",
+              child: InkWell(
+                  borderRadius: BorderRadius.circular(15),
+                  onTap: () =>
+                      launch('https://myanimelist.net/anime/${details.malID}'),
+                  child: Card(
+                      color: Color.alphaBlend(
+                          cardColor.withOpacity(0.8), Colors.black),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15)),
+                      elevation: 8,
+                      child: Padding(
+                          padding: EdgeInsets.all(8),
+                          child: Row(children: [
+                            Icon(Icons.star),
+                            Padding(padding: EdgeInsets.all(2)),
+                            Text(double.parse(details.score).toStringAsFixed(2),
+                                style: TextStyle(fontSize: 20)),
+                            Padding(padding: EdgeInsets.all(2))
+                          ]))))))
   ]);
 }

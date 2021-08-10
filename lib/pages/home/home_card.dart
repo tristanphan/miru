@@ -12,6 +12,7 @@ class HomeCard extends StatefulWidget {
   final PaletteGenerator palette;
   final double width;
   final Function(VoidCallback fn) setState;
+  final bool? useCustomCrawler;
 
   const HomeCard(
       {Key? key,
@@ -21,7 +22,8 @@ class HomeCard extends StatefulWidget {
       required this.palette,
       required this.width,
       required this.url,
-      required this.setState})
+      required this.setState,
+      this.useCustomCrawler})
       : super(key: key);
 
   @override
@@ -64,6 +66,7 @@ class _HomeCardState extends State<HomeCard> {
                         builder: (BuildContext context) => DetailsLoadingPage(
                             title: widget.title,
                             url: widget.url,
+                            useCustomCrawler: widget.useCustomCrawler,
                             homeCard: HomeCard(
                                 palette: widget.palette,
                                 url: '',
@@ -74,14 +77,16 @@ class _HomeCardState extends State<HomeCard> {
                                 subtext: widget.subtext))));
                     widget.setState(() {});
                   },
-                  onLongPress: () {
+                  onLongPress: () async {
                     if (widget.url.isEmpty) return;
-                    showInfo(
+                    await showInfo(
                         context: context,
                         setState: widget.setState,
                         image: widget.img,
                         name: widget.title,
-                        url: widget.url);
+                        url: widget.url,
+                        pop: false);
+                    widget.setState(() {});
                   },
                   child: Container(
                       decoration: BoxDecoration(
@@ -121,16 +126,19 @@ class _HomeCardState extends State<HomeCard> {
                           ])))))),
       if (widget.title.endsWith(" (Dub)"))
         Positioned(
-            top: 5,
-            right: 5,
+            top: 0,
+            right: 0,
             child: Tooltip(
                 message: "Dubbed",
-                child: Container(
-                    decoration: BoxDecoration(
-                        color: backgroundColor.withOpacity(0.5),
-                        borderRadius: BorderRadius.circular(10)),
-                    padding: EdgeInsets.all(6),
-                    child: Icon(Icons.language))))
+                child: Card(
+                    color: Color.alphaBlend(
+                        backgroundColor.withOpacity(0.8), Colors.black),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15)),
+                    elevation: 8,
+                    child: Padding(
+                        padding: EdgeInsets.all(8),
+                        child: Icon(Icons.language)))))
     ]);
   }
 }

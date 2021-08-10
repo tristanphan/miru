@@ -21,6 +21,7 @@ void main() async {
   await Storage.initialize();
   Storage.load();
   AppTheme.load();
+  Sources.load();
   Video.onAppStart();
   recentlyUpdatedFuture = Sources.get().getRecentReleases();
   popularFuture = Sources.get().getPopular();
@@ -34,7 +35,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         title: "Miru",
-        theme: ThemeData(accentColor: AppTheme.color),
+        theme: ThemeData(
+            accentColor: AppTheme.color,
+            switchTheme: SwitchThemeData(
+                thumbColor: MaterialStateProperty.all(
+                    AppTheme.color ?? Colors.blueAccent),
+                trackColor: MaterialStateProperty.all(
+                    (AppTheme.color ?? Colors.blueAccent).withOpacity(0.4)))),
         darkTheme: AppTheme.fullBlack
             ? ThemeData(
                 brightness: Brightness.dark,
@@ -42,9 +49,19 @@ class MyApp extends StatelessWidget {
                 scaffoldBackgroundColor: Colors.black,
                 bottomNavigationBarTheme:
                     BottomNavigationBarThemeData(backgroundColor: Colors.black),
-                dividerColor: Colors.white38)
+                dividerColor: Colors.white38,
+                switchTheme: SwitchThemeData(
+                    thumbColor: MaterialStateProperty.all(
+                        AppTheme.color ?? Colors.tealAccent),
+                    trackColor: MaterialStateProperty.all(
+                        (AppTheme.color ?? Colors.tealAccent)
+                            .withOpacity(0.4))))
             : ThemeData(
-                accentColor: AppTheme.color, brightness: Brightness.dark),
+                accentColor: AppTheme.color,
+                brightness: Brightness.dark,
+                switchTheme: SwitchThemeData(
+                    thumbColor: MaterialStateProperty.all(AppTheme.color ?? Colors.tealAccent),
+                    trackColor: MaterialStateProperty.all((AppTheme.color ?? Colors.tealAccent).withOpacity(0.4)))),
         themeMode: EasyDynamicTheme.of(context).themeMode,
         home: Navigation());
   }

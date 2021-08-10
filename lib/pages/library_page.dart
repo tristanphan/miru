@@ -76,7 +76,8 @@ class _LibraryPageState extends State<LibraryPage> {
                               child: HomeList(
                                   list: libraryItems,
                                   subtext: (item) => item.subtext,
-                                  setState: setState)));
+                                  setState: setState,
+                                  useCustomCrawler: true)));
                     }))));
   }
 }

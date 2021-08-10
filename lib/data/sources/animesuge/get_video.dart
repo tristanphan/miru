@@ -19,8 +19,11 @@ Future<VideoDetails?> getVideo(String url, Function changeProgress) async {
   String title = web.getElementTitle('h1.title')[0].replaceAll(" (Dub)", "");
 
   String id = web.getElementAttribute('div.watchpage', 'data-id')[0]!;
-  Response response =
-      await get(Uri.parse('https://animesuge.io/ajax/anime/servers?id=' + id));
+  Response response = await get(Uri.parse(
+      'https://animesuge.io/ajax/anime/servers?id=' +
+          id +
+          '&episode=' +
+          web.getElementAttribute('div.watchpage', 'data-ep-name')[0]!));
   String episodesHtml = jsonDecode(response.body)['html'];
   web.loadFromString(episodesHtml);
 
@@ -36,6 +39,7 @@ Future<VideoDetails?> getVideo(String url, Function changeProgress) async {
         'active') {
       episodeID = jsonDecode(web.getElementAttribute(
           'ul.episodes > li > a', 'data-sources')[i]!)['40'];
+      title += " Episode " + web.getElementTitle('ul.episodes > li > a')[i];
       if (i != 0) {
         lastEpisode.add(
             'Episode ' + web.getElementTitle('ul.episodes > li > a')[i - 1]);
@@ -63,11 +67,9 @@ Future<VideoDetails?> getVideo(String url, Function changeProgress) async {
   String videoURL = '';
   for (var i in web.getElementTitle('script')) {
     if (i.startsWith('document.getElementById(')) {
-      videoURL = "https://streamtape.com/" +
-          i
-              .replaceAll('" + \'c', '')
-              .split('//streamtape.com/')[1]
-              .split("'.sub")[0];
+      List<String> splicedUrl = i.split(RegExp("(\"|')"));
+      int index = int.parse(i[i.lastIndexOf("(") + 1]);
+      videoURL = "https://streamtape.com/" + splicedUrl[3].split('.com/')[1] + splicedUrl[5].substring(index);
     }
   }
   changeProgress("Preparing Video Player", 25);

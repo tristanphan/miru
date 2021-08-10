@@ -11,13 +11,15 @@ class Loading extends StatefulWidget {
   final String url;
   final AnimeDetails anime;
   final Function detailsState;
+  final String? customCrawler;
 
   const Loading(
       {required this.name,
       required this.url,
       required this.anime,
       required this.detailsState,
-      Key? key})
+      Key? key,
+      this.customCrawler})
       : super(key: key);
 
   @override
@@ -30,7 +32,8 @@ class _LoadingState extends State<Loading> {
 
   @override
   void initState() {
-    Sources.get().getVideo(widget.url, changeProgress).then((video) {
+    Sources.get(widget.customCrawler).getVideo(widget.url, changeProgress).then(
+        (video) {
       if (!mounted) return;
       Navigator.of(context)
           .pushReplacement(MaterialPageRoute(builder: (context) {
@@ -43,6 +46,9 @@ class _LoadingState extends State<Loading> {
             lastEpisode: video.last,
             nextEpisode: video.next);
       }));
+    }, onError: (obj, stackTrace) {
+      print(stackTrace);
+      Navigator.of(context).pop();
     });
     super.initState();
   }
@@ -99,19 +105,7 @@ class _LoadingState extends State<Loading> {
                             textAlign: TextAlign.center,
                             style: TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.bold))
-                      ]),
-                  Positioned(
-                      top: 40,
-                      left: 20,
-                      child: FloatingActionButton.extended(
-                          heroTag: "back",
-                          backgroundColor: Colors.black,
-                          foregroundColor: Colors.white,
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          label: Text("Back"),
-                          icon: Icon(Icons.navigate_before_rounded)))
+                      ])
                 ]))));
   }
 }

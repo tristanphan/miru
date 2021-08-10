@@ -6,7 +6,6 @@ import 'package:miru/data/persistent_data/theme.dart';
 import 'package:miru/data/sources/sources.dart';
 import 'package:miru/main.dart';
 import 'package:miru/pages/home/header_silver_builder.dart';
-import 'package:toggle_switch/toggle_switch.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -35,63 +34,43 @@ class _SettingsPageState extends State<SettingsPage> {
                           children: [
                             Text("Theme", style: TextStyle(fontSize: 20)),
                             Expanded(child: Container()),
-                            ToggleSwitch(
-                                totalSwitches: 3,
-                                labels: ["System", "Light", "Dark"],
-                                dividerColor:
-                                    isDark ? Colors.white30 : Colors.black26,
-                                activeBgColor: [
-                                  isDark ? Colors.white : Colors.black
-                                ],
-                                inactiveBgColor:
-                                    isDark ? Colors.white10 : Colors.black12,
-                                activeFgColor:
-                                    isDark ? Colors.black : Colors.white,
-                                changeOnTap: true,
-                                initialLabelIndex: [
-                                  ThemeMode.system,
-                                  ThemeMode.light,
-                                  ThemeMode.dark
-                                ].indexOf(AppTheme.theme),
-                                onToggle: (int setting) {
-                                  AppTheme.setTheme(
-                                      context,
-                                      [
-                                        ThemeMode.system,
-                                        ThemeMode.light,
-                                        ThemeMode.dark
-                                      ][setting]);
+                            CupertinoSlidingSegmentedControl(
+                                children: {
+                                  ThemeMode.system: Text("System"),
+                                  ThemeMode.light: Text("Light"),
+                                  ThemeMode.dark: Text("Dark")
+                                },
+                                onValueChanged: (ThemeMode? mode) {
+                                  AppTheme.setTheme(context, mode!);
                                   setState(() {});
-                                })
+                                },
+                                groupValue: AppTheme.theme)
                           ]))),
               if (Theme.of(context).brightness == Brightness.dark)
                 Divider(height: 0),
               if (Theme.of(context).brightness == Brightness.dark)
-                Container(
-                    height: 60,
-                    child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text("Full Black",
-                                        style: TextStyle(fontSize: 20)),
-                                    Opacity(
-                                        opacity: 0.7,
-                                        child: Text("For AMOLED Screens",
-                                            style: TextStyle(fontSize: 15)))
-                                  ]),
-                              Expanded(child: Container()),
-                              Switch(
-                                  value: AppTheme.fullBlack,
-                                  onChanged: (bool newValue) {
-                                    AppTheme.setFullBlack(context, newValue);
-                                  })
-                            ]))),
+                InkWell(
+                    onTap: () {
+                      AppTheme.setFullBlack(context, !AppTheme.fullBlack);
+                    },
+                    child: Container(
+                        height: 60,
+                        child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text("Full Black",
+                                      style: TextStyle(fontSize: 20)),
+                                  Expanded(child: Container()),
+                                  IgnorePointer(
+                                      child: Switch(
+                                          inactiveTrackColor:
+                                              Colors.grey.withOpacity(0.6),
+                                          value: AppTheme.fullBlack,
+                                          onChanged: (a) {}))
+                                ])))),
               Divider(height: 0),
               InkWell(
                   onTap: () async {
@@ -135,6 +114,12 @@ class _SettingsPageState extends State<SettingsPage> {
                             Text("Server", style: TextStyle(fontSize: 20)),
                             Expanded(child: Container()),
                             DropdownButton(
+                                underline: Container(
+                                    color: AppTheme.color ??
+                                        (isDark
+                                            ? Colors.tealAccent
+                                            : Colors.blueAccent),
+                                    height: 2),
                                 items: [
                                   DropdownMenuItem(
                                       child: Text("AnimeSuge"), value: 0),

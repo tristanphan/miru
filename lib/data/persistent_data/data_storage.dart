@@ -142,6 +142,8 @@ class Storage {
     pinned.clear();
     AppTheme.theme = ThemeMode.system;
     AppTheme.color = null;
+    AppTheme.fullBlack = false;
+    Sources.set(0);
     await sharedPreferences!.clear();
   }
 }
