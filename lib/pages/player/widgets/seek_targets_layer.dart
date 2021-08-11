@@ -19,14 +19,16 @@ Widget seekTargetsLayer(
     void Function() unsetTimer) {
   return MouseRegion(
       onHover: (PointerHoverEvent event) {
-        double thisDistance = event.position.distance - distance;
-        distance = event.position.distance;
-        if (thisDistance.abs() < 5) return;
-        if (!video.isPlaying()) return;
-        if (!Player.showPopup) {
-          setPopup(true);
+        if (Platform.isWindows || Platform.isMacOS || Platform.isLinux) {
+          double thisDistance = event.position.distance - distance;
+          distance = event.position.distance;
+          if (thisDistance.abs() < 5) return;
+          if (!video.isPlaying()) return;
+          if (!Player.showPopup) {
+            setPopup(true);
+          }
+          setTimer();
         }
-        setTimer();
       },
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         SizedBox(

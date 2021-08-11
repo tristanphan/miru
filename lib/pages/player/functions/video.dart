@@ -131,6 +131,13 @@ class Video {
     return Duration();
   }
 
+  Future<Duration> getPrecisePosition() async {
+    if (Platform.isIOS || Platform.isAndroid) {
+      return await _videoPlayerController!.position ?? getPosition();
+    }
+    return getPosition();
+  }
+
   Duration getDuration() {
     if (Platform.isIOS || Platform.isAndroid) {
       return _videoPlayerController!.value.duration;

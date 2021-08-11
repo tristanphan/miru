@@ -403,14 +403,14 @@ class _PopupState extends State<Popup> {
                           width: 50,
                           child: Icon(Icons.add_photo_alternate_outlined,
                               color: Colors.white, size: 30))),
-                  onTap: () {
+                  onTap: () async {
                     widget.video.pause();
                     Wakelock.disable();
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         behavior: SnackBarBehavior.floating,
                         content: Text("Saving Frame..."),
                         duration: Duration(seconds: 2)));
-                    saveFrame(context, widget.url, position);
+                    saveFrame(context, widget.url, await widget.video.getPrecisePosition());
                   })),
           Padding(padding: EdgeInsets.all(8))
         ])

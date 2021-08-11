@@ -14,23 +14,24 @@ import 'package:video_thumbnail/video_thumbnail.dart';
 void saveFrame(BuildContext context, String videoUrl, Duration position) async {
   Directory temporary = (await getTemporaryDirectory());
   DateTime now = DateTime.now();
+  String filename = 'Screen Shot ${DateFormat('yyyy-MM-dd').format(now)} at ${DateFormat('h.mm.ss a').format(now)}.png';
   if (Platform.isIOS || Platform.isAndroid) {
-    String? fileName = await VideoThumbnail.thumbnailFile(
+    File file = File("${temporary.path}/$filename");
+    Uint8List? bytes = await VideoThumbnail.thumbnailData(
         video: videoUrl,
         imageFormat: ImageFormat.PNG,
         maxHeight: 0,
         maxWidth: 0,
         quality: 100,
-        timeMs: position.inMilliseconds,
-        thumbnailPath: temporary.path);
-    if (fileName != null)
-      Share.shareFiles([fileName]);
-    else {
+        timeMs: position.inMilliseconds);
+    if (bytes == null) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           behavior: SnackBarBehavior.floating,
           content: Text("Failed to save frame"),
           duration: Duration(seconds: 3)));
     }
+    await file.writeAsBytes(bytes!, flush: true);
+    Share.shareFiles([file.path], subject: filename);
   }
   if (Platform.isWindows || Platform.isLinux) {
     VideoFrame frame = await videoStreamControllers[1]!.stream.last;
@@ -46,8 +47,7 @@ void saveFrame(BuildContext context, String videoUrl, Duration position) async {
         targetHeight: frame.videoHeight);
     ui.Image image = await imageCompleter.future;
 
-    File file = File(temporary.path +
-        "/Screen Shot ${DateFormat('yyyy-MM-dd').format(now)} at ${DateFormat('h.mm.ss a').format(now)}.png");
+    File file = File("${temporary.path}/$filename");
     ByteData? bytes = await image.toByteData(format: ui.ImageByteFormat.png);
     if (bytes == null) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(

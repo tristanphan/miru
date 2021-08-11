@@ -9,7 +9,7 @@ import 'package:miru/pages/player/widgets/popup.dart';
 import 'package:wakelock/wakelock.dart';
 
 void keyboardEvents(BuildContext context, RawKeyEvent e, Video video,
-    void Function(bool set) setPopup, void Function(VoidCallback fn) setState) {
+    void Function(bool set) setPopup, void Function(VoidCallback fn) setState) async {
   if (!(e is RawKeyDownEvent)) return;
 
   // Functions
@@ -95,6 +95,6 @@ void keyboardEvents(BuildContext context, RawKeyEvent e, Video video,
         behavior: SnackBarBehavior.floating,
         content: Text("Saving Frame..."),
         duration: Duration(seconds: 2)));
-    saveFrame(context, video.url, video.getPosition());
+    saveFrame(context, video.url, await video.getPrecisePosition());
   }
 }
