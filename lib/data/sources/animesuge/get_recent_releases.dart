@@ -39,13 +39,17 @@ Future<List<RecentRelease>> getRecentReleases() async {
         .replaceAll('/', ' / ')
         .trim();
 
-    recentReleases.add(RecentRelease(
+    recentReleases.add(
+      RecentRelease(
         title: title,
         url: url,
         image: image,
         subtext: latestEp,
-        palette:
-            await PaletteGenerator.fromImageProvider(NetworkImage(image))));
+        palette: await PaletteGenerator.fromImageProvider(
+          NetworkImage(image),
+        ),
+      ),
+    );
   }
 
   return recentReleases;

@@ -32,13 +32,17 @@ Future<List<Popular>> getPopular() async {
     String image = images[item]!.trim();
     String released = releases[item].trim().replaceAll(": ", " in ");
 
-    popular.add(Popular(
+    popular.add(
+      Popular(
         title: title,
         url: url,
         image: image,
         subtext: released,
-        palette:
-            await PaletteGenerator.fromImageProvider(NetworkImage(image))));
+        palette: await PaletteGenerator.fromImageProvider(
+          NetworkImage(image),
+        ),
+      ),
+    );
   }
 
   return popular;

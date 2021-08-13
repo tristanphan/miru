@@ -22,7 +22,7 @@ class DetailsLoadingPage extends StatefulWidget {
 }
 
 class _DetailsLoadingPageState extends State<DetailsLoadingPage> {
-  bool popped = false;
+  bool isPopped = false;
 
   @override
   void initState() {
@@ -30,35 +30,53 @@ class _DetailsLoadingPageState extends State<DetailsLoadingPage> {
     Sources.get(
             (widget.useCustomCrawler ?? false) ? widget.homeCard.subtext : null)
         .getDetails(widget.url)
-        .then((details) {
-      if (!mounted || popped) return;
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (BuildContext context) => DetailsPage(
-              details: details,
-              url: widget.url,
-              title: widget.title,
-              useCustomCrawler: widget.useCustomCrawler,
-              homeCard: widget.homeCard)));
-    }, onError: (obj, stackTrace) {
-      Navigator.of(context).pop();
-    });
+        .then(
+      (details) {
+        if (!mounted || isPopped) return;
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (BuildContext context) => DetailsPage(
+                details: details,
+                url: widget.url,
+                title: widget.title,
+                useCustomCrawler: widget.useCustomCrawler,
+                homeCard: widget.homeCard),
+          ),
+        );
+      },
+      onError: (obj, stackTrace) =>
+        Navigator.of(context).pop(),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: Stack(alignment: Alignment.center, children: [
-      Center(
-          child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-            widget.homeCard,
-            Padding(padding: EdgeInsets.all(4)),
-            Text("Loading...",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold))
-          ]))
-    ]));
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        body: Stack(
+          alignment: Alignment.center,
+          children: [
+            Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  widget.homeCard,
+                  Padding(
+                    padding: EdgeInsets.all(4),
+                  ),
+                  Text(
+                    "Loading...",
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

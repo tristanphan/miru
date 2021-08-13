@@ -27,5 +27,8 @@ class Gogoanime implements Anime {
 
   // Get video from Episode URL
   Future<VideoDetails?> getVideo(String url, [Function? changeProgress]) =>
-      Data.getVideo(url, changeProgress ?? (String a) {});
+      Data.getVideo(
+        url,
+        changeProgress ?? (String a) {},
+      );
 }

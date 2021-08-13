@@ -15,7 +15,10 @@ class Storage {
 
   static void save() {
     print("Saving");
-    sharedPreferences!.setString("pinned", jsonEncode(pinned));
+    sharedPreferences!.setString(
+      "pinned",
+      jsonEncode(pinned),
+    );
   }
 
   static Future<void> initialize() async {
@@ -26,9 +29,13 @@ class Storage {
     String? pref = sharedPreferences!.getString("pinned");
     try {
       List<dynamic> data = jsonDecode(pref!) as List<dynamic>;
-      pinned = [for (var pin in data) Pin.fromJson(pin)];
+      pinned = [
+        for (Map<String, dynamic> pin in data) Pin.fromJson(pin),
+      ];
     } catch (e) {
-      print("Error: " + e.toString());
+      print(
+        "Error: " + e.toString(),
+      );
       sharedPreferences!.clear();
       sharedPreferences!.setString("pinned", "[]");
       pinned = [];
@@ -37,12 +44,15 @@ class Storage {
   }
 
   static void addPin(String url, String title, String image) {
-    pinned.add(Pin(
+    pinned.add(
+      Pin(
         url: url,
         title: title,
         image: image,
         episodes: List.empty(growable: true),
-        source: Sources.getName()));
+        source: Sources.getName(),
+      ),
+    );
     while (pinned.length > 50) {
       pinned.removeAt(0);
     }
@@ -76,9 +86,9 @@ class Storage {
       addPin(anime.url, anime.name, anime.image);
     }
     int animeIndex = pinned.indexWhere((Pin pin) => pin.url == anime.url);
-    pinned[animeIndex]
-        .episodes
-        .add(Bookmark(url: url, duration: totalTime, position: timeMs));
+    pinned[animeIndex].episodes.add(
+          Bookmark(url: url, duration: totalTime, position: timeMs),
+        );
     save();
   }
 

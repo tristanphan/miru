@@ -28,22 +28,29 @@ Future<AnimeDetails> getDetails(String url) async {
   String alias = "";
 
   try {
-    Response jikanSearch = await get(Uri.parse(
-            "https://api.jikan.moe/v3/search/anime?q=${name.replaceAll(' (Dub)', '')}"))
-        .timeout(Duration(seconds: 5));
-    var jikanBody = jsonDecode(jikanSearch.body);
+    Response jikanSearch = await get(
+      Uri.parse(
+          "https://api.jikan.moe/v3/search/anime?q=${name.replaceAll(' (Dub)', '')}"),
+    ).timeout(
+      Duration(seconds: 5),
+    );
+    dynamic jikanBody = jsonDecode(jikanSearch.body);
 
     // Fuzzy Matching for Title
     Map<String, int> entries = {};
     for (Map entry in jikanBody['results']) {
       entries[entry['title'].trim()] = entry['mal_id'];
     }
-    malID = entries[Fuzzy(entries.keys.toList()).search(name).first.item] ??
+    malID = entries[Fuzzy(
+          entries.keys.toList(),
+        ).search(name).first.item] ??
         jikanBody['results'][0]['mal_id'];
 
-    Response jikanStr =
-        await get(Uri.parse('https://api.jikan.moe/v3/anime/$malID'))
-            .timeout(Duration(seconds: 5));
+    Response jikanStr = await get(
+      Uri.parse('https://api.jikan.moe/v3/anime/$malID'),
+    ).timeout(
+      Duration(seconds: 5),
+    );
     score = (jsonDecode(jikanStr.body)['score'] ?? score).toString();
   } catch (e) {}
 
@@ -93,7 +100,12 @@ Future<AnimeDetails> getDetails(String url) async {
   for (int i = 0; i < episodeNames.length; i++) {
     episodeNames[i] = episodeNames[i].replaceAll("EP", "Episode").trim();
     episodeLinks[i] = "https://gogoanime.vc" + episodeLinks[i].trim();
-    episodes.add(Episode(name: episodeNames[i], url: episodeLinks[i]));
+    episodes.add(
+      Episode(
+        name: episodeNames[i],
+        url: episodeLinks[i],
+      ),
+    );
   }
 
   print("Details Loading Time: " +
@@ -102,17 +114,20 @@ Future<AnimeDetails> getDetails(String url) async {
       " seconds");
 
   return AnimeDetails(
-      name: name,
-      image: image,
-      summary: summary,
-      type: type,
-      genre: genre,
-      released: released,
-      status: status,
-      malID: malID,
-      score: score,
-      alias: alias,
-      episodes: episodes,
-      url: url,
-      palette: await PaletteGenerator.fromImageProvider(NetworkImage(image)));
+    name: name,
+    image: image,
+    summary: summary,
+    type: type,
+    genre: genre,
+    released: released,
+    status: status,
+    malID: malID,
+    score: score,
+    alias: alias,
+    episodes: episodes,
+    url: url,
+    palette: await PaletteGenerator.fromImageProvider(
+      NetworkImage(image),
+    ),
+  );
 }

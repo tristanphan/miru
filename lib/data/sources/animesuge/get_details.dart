@@ -35,28 +35,36 @@ Future<AnimeDetails> getDetails(String url) async {
   try {
     String jname =
         web.getElementAttribute('div.heading > h1', 'data-jtitle')[0]!;
-    Response jikanSearch = await get(Uri.parse(
-            "https://api.jikan.moe/v3/search/anime?q=${jname.replaceAll(' (Dub)', '')}"))
-        .timeout(Duration(seconds: 5));
-    ;
-    var jikanBody = jsonDecode(jikanSearch.body);
+    Response jikanSearch = await get(
+      Uri.parse(
+          "https://api.jikan.moe/v3/search/anime?q=${jname.replaceAll(' (Dub)', '')}"),
+    ).timeout(
+      Duration(seconds: 5),
+    );
+    dynamic jikanBody = jsonDecode(jikanSearch.body);
 
     // Fuzzy Matching for Title
     Map<String, int> entries = {};
     for (Map entry in jikanBody['results']) {
       entries[entry['title'].trim()] = entry['mal_id'];
     }
-    malID = entries[Fuzzy(entries.keys.toList()).search(jname).first.item] ??
+    malID = entries[Fuzzy(
+          entries.keys.toList(),
+        ).search(jname).first.item] ??
         jikanBody['results'][0]['mal_id'];
 
-    Response jikanStr =
-        await get(Uri.parse('https://api.jikan.moe/v3/anime/$malID'))
-            .timeout(Duration(seconds: 5));
+    Response jikanStr = await get(
+      Uri.parse('https://api.jikan.moe/v3/anime/$malID'),
+    ).timeout(
+      Duration(seconds: 5),
+    );
     score = (jsonDecode(jikanStr.body)['score'] ?? score).toString();
   } catch (e) {}
 
   List<String> properties = web.getElementTitle('div.col1 > div');
-  properties.addAll(web.getElementTitle('div.col2 > div'));
+  properties.addAll(
+    web.getElementTitle('div.col2 > div'),
+  );
   for (String content in properties) {
     content = content.trim();
     if (content.startsWith("Type:"))
@@ -74,8 +82,9 @@ Future<AnimeDetails> getDetails(String url) async {
   // Episodes
   List<Episode> episodes = [];
   String id = web.getElementAttribute('div.watchpage', 'data-id')[0]!;
-  Response response =
-      await get(Uri.parse('https://animesuge.io/ajax/anime/servers?id=' + id));
+  Response response = await get(
+    Uri.parse('https://animesuge.io/ajax/anime/servers?id=' + id),
+  );
   String episodesHtml = jsonDecode(response.body)['html'];
   web.loadFromString(episodesHtml);
 
@@ -86,24 +95,29 @@ Future<AnimeDetails> getDetails(String url) async {
 
   int episodeCount = web.getElementTitle('ul.episodes > li > a').length;
   for (int i = 0; i < episodeCount; i++) {
-    episodes.add(Episode(
-        name: "Episode " + web.getElementTitle('ul.episodes > li > a')[i],
-        url: 'https://animesuge.io' +
-            web.getElementAttribute('ul.episodes > li > a', 'href')[i]!));
+    episodes.add(
+      Episode(
+          name: "Episode " + web.getElementTitle('ul.episodes > li > a')[i],
+          url: 'https://animesuge.io' +
+              web.getElementAttribute('ul.episodes > li > a', 'href')[i]!),
+    );
   }
 
   return AnimeDetails(
-      name: name,
-      image: image,
-      summary: summary,
-      type: type,
-      genre: genre,
-      released: released,
-      status: status,
-      malID: malID,
-      score: score,
-      alias: alias,
-      episodes: episodes,
-      url: url,
-      palette: await PaletteGenerator.fromImageProvider(NetworkImage(image)));
+    name: name,
+    image: image,
+    summary: summary,
+    type: type,
+    genre: genre,
+    released: released,
+    status: status,
+    malID: malID,
+    score: score,
+    alias: alias,
+    episodes: episodes,
+    url: url,
+    palette: await PaletteGenerator.fromImageProvider(
+      NetworkImage(image),
+    ),
+  );
 }

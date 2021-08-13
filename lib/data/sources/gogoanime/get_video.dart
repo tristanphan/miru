@@ -29,7 +29,9 @@ Future<VideoDetails?> getVideo(String url, Function changeProgress) async {
             .getElementAttribute(
                 'div.anime_video_body_episodes_l > a', 'href')[0]!
             .trim();
-    lastEpisode.add(lastName.substring(3));
+    lastEpisode.add(
+      lastName.substring(3),
+    );
     lastEpisode.add(lastURL);
   }
 
@@ -43,7 +45,9 @@ Future<VideoDetails?> getVideo(String url, Function changeProgress) async {
             .getElementAttribute(
                 'div.anime_video_body_episodes_r > a', 'href')[0]!
             .trim();
-    nextEpisode.add(nextName.substring(0, nextName.length - 3));
+    nextEpisode.add(
+      nextName.substring(0, nextName.length - 3),
+    );
     nextEpisode.add(nextURL);
   }
 

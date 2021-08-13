@@ -16,10 +16,6 @@ class LibraryPage extends StatefulWidget {
 }
 
 class _LibraryPageState extends State<LibraryPage> {
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,57 +23,70 @@ class _LibraryPageState extends State<LibraryPage> {
     Future<List<PaletteGenerator>> pinnedPalette = () async {
       return [
         for (Pin pin in Storage.pinned)
-          await PaletteGenerator.fromImageProvider(NetworkImage(pin.image))
+          await PaletteGenerator.fromImageProvider(
+            NetworkImage(pin.image),
+          ),
       ];
     }();
     return Scaffold(
-        floatingActionButton: FloatingActionButton.extended(
-            onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (BuildContext context) => SearchPage()));
-            },
-            label: Text("Search"),
-            icon: Icon(Icons.search)),
-        body: NestedScrollView(
-            headerSliverBuilder: (BuildContext context, bool scroll) =>
-                headerSilverBuilder(context, "Library"),
-            body: RefreshIndicator(
-                onRefresh: () async {
-                  setState(() {});
-                },
-                color: isDark ? Colors.black : Colors.white,
-                backgroundColor: isDark ? Colors.white : Colors.black,
-                child: FutureBuilder(
-                    future: pinnedPalette,
-                    builder: (BuildContext context,
-                        AsyncSnapshot<List<PaletteGenerator>> snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting ||
-                          snapshot.data == null)
-                        return Center(child: CupertinoActivityIndicator());
-                      List<Popular> libraryItems = [
-                        for (int index = Storage.pinned.length - 1;
-                            index >= 0;
-                            index--)
-                          Popular(
-                              image: Storage.pinned[index].image,
-                              url: Storage.pinned[index].url,
-                              title: Storage.pinned[index].title,
-                              palette: snapshot.data![index],
-                              subtext: Storage.pinned[index].source)
-                      ];
-                      if (libraryItems.isEmpty)
-                        return Center(
-                            child:
-                                Text("Shows will appear here as you watch!"));
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () =>
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (BuildContext context) => SearchPage(),
+            ),
+          ),
+        label: Text("Search"),
+        icon: Icon(Icons.search),
+      ),
+      body: NestedScrollView(
+        headerSliverBuilder: (BuildContext context, bool scroll) =>
+            headerSilverBuilder(context, "Library"),
+        body: RefreshIndicator(
+          onRefresh: () async {
+            setState(
+              () {}
+            );
+          },
+          color: isDark ? Colors.black : Colors.white,
+          backgroundColor: isDark ? Colors.white : Colors.black,
+          child: FutureBuilder(
+            future: pinnedPalette,
+            builder: (BuildContext context,
+                AsyncSnapshot<List<PaletteGenerator>> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting ||
+                  snapshot.data == null)
+                return Center(
+                  child: CupertinoActivityIndicator(),
+                );
+              List<Popular> libraryItems = [
+                for (int index = Storage.pinned.length - 1; index >= 0; index--)
+                  Popular(
+                      image: Storage.pinned[index].image,
+                      url: Storage.pinned[index].url,
+                      title: Storage.pinned[index].title,
+                      palette: snapshot.data![index],
+                      subtext: Storage.pinned[index].source),
+              ];
+              if (libraryItems.isEmpty)
+                return Center(
+                  child: Text("Shows will appear here as you watch!"),
+                );
 
-                      return Container(
-                          height: double.maxFinite,
-                          child: SingleChildScrollView(
-                              child: HomeList(
-                                  list: libraryItems,
-                                  subtext: (item) => item.subtext,
-                                  setState: setState,
-                                  useCustomCrawler: true)));
-                    }))));
+              return Container(
+                height: double.maxFinite,
+                child: SingleChildScrollView(
+                  child: HomeList(
+                      list: libraryItems,
+                      subtext: (item) => item.subtext,
+                      setState: setState,
+                      useCustomCrawler: true),
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
   }
 }

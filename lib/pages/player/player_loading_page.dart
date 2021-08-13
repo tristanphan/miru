@@ -33,79 +33,92 @@ class _LoadingState extends State<Loading> {
   @override
   void initState() {
     Sources.get(widget.customCrawler).getVideo(widget.url, changeProgress).then(
-        (video) {
-      if (!mounted) return;
-      Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (context) {
-        return Player(
-            name: video!.title,
-            url: video.url,
-            sourceUrl: widget.url,
-            anime: widget.anime,
-            detailsState: widget.detailsState,
-            lastEpisode: video.last,
-            nextEpisode: video.next);
-      }));
-    }, onError: (obj, stackTrace) {
-      print(stackTrace);
-      Navigator.of(context).pop();
-    });
+      (video) {
+        if (!mounted) return;
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) =>Player(
+                  name: video!.title,
+                  url: video.url,
+                  sourceUrl: widget.url,
+                  anime: widget.anime,
+                  detailsState: widget.detailsState,
+                  lastEpisode: video.last,
+                  nextEpisode: video.next),
+          ),
+        );
+      },
+      onError: (obj, stackTrace) {
+        print(stackTrace);
+        Navigator.of(context).pop();
+      },
+    );
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   void changeProgress(String newProgress, int percent) {
     if (!mounted) return;
-    setState(() {
-      progress += percent;
-      loadingProgress = newProgress;
-    });
+    setState(
+      () {
+        progress += percent;
+        loadingProgress = newProgress;
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Theme(
-        data: ThemeData.dark(),
-        child: Scaffold(
-            body: Container(
-                width: double.maxFinite,
-                height: double.maxFinite,
-                child: Stack(alignment: Alignment.center, children: [
-                  Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        HomeCard(
-                            title: widget.anime.name,
-                            setState: setState,
-                            width: 350,
-                            img: widget.anime.image,
-                            url: '',
-                            palette: widget.anime.palette,
-                            subtext:
-                                "Episode " + widget.name.split('Episode ')[1]),
-                        Padding(padding: EdgeInsets.all(4)),
-                        Container(
-                            width: 300,
-                            child: FAProgressBar(
-                                borderRadius: BorderRadius.circular(15),
-                                animatedDuration: Duration(milliseconds: 300),
-                                maxValue: 100,
-                                size: 10,
-                                backgroundColor: Colors.white24,
-                                progressColor: Colors.white,
-                                currentValue: progress)),
-                        Padding(padding: EdgeInsets.all(4)),
-                        Text(loadingProgress,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold))
-                      ])
-                ]))));
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        body: Container(
+          width: double.maxFinite,
+          height: double.maxFinite,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  HomeCard(
+                    title: widget.anime.name,
+                    setState: setState,
+                    width: 350,
+                    img: widget.anime.image,
+                    url: '',
+                    palette: widget.anime.palette,
+                    subtext: "Episode " + widget.name.split('Episode ')[1],
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(4),
+                  ),
+                  Container(
+                    width: 300,
+                    child: FAProgressBar(
+                        borderRadius: BorderRadius.circular(15),
+                        animatedDuration: Duration(milliseconds: 300),
+                        maxValue: 100,
+                        size: 10,
+                        backgroundColor: Colors.white24,
+                        progressColor: Colors.white,
+                        currentValue: progress),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(4),
+                  ),
+                  Text(
+                    loadingProgress,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

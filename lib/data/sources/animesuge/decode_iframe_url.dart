@@ -1,18 +1,20 @@
 // I really wish I knew what was going on
 String decodeIFrameUrl(String code) {
-  var one = code.substring(0, 9);
-  var two = code.substring(9);
+  String one = code.substring(0, 9);
+  String two = code.substring(9);
 
-  var encoded = 0;
-  var count = 0;
-  var start = '';
+  int encoded = 0;
+  int count = 0;
+  String start = '';
 
-  for (var character in two.split('')) {
+  for (String character in two.split('')) {
     encoded <<= 6;
 
-    var index =
+    int index =
         'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
-            .indexOf(character.toString());
+            .indexOf(
+      character.toString(),
+    );
     if (index != -1) {
       encoded |= index;
     }
@@ -41,17 +43,17 @@ String decodeIFrameUrl(String code) {
     start = Uri.decodeFull(start);
   } catch (e) {}
 
-  var arr = <int, int>{};
-  var i = 0;
-  var byteSize = 256;
-  var result = '';
+  Map<int, int> arr = {};
+  int i = 0;
+  int byteSize = 256;
+  String result = '';
 
-  for (var c = 0; c < byteSize; c++) {
+  for (int c = 0; c < byteSize; c++) {
     arr[c] = c;
   }
 
-  var x = 0;
-  for (var c = 0; c < byteSize; c++) {
+  int x = 0;
+  for (int c = 0; c < byteSize; c++) {
     x = (x + arr[c]! + one[c % one.length].runes.first) % byteSize;
     i = arr[c]!;
     arr[c] = arr[x]!;
@@ -59,9 +61,9 @@ String decodeIFrameUrl(String code) {
   }
 
   x = 0;
-  var d = 0;
+  int d = 0;
 
-  for (var s = 0; s < start.length; s++) {
+  for (int s = 0; s < start.length; s++) {
     d = (d + 1) % byteSize;
     x = (x + arr[d]!) % byteSize;
 

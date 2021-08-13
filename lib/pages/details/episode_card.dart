@@ -10,90 +10,128 @@ Widget episodeCard(
     BuildContext context,
     AnimeDetails details,
     int index,
-    bool pinned,
+    bool isPinned,
     bool isDark,
     void Function(VoidCallback fn) setState,
     String? customCrawler) {
   int episodeTime = 0;
   int totalTime = 1;
-  bool bookmarked =
-      pinned && Storage.isBookmarked(details.url, details.episodes[index].url);
-  if (bookmarked) {
+  bool isBookmarked = isPinned &&
+      Storage.isBookmarked(details.url, details.episodes[index].url);
+  if (isBookmarked) {
     episodeTime =
         Storage.getEpisodePosition(details.url, details.episodes[index].url);
     totalTime =
         Storage.getEpisodeDuration(details.url, details.episodes[index].url);
   }
+  bool isFinished = (episodeTime / totalTime) >= 0.9;
+
   return InkWell(
-      onTap: () async {
-        await Navigator.of(context)
-            .push(MaterialPageRoute(builder: (BuildContext context) {
-          return Loading(
-              url: details.episodes[index].url,
-              name: details.name + " " + details.episodes[index].name,
-              anime: details,
-              detailsState: setState,
-              customCrawler: customCrawler);
-        }));
-        setState(() {});
-      },
-      onLongPress: () {
-        downloadPopup(details, index, context, setState);
-      },
-      child: Container(
-          height: 60,
-          padding: EdgeInsets.all(4),
-          child: Row(children: [
-            Padding(padding: EdgeInsets.all(8)),
-            Text(details.episodes[index].name, style: TextStyle(fontSize: 20)),
-            if (bookmarked)
-              Expanded(
-                  child: Column(
+    onTap: () async {
+      await Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (BuildContext context) {
+            return Loading(
+                url: details.episodes[index].url,
+                name: details.name + " " + details.episodes[index].name,
+                anime: details,
+                detailsState: setState,
+                customCrawler: customCrawler);
+          },
+        ),
+      );
+      setState(
+        () {}
+      );
+    },
+    onLongPress: () {
+      downloadPopup(details, index, context, setState);
+    },
+    child: Container(
+      height: 60,
+      padding: EdgeInsets.all(4),
+      child: Row(
+        children: [
+          Padding(
+            padding: EdgeInsets.all(8),
+          ),
+          Text(
+            details.episodes[index].name,
+            style: TextStyle(fontSize: 20),
+          ),
+          if (isBookmarked)
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    isFinished
+                        ? "Finished"
+                        : formatDuration(
+                              Duration(milliseconds: episodeTime),
+                              Duration(milliseconds: episodeTime),
+                            ) +
+                            " / " +
+                            formatDuration(
+                              Duration(milliseconds: totalTime),
+                              Duration(milliseconds: totalTime),
+                            ),
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  ConstrainedBox(
+                    constraints: BoxConstraints(maxWidth: 200),
+                    child: Row(
                       mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                    if (episodeTime == totalTime)
-                      Text("Finished", style: TextStyle(fontSize: 20)),
-                    if (episodeTime != totalTime)
-                      Text(
-                          formatDuration(Duration(milliseconds: episodeTime),
-                                  Duration(milliseconds: episodeTime)) +
-                              " / " +
-                              formatDuration(Duration(milliseconds: totalTime),
-                                  Duration(milliseconds: totalTime)),
-                          style: TextStyle(fontSize: 20)),
-                    ConstrainedBox(
-                        constraints: BoxConstraints(maxWidth: 200),
-                        child: Row(mainAxisSize: MainAxisSize.min, children: [
-                          Padding(padding: EdgeInsets.only(right: 16)),
-                          Text(((episodeTime / totalTime * 100).floor())
-                                  .toString() +
-                              "%"),
-                          Padding(padding: EdgeInsets.only(right: 8)),
-                          Expanded(
-                              child: FAProgressBar(
-                                  borderRadius: BorderRadius.circular(15),
-                                  animatedDuration: Duration(milliseconds: 100),
-                                  maxValue: totalTime,
-                                  size: 5,
-                                  backgroundColor: (isDark)
-                                      ? Colors.white24
-                                      : Colors.black12,
-                                  progressColor:
-                                      (isDark) ? Colors.white : Colors.black38,
-                                  currentValue: episodeTime))
-                        ]))
-                  ]))
-            else
-              Expanded(child: Container()),
-            Padding(padding: EdgeInsets.all(4)),
-            GestureDetector(
-                onLongPress: () {
-                  Storage.removeEpisode(
-                      details.url, details.episodes[index].url);
-                  setState(() {});
-                },
-                child: Icon(Icons.navigate_next)),
-            Padding(padding: EdgeInsets.all(4))
-          ])));
+                        Padding(
+                          padding: EdgeInsets.only(right: 16),
+                        ),
+                        Text(
+                            (episodeTime / totalTime * 100).floor().toString() +
+                                "%"),
+                        Padding(
+                          padding: EdgeInsets.only(right: 8),
+                        ),
+                        Expanded(
+                          child: FAProgressBar(
+                              borderRadius: BorderRadius.circular(15),
+                              animatedDuration: Duration(milliseconds: 100),
+                              maxValue: totalTime,
+                              size: 5,
+                              backgroundColor:
+                                  isDark ? Colors.white24 : Colors.black12,
+                              progressColor:
+                                  isDark ? Colors.white : Colors.black38,
+                              currentValue: episodeTime),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            )
+          else
+            Expanded(
+              child: Container(),
+            ),
+          Padding(
+            padding: EdgeInsets.all(4),
+          ),
+          GestureDetector(
+            onLongPress: () {
+              Storage.removeEpisode(details.url, details.episodes[index].url);
+              setState(
+                () {}
+              );
+            },
+            child: Icon(Icons.navigate_next),
+          ),
+          Padding(
+            padding: EdgeInsets.all(4),
+          ),
+        ],
+      ),
+    ),
+  );
 }

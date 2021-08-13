@@ -45,28 +45,37 @@ Future<List<SearchItem>> search(String keyword, Language language) async {
                 'ul.items > li > p.name > a', 'href')[entry]!)
         .trim();
     String released = web
-        .getElement('ul.items > li > p.released', [''])[entry]['title']
+        .getElement(
+          'ul.items > li > p.released',
+          [''],
+        )[entry]['title']
         .replaceAll('Released: ', '')
         .trim();
-    items.add(SearchItem(
+    items.add(
+      SearchItem(
         title: title,
         image: image,
         url: url,
         subtitle: released,
-        palette:
-            await PaletteGenerator.fromImageProvider(NetworkImage(image))));
+        palette: await PaletteGenerator.fromImageProvider(
+          NetworkImage(image),
+        ),
+      ),
+    );
   }
 
-  items.sort((SearchItem a, SearchItem b) {
-    if (a.title == b.title) return 0;
-    return a.title ==
-            Fuzzy([a.title, b.title], options: FuzzyOptions(threshold: 1))
-                .search(keyword)
-                .first
-                .item
-        ? -1
-        : 1;
-  });
+  items.sort(
+    (SearchItem a, SearchItem b) {
+      if (a.title == b.title) return 0;
+      return a.title ==
+              Fuzzy(
+                [a.title, b.title],
+                options: FuzzyOptions(threshold: 1),
+              ).search(keyword).first.item
+          ? -1
+          : 1;
+    },
+  );
 
   return items;
 }

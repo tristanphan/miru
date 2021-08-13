@@ -55,46 +55,58 @@ class _PlayerState extends State<Player> {
       Storage.addEpisode(widget.sourceUrl, widget.anime);
     }
     video = Video(
-        url: widget.url,
-        onInitialized: (Video video) {
-          if (!mounted) return;
-          setState(() {
+      url: widget.url,
+      onInitialized: (Video video) {
+        if (!mounted) return;
+        setState(
+          () {
             int position =
                 Storage.getEpisodePosition(widget.anime.url, widget.sourceUrl);
             int duration =
                 Storage.getEpisodeDuration(widget.anime.url, widget.sourceUrl);
             if (position != duration && position != 0) {
-              video.seekTo(Duration(
+              video.seekTo(
+                Duration(
                   milliseconds: Storage.getEpisodePosition(
-                      widget.anime.url, widget.sourceUrl)));
+                      widget.anime.url, widget.sourceUrl),
+                ),
+              );
             }
             video.play();
             Wakelock.enable();
             setTimer();
             isInitialized = true;
-          });
-        },
-        setPopup: setPopup,
-        setState: (void Function() function) {
-          if (mounted) setState(function);
-        });
+          },
+        );
+      },
+      setPopup: setPopup,
+      setState: (void Function() function) {
+        if (mounted) setState(function);
+      },
+    );
     SystemChrome.setPreferredOrientations(
-        [DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
-    SystemChrome.setEnabledSystemUIOverlays([]);
+      [DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight],
+    );
+    SystemChrome.setEnabledSystemUIOverlays(
+      [],
+    );
     super.initState();
   }
 
   @override
   void dispose() {
     Wakelock.disable();
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-      DeviceOrientation.portraitDown,
-      DeviceOrientation.portraitUp
-    ]);
+    SystemChrome.setPreferredOrientations(
+      [
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight,
+        DeviceOrientation.portraitDown,
+        DeviceOrientation.portraitUp
+      ],
+    );
     SystemChrome.setEnabledSystemUIOverlays(
-        [SystemUiOverlay.top, SystemUiOverlay.bottom]);
+      [SystemUiOverlay.top, SystemUiOverlay.bottom],
+    );
     if (isInitialized) {
       video!.pause();
       video!.dispose();
@@ -114,7 +126,9 @@ class _PlayerState extends State<Player> {
             video!.getDuration().inMilliseconds);
       }
     }
-    widget.detailsState(() {});
+    widget.detailsState(
+      () {}
+    );
     unsetTimer();
     super.deactivate();
   }
@@ -123,85 +137,108 @@ class _PlayerState extends State<Player> {
   Widget build(BuildContext context) {
     if (!isInitialized) {
       return Scaffold(
-          backgroundColor: Colors.black,
-          body: Stack(children: [
+        backgroundColor: Colors.black,
+        body: Stack(
+          children: [
             Positioned(
-                left: 30,
-                top: 30,
-                child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                        borderRadius: BorderRadius.circular(500),
-                        child: Container(
-                            height: 50,
-                            width: 50,
-                            child: Icon(Icons.close_rounded,
-                                color: Colors.white, size: 30)),
-                        onTap: () {
-                          unsetTimer();
-                          Navigator.of(context).pop();
-                        }))),
-            Center(child: CupertinoActivityIndicator())
-          ]));
+              left: 30,
+              top: 30,
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(500),
+                  child: Container(
+                    height: 50,
+                    width: 50,
+                    child: Icon(Icons.close_rounded,
+                        color: Colors.white, size: 30),
+                  ),
+                  onTap: () {
+                    unsetTimer();
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ),
+            ),
+            Center(
+              child: CupertinoActivityIndicator(),
+            ),
+          ],
+        ),
+      );
     }
     return WillPopScope(
-        onWillPop: () async => false,
-        child: Scaffold(
-            backgroundColor: Colors.black,
-            body: RawKeyboardListener(
-                focusNode: keyboardFocus,
-                autofocus: true,
-                onKey: (RawKeyEvent e) =>
-                    keyboardEvents(context, e, video!, setPopup, setState),
-                child: Stack(alignment: Alignment.center, children: [
-                  // Video
-                  if (Platform.isIOS || Platform.isAndroid)
-                    AspectRatio(
-                        aspectRatio: video!.getDetails().value.aspectRatio,
-                        child: VideoPlayer(video!.getDetails())),
-                  if (Platform.isWindows || Platform.isLinux)
-                    Vlc.Video(playerId: 1, width: 1920, height: 1080),
+      onWillPop: () async => false,
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        body: RawKeyboardListener(
+          focusNode: keyboardFocus,
+          autofocus: true,
+          onKey: (RawKeyEvent e) =>
+              keyboardEvents(context, e, video!, setPopup, setState),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              // Video
+              if (Platform.isIOS || Platform.isAndroid)
+                AspectRatio(
+                  aspectRatio: video!.getDetails().value.aspectRatio,
+                  child: VideoPlayer(
+                    video!.getDetails(),
+                  ),
+                ),
+              if (Platform.isWindows || Platform.isLinux)
+                Vlc.Video(playerId: 1, width: 1920, height: 1080),
 
-                  for (var i in darkenLayer()) i,
+              for (Widget i in darkenLayer()) i,
 
-                  // Buffering Indicator
-                  Opacity(
-                      opacity: video!.buffering && Player.showPopup ? 1 : 0,
-                      child: SizedBox(
-                          height: 70,
-                          width: 70,
-                          child:
-                              CircularProgressIndicator(color: Colors.white))),
+              // Buffering Indicator
+              Opacity(
+                opacity: video!.isBuffering && Player.showPopup ? 1 : 0,
+                child: SizedBox(
+                  height: 70,
+                  width: 70,
+                  child: CircularProgressIndicator(color: Colors.white),
+                ),
+              ),
 
-                  seekTargetsLayer(context, togglePopup, video!, setPopup,
-                      setState, setTimer, unsetTimer),
+              seekTargetsLayer(context, togglePopup, video!, setPopup, setState,
+                  setTimer, unsetTimer),
 
-                  AnimatedOpacity(
-                      duration: Duration(milliseconds: 200),
-                      opacity: Player.showPopup ? 1 : 0,
-                      child: IgnorePointer(
-                          ignoring: !Player.showPopup,
-                          child: Popup(
-                              video: video!,
-                              name: widget.name,
-                              url: widget.url,
-                              sourceUrl: widget.sourceUrl,
-                              anime: widget.anime,
-                              setPopup: setPopup,
-                              setTimer: setTimer,
-                              unsetTimer: unsetTimer,
-                              lastEpisode: widget.lastEpisode,
-                              nextEpisode: widget.nextEpisode,
-                              detailsState: widget.detailsState,
-                              setState: setState)))
-                ]))));
+              AnimatedOpacity(
+                duration: Duration(milliseconds: 200),
+                opacity: Player.showPopup ? 1 : 0,
+                child: IgnorePointer(
+                  ignoring: !Player.showPopup,
+                  child: Popup(
+                      video: video!,
+                      name: widget.name,
+                      url: widget.url,
+                      sourceUrl: widget.sourceUrl,
+                      anime: widget.anime,
+                      setPopup: setPopup,
+                      setTimer: setTimer,
+                      unsetTimer: unsetTimer,
+                      lastEpisode: widget.lastEpisode,
+                      nextEpisode: widget.nextEpisode,
+                      detailsState: widget.detailsState,
+                      setState: setState),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   void setPopup(bool set) {
     if (!mounted) return;
-    setState(() {
-      Player.showPopup = set;
-    });
+    setState(
+      () {
+        Player.showPopup = set;
+      },
+    );
   }
 
   void togglePopup() {
@@ -219,11 +256,14 @@ class _PlayerState extends State<Player> {
 
   void setTimer() {
     if (close != null && close!.isActive) close!.cancel();
-    close = Timer(Duration(seconds: 2), () {
-      if (!mounted) return;
-      if (video!.isPlaying()) {
-        setPopup(false);
-      }
-    });
+    close = Timer(
+      Duration(seconds: 2),
+      () {
+        if (!mounted) return;
+        if (video!.isPlaying()) {
+          setPopup(false);
+        }
+      },
+    );
   }
 }

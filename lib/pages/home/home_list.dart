@@ -30,21 +30,23 @@ class _HomeListState extends State<HomeList> {
     double width = min(deviceWidth / (deviceWidth ~/ idealWidth), deviceWidth);
 
     return Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Wrap(
-            alignment: WrapAlignment.center,
-            direction: Axis.horizontal,
-            children: [
-              for (var item in widget.list)
-                HomeCard(
-                    title: item.title,
-                    img: item.image,
-                    subtext: widget.subtext(item),
-                    palette: item.palette,
-                    width: width,
-                    url: item.url,
-                    setState: widget.setState,
-                    useCustomCrawler: widget.useCustomCrawler)
-            ]));
+      padding: const EdgeInsets.all(8.0),
+      child: Wrap(
+        alignment: WrapAlignment.center,
+        direction: Axis.horizontal,
+        children: [
+          for (dynamic item in widget.list)
+            HomeCard(
+                title: item.title,
+                img: item.image,
+                subtext: widget.subtext(item),
+                palette: item.palette,
+                width: width,
+                url: item.url,
+                setState: widget.setState,
+                useCustomCrawler: widget.useCustomCrawler),
+        ],
+      ),
+    );
   }
 }

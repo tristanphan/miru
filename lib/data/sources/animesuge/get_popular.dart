@@ -39,13 +39,17 @@ Future<List<Popular>> getPopular() async {
         .replaceAll('/', ' / ')
         .trim();
 
-    popular.add(Popular(
+    popular.add(
+      Popular(
         title: title,
         url: url,
         image: image,
         subtext: latestEp,
-        palette:
-            await PaletteGenerator.fromImageProvider(NetworkImage(image))));
+        palette: await PaletteGenerator.fromImageProvider(
+          NetworkImage(image),
+        ),
+      ),
+    );
   }
 
   return popular;

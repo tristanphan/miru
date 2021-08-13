@@ -34,7 +34,7 @@ class _DetailsPageState extends State<DetailsPage> {
   @override
   Widget build(BuildContext context) {
     AnimeDetails details = widget.details;
-    bool pinned = Storage.isPinned(widget.url);
+    bool isPinned = Storage.isPinned(widget.url);
     bool isDark = Theme.of(context).brightness == Brightness.dark;
     Color cardColor;
     PaletteColor? cardSet = isDark
@@ -46,88 +46,110 @@ class _DetailsPageState extends State<DetailsPage> {
       cardColor = cardSet.color;
     }
     return Scaffold(
-        floatingActionButton: FloatingActionButton.extended(
-            onPressed: () {
-              showInfo(
-                  context: context,
-                  url: widget.url,
-                  name: widget.title,
-                  image: details.image,
-                  setState: setState,
-                  pop: true);
-            },
-            label: Text(pinned ? "Unpin" : "Pin"),
-            icon: Icon(pinned ? Icons.favorite : Icons.favorite_border),
-            foregroundColor: pinned
-                ? Colors.white
-                : isDark
-                    ? Colors.black
-                    : Colors.white,
-            backgroundColor: pinned
-                ? Colors.red
-                : isDark
-                    ? Colors.white
-                    : Colors.black),
-        body: Stack(alignment: Alignment.center, children: [
+      floatingActionButton: FloatingActionButton.extended(
+          onPressed: () =>
+            showInfo(
+                context: context,
+                url: widget.url,
+                name: widget.title,
+                image: details.image,
+                setState: setState,
+                shouldPop: true),
+          label: Text(isPinned ? "Unpin" : "Pin"),
+          icon: Icon(isPinned ? Icons.favorite : Icons.favorite_border),
+          foregroundColor: isPinned
+              ? Colors.white
+              : isDark
+                  ? Colors.black
+                  : Colors.white,
+          backgroundColor: isPinned
+              ? Colors.red
+              : isDark
+                  ? Colors.white
+                  : Colors.black),
+      body: Stack(
+        alignment: Alignment.center,
+        children: [
           NestedScrollView(
-              headerSliverBuilder: (BuildContext context, bool scroll) =>
-                  headerSilverBuilder(
-                      context, widget.title.replaceAll(' (Dub)', '')),
-              body: Container(
-                  height: double.maxFinite,
-                  child: RefreshIndicator(
-                      color: isDark ? Colors.black : Colors.white,
-                      backgroundColor: isDark ? Colors.white : Colors.black,
-                      onRefresh: () async {
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                DetailsLoadingPage(
-                                    homeCard: widget.homeCard,
-                                    useCustomCrawler: widget.useCustomCrawler,
-                                    title: widget.title,
-                                    url: widget.url)));
-                      },
-                      child: Scrollbar(
-                          child: SingleChildScrollView(
-                              child: Column(children: [
+            headerSliverBuilder: (BuildContext context, bool scroll) =>
+                headerSilverBuilder(
+              context,
+              widget.title.replaceAll(' (Dub)', ''),
+            ),
+            body: Container(
+              height: double.maxFinite,
+              child: RefreshIndicator(
+                color: isDark ? Colors.black : Colors.white,
+                backgroundColor: isDark ? Colors.white : Colors.black,
+                onRefresh: () async {
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => DetailsLoadingPage(
+                          homeCard: widget.homeCard,
+                          useCustomCrawler: widget.useCustomCrawler,
+                          title: widget.title,
+                          url: widget.url),
+                    ),
+                  );
+                },
+                child: Scrollbar(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
                         detailsCard(
                             context, details, cardColor, isDark, setState),
-                        Padding(padding: EdgeInsets.all(4)),
+                        Padding(
+                          padding: EdgeInsets.all(4),
+                        ),
                         Divider(height: 0),
                         MediaQuery.removePadding(
-                            removeTop: true,
-                            context: context,
-                            child: ListView.separated(
-                                physics: NeverScrollableScrollPhysics(),
-                                itemCount: details.episodes.length,
-                                shrinkWrap: true,
-                                itemBuilder: (context, index) => episodeCard(
-                                    context,
-                                    details,
-                                    index,
-                                    pinned,
-                                    isDark,
-                                    setState,
-                                    (widget.useCustomCrawler ?? false)
-                                        ? widget.homeCard.subtext
-                                        : null),
-                                separatorBuilder:
-                                    (BuildContext context, int index) =>
-                                        Divider(height: 0)))
-                      ])))))),
+                          removeTop: true,
+                          context: context,
+                          child: ListView.separated(
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: details.episodes.length,
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) => episodeCard(
+                                context,
+                                details,
+                                index,
+                                isPinned,
+                                isDark,
+                                setState,
+                                (widget.useCustomCrawler ?? false)
+                                    ? widget.homeCard.subtext
+                                    : null),
+                            separatorBuilder:
+                                (BuildContext context, int index) =>
+                                    Divider(height: 0),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
           if (details.name.contains(' (Dub)'))
             Positioned(
-                bottom: 10,
-                left: 10,
-                child: Tooltip(
-                    message: "Dubbed",
-                    child: Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
-                            color: Color.alphaBlend(
-                                cardColor.withOpacity(0.8), Colors.black)),
-                        padding: EdgeInsets.all(8),
-                        child: Icon(Icons.language, color: Colors.white))))
-        ]));
+              bottom: 10,
+              left: 10,
+              child: Tooltip(
+                message: "Dubbed",
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: Color.alphaBlend(
+                        cardColor.withOpacity(0.8), Colors.black),
+                  ),
+                  padding: EdgeInsets.all(8),
+                  child: Icon(Icons.language, color: Colors.white),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
   }
 }

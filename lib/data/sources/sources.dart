@@ -5,7 +5,10 @@ import 'package:miru/data/sources/gogoanime/gogoanime.dart';
 
 class Sources {
   static int _selected = 0;
-  static List<Anime> list = [AnimeSuge(), Gogoanime()];
+  static List<Anime> list = [
+    Gogoanime(),
+    AnimeSuge(),
+  ];
 
   static Anime get([String? name]) {
     if (name != null) {

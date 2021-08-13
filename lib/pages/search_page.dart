@@ -20,7 +20,7 @@ class _SearchPageState extends State<SearchPage> {
   String query = "";
   FocusNode searchFocusNode = FocusNode();
   ScrollController _controller = ScrollController();
-  bool loading = false;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -30,72 +30,95 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    _controller.addListener(() {
-      FocusScope.of(context).requestFocus(FocusNode());
-    });
+    _controller.addListener(
+      () {
+        FocusScope.of(context).requestFocus(
+          FocusNode(),
+        );
+      },
+    );
     bool isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-        floatingActionButton: FloatingActionButton.extended(
-            onPressed: () async {
-              if (language == Language.ALL)
-                language = Language.SUB;
-              else if (language == Language.SUB)
-                language = Language.DUB;
-              else if (language == Language.DUB) language = Language.ALL;
-              load(query);
-            },
-            label: Text(() {
-              if (language == Language.ALL)
-                return "All Languages";
-              else if (language == Language.SUB)
-                return "Subtitled Only";
-              else
-                return "Dubbed Only";
-            }()),
-            icon: Icon(Icons.translate)),
-        body: NestedScrollView(
-            headerSliverBuilder: (BuildContext context, bool scroll) =>
-                headerSilverBuilder(context, "Search"),
-            body: Column(children: [
-              Padding(
-                  padding:
-                      const EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
-                  child: CupertinoSearchTextField(
-                      focusNode: searchFocusNode,
-                      style: TextStyle(
-                          color: isDark ? Colors.white : Colors.black),
-                      borderRadius: BorderRadius.circular(15),
-                      onSubmitted: (String keyword) async {
-                        query = keyword;
-                        load(query);
-                        FocusScope.of(context).requestFocus(FocusNode());
-                      })),
-              Expanded(
-                  child: items.length == 0
-                      ? loading
-                          ? Center(child: CupertinoActivityIndicator())
-                          : Center(
-                              child: Text(query.isEmpty
-                                  ? "Type something to begin"
-                                  : "No results found"))
-                      : SingleChildScrollView(
-                          child: HomeList(
-                              list: items,
-                              subtext: (item) => item.subtitle,
-                              setState: setState)))
-            ])));
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () async {
+          if (language == Language.ALL)
+            language = Language.SUB;
+          else if (language == Language.SUB)
+            language = Language.DUB;
+          else if (language == Language.DUB) language = Language.ALL;
+          load(query);
+        },
+        label: Text(
+          () {
+            if (language == Language.ALL)
+              return "All Languages";
+            else if (language == Language.SUB)
+              return "Subtitled Only";
+            else
+              return "Dubbed Only";
+          }(),
+        ),
+        icon: Icon(Icons.translate),
+      ),
+      body: NestedScrollView(
+        headerSliverBuilder: (BuildContext context, bool scroll) =>
+            headerSilverBuilder(context, "Search"),
+        body: Column(
+          children: [
+            Padding(
+              padding:
+                  const EdgeInsets.only(top: 16.0, left: 16.0, right: 16.0),
+              child: CupertinoSearchTextField(
+                focusNode: searchFocusNode,
+                style: TextStyle(color: isDark ? Colors.white : Colors.black),
+                borderRadius: BorderRadius.circular(15),
+                onSubmitted: (String keyword) async {
+                  query = keyword;
+                  load(query);
+                  FocusScope.of(context).requestFocus(
+                    FocusNode(),
+                  );
+                },
+              ),
+            ),
+            Expanded(
+              child: items.length == 0
+                  ? isLoading
+                      ? Center(
+                          child: CupertinoActivityIndicator(),
+                        )
+                      : Center(
+                          child: Text(query.isEmpty
+                              ? "Type something to begin"
+                              : "No results found"),
+                        )
+                  : SingleChildScrollView(
+                      child: HomeList(
+                          list: items,
+                          subtext: (item) => item.subtitle,
+                          setState: setState),
+                    ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   void load(String query) async {
-    setState(() {
-      loading = true;
-      items.clear();
-    });
+    setState(
+      () {
+        isLoading = true;
+        items.clear();
+      },
+    );
     if (query.isNotEmpty) {
       items = await Sources.get().search(query, language);
     }
-    setState(() {
-      loading = false;
-    });
+    setState(
+      () {
+        isLoading = false;
+      },
+    );
   }
 }

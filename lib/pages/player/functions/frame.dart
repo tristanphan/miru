@@ -14,7 +14,8 @@ import 'package:video_thumbnail/video_thumbnail.dart';
 void saveFrame(BuildContext context, String videoUrl, Duration position) async {
   Directory temporary = (await getTemporaryDirectory());
   DateTime now = DateTime.now();
-  String filename = 'Screen Shot ${DateFormat('yyyy-MM-dd').format(now)} at ${DateFormat('h.mm.ss a').format(now)}.png';
+  String filename =
+      'Screen Shot ${DateFormat('yyyy-MM-dd').format(now)} at ${DateFormat('h.mm.ss a').format(now)}.png';
   if (Platform.isIOS || Platform.isAndroid) {
     File file = File("${temporary.path}/$filename");
     Uint8List? bytes = await VideoThumbnail.thumbnailData(
@@ -25,10 +26,13 @@ void saveFrame(BuildContext context, String videoUrl, Duration position) async {
         quality: 100,
         timeMs: position.inMilliseconds);
     if (bytes == null) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
           behavior: SnackBarBehavior.floating,
           content: Text("Failed to save frame"),
-          duration: Duration(seconds: 3)));
+          duration: Duration(seconds: 3),
+        ),
+      );
     }
     await file.writeAsBytes(bytes!, flush: true);
     Share.shareFiles([file.path], subject: filename);
@@ -50,12 +54,17 @@ void saveFrame(BuildContext context, String videoUrl, Duration position) async {
     File file = File("${temporary.path}/$filename");
     ByteData? bytes = await image.toByteData(format: ui.ImageByteFormat.png);
     if (bytes == null) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
           behavior: SnackBarBehavior.floating,
           content: Text("Failed to save frame"),
-          duration: Duration(seconds: 3)));
+          duration: Duration(seconds: 3),
+        ),
+      );
     }
     await file.writeAsBytes(bytes!.buffer.asUint8List(), flush: true);
-    launch(file.uri.toString());
+    launch(
+      file.uri.toString(),
+    );
   }
 }

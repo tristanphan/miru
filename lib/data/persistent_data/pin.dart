@@ -19,7 +19,8 @@ class Pin {
         this.title = json['title'],
         this.image = json['image'],
         this.episodes = [
-          for (var episode in json['episodes']) Bookmark.fromJson(episode)
+          for (Map<String, dynamic> episode in json['episodes'])
+            Bookmark.fromJson(episode),
         ],
         this.source = json['source'];
 

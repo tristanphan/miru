@@ -18,40 +18,45 @@ Widget seekTargetsLayer(
     void Function() setTimer,
     void Function() unsetTimer) {
   return MouseRegion(
-      onHover: (PointerHoverEvent event) {
-        if (Platform.isWindows || Platform.isMacOS || Platform.isLinux) {
-          double thisDistance = event.position.distance - distance;
-          distance = event.position.distance;
-          if (thisDistance.abs() < 5) return;
-          if (!video.isPlaying()) return;
-          if (!Player.showPopup) {
-            setPopup(true);
-          }
-          setTimer();
+    onHover: (PointerHoverEvent event) {
+      if (Platform.isWindows || Platform.isMacOS || Platform.isLinux) {
+        double thisDistance = event.position.distance - distance;
+        distance = event.position.distance;
+        if (thisDistance.abs() < 5) return;
+        if (!video.isPlaying()) return;
+        if (!Player.showPopup) {
+          setPopup(true);
         }
-      },
-      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        setTimer();
+      }
+    },
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
         SizedBox(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width * 0.3,
-            // Left Seek
-            child: GestureDetector(
-                onTap: togglePopup,
-                onLongPress: null,
-                onDoubleTap: () {
-                  Seek.seek(video, SeekDirection.BACKWARDS, 5, setState);
-                })),
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width * 0.3,
+          // Left Seek
+          child: GestureDetector(
+            onTap: togglePopup,
+            onLongPress: null,
+            onDoubleTap: () {
+              Seek.seek(video, SeekDirection.BACKWARDS, 5, setState);
+            },
+          ),
+        ),
         // Play Double Tap
         SizedBox(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width * 0.4,
-            // Left Seek
-            child: GestureDetector(
-                onTap: togglePopup,
-                onLongPress: null,
-                onDoubleTap: (Platform.isAndroid || Platform.isIOS)
-                    ? () {
-                        setState(() {
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width * 0.4,
+          // Left Seek
+          child: GestureDetector(
+              onTap: togglePopup,
+              onLongPress: null,
+              onDoubleTap: (Platform.isAndroid || Platform.isIOS)
+                  ? () {
+                      setState(
+                        () {
                           if (video.isPlaying()) {
                             video.pause();
                             Wakelock.disable();
@@ -62,18 +67,24 @@ Widget seekTargetsLayer(
                             setPopup(false);
                           }
                           unsetTimer();
-                        });
-                      }
-                    : null)),
+                        },
+                      );
+                    }
+                  : null),
+        ),
         SizedBox(
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width * 0.3,
-            // Right Seek
-            child: GestureDetector(
-                onTap: togglePopup,
-                onLongPress: null,
-                onDoubleTap: () {
-                  Seek.seek(video, SeekDirection.FORWARDS, 5, setState);
-                }))
-      ]));
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width * 0.3,
+          // Right Seek
+          child: GestureDetector(
+            onTap: togglePopup,
+            onLongPress: null,
+            onDoubleTap: () {
+              Seek.seek(video, SeekDirection.FORWARDS, 5, setState);
+            },
+          ),
+        ),
+      ],
+    ),
+  );
 }

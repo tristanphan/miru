@@ -6,7 +6,7 @@ import 'package:wakelock/wakelock.dart';
 
 class Video {
   String url;
-  bool buffering = true;
+  bool isBuffering = true;
 
   // iOS and Android
   VideoPlayerController? _videoPlayerController;
@@ -22,21 +22,27 @@ class Video {
       : this.url = url {
     if (Platform.isIOS || Platform.isAndroid) {
       _videoPlayerController = VideoPlayerController.network(this.url);
-      _videoPlayerController!.initialize().then((value) {
-        onInitialized(this);
-        _videoPlayerController!.addListener(() {
-          if (_videoPlayerController!.value.isBuffering != buffering) {
-            setState(() {
-              buffering = _videoPlayerController!.value.isBuffering;
-            });
-          }
-          if (_videoPlayerController!.value.position ==
-              _videoPlayerController!.value.duration) {
-            Wakelock.disable();
-            setPopup(true);
-          }
-        });
-      });
+      _videoPlayerController!.initialize().then(
+        (value) {
+          onInitialized(this);
+          _videoPlayerController!.addListener(
+            () {
+              if (_videoPlayerController!.value.isBuffering != isBuffering) {
+                setState(
+                  () {
+                    isBuffering = _videoPlayerController!.value.isBuffering;
+                  },
+                );
+              }
+              if (_videoPlayerController!.value.position ==
+                  _videoPlayerController!.value.duration) {
+                Wakelock.disable();
+                setPopup(true);
+              }
+            },
+          );
+        },
+      );
     }
     if (Platform.isWindows || Platform.isLinux) {
       _vlcPlayer = Vlc.Player(id: 1, videoHeight: 1080, videoWidth: 1920);
@@ -44,12 +50,16 @@ class Video {
       (() async {
         // Ensure initialized
         while (getDuration() == Duration(milliseconds: 1)) {
-          await Future.delayed(Duration(milliseconds: 10));
+          await Future.delayed(
+            Duration(milliseconds: 10),
+          );
         }
         onInitialized(this);
-        setState(() {
-          buffering = false;
-        });
+        setState(
+          () {
+            isBuffering = false;
+          },
+        );
       })();
     }
   }

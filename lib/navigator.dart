@@ -17,29 +17,33 @@ class _NavigationState extends State<Navigation> {
     RecentlyUpdatedPage(),
     PopularPage(),
     LibraryPage(),
-    SettingsPage()
+    SettingsPage(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        bottomNavigationBar: BottomNavigationBar(
-            type: BottomNavigationBarType.fixed,
-            selectedItemColor: Theme.of(context).accentColor,
-            items: [
-              BottomNavigationBarItem(icon: Icon(Icons.feed), label: "Updated"),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.leaderboard), label: "Popular"),
-              BottomNavigationBarItem(icon: Icon(Icons.book), label: "Library"),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.settings), label: "Settings")
-            ],
-            currentIndex: page,
-            onTap: (int index) {
-              setState(() {
-                page = index;
-              });
-            }),
-        body: pages[page]);
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: Theme.of(context).accentColor,
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.feed), label: "Updated"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.leaderboard), label: "Popular"),
+          BottomNavigationBarItem(icon: Icon(Icons.book), label: "Library"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.settings), label: "Settings"),
+        ],
+        currentIndex: page,
+        onTap: (int index) {
+          setState(
+            () {
+              page = index;
+            },
+          );
+        },
+      ),
+      body: pages[page],
+    );
   }
 }

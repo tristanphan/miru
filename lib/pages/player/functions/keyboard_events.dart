@@ -8,8 +8,12 @@ import 'package:miru/pages/player/functions/video.dart';
 import 'package:miru/pages/player/widgets/popup.dart';
 import 'package:wakelock/wakelock.dart';
 
-void keyboardEvents(BuildContext context, RawKeyEvent e, Video video,
-    void Function(bool set) setPopup, void Function(VoidCallback fn) setState) async {
+void keyboardEvents(
+    BuildContext context,
+    RawKeyEvent e,
+    Video video,
+    void Function(bool set) setPopup,
+    void Function(VoidCallback fn) setState) async {
   if (!(e is RawKeyDownEvent)) return;
 
   // Functions
@@ -68,10 +72,14 @@ void keyboardEvents(BuildContext context, RawKeyEvent e, Video video,
 
   // Speed
   if (e.physicalKey == PhysicalKeyboardKey.keyJ) {
-    video.setSpeed(max(0.25, video.getSpeed() - 0.25));
+    video.setSpeed(
+      max(0.25, video.getSpeed() - 0.25),
+    );
   }
   if (e.physicalKey == PhysicalKeyboardKey.keyK) {
-    video.setSpeed(min(2, video.getSpeed() + 0.25));
+    video.setSpeed(
+      min(2, video.getSpeed() + 0.25),
+    );
   }
   if (e.physicalKey == PhysicalKeyboardKey.keyM) {
     video.setSpeed(1);
@@ -79,11 +87,15 @@ void keyboardEvents(BuildContext context, RawKeyEvent e, Video video,
 
   // Volume
   if (e.physicalKey == PhysicalKeyboardKey.arrowUp) {
-    video.setVolume(min(1, video.getVolume() + 0.1));
+    video.setVolume(
+      min(1, video.getVolume() + 0.1),
+    );
     Popup.volume = min(1, video.getVolume() + 0.1);
   }
   if (e.physicalKey == PhysicalKeyboardKey.arrowDown) {
-    video.setVolume(max(0, video.getVolume() - 0.1));
+    video.setVolume(
+      max(0, video.getVolume() - 0.1),
+    );
     Popup.volume = max(0, video.getVolume() - 0.1);
   }
 
@@ -91,10 +103,17 @@ void keyboardEvents(BuildContext context, RawKeyEvent e, Video video,
   if (e.physicalKey == PhysicalKeyboardKey.keyI) {
     video.pause();
     Wakelock.disable();
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
         behavior: SnackBarBehavior.floating,
         content: Text("Saving Frame..."),
-        duration: Duration(seconds: 2)));
-    saveFrame(context, video.url, await video.getPrecisePosition());
+        duration: Duration(seconds: 2),
+      ),
+    );
+    saveFrame(
+      context,
+      video.url,
+      await video.getPrecisePosition(),
+    );
   }
 }

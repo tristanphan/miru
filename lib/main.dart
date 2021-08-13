@@ -26,43 +26,55 @@ void main() async {
   recentlyUpdatedFuture = Sources.get().getRecentReleases();
   popularFuture = Sources.get().getPopular();
   runApp(
-      EasyDynamicThemeWidget(child: MyApp(), initialThemeMode: AppTheme.theme));
+    EasyDynamicThemeWidget(child: MyApp(), initialThemeMode: AppTheme.theme),
+  );
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: "Miru",
-        theme: ThemeData(
-            accentColor: AppTheme.color,
-            switchTheme: SwitchThemeData(
+      debugShowCheckedModeBanner: false,
+      title: "Miru",
+      theme: ThemeData(
+        accentColor: AppTheme.color,
+        switchTheme: SwitchThemeData(
+          thumbColor:
+              MaterialStateProperty.all(AppTheme.color ?? Colors.blueAccent),
+          trackColor: MaterialStateProperty.all(
+            (AppTheme.color ?? Colors.blueAccent).withOpacity(0.4),
+          ),
+        ),
+      ),
+      darkTheme: AppTheme.fullBlack
+          ? ThemeData(
+              brightness: Brightness.dark,
+              accentColor: AppTheme.color,
+              scaffoldBackgroundColor: Colors.black,
+              bottomNavigationBarTheme:
+                  BottomNavigationBarThemeData(backgroundColor: Colors.black),
+              dividerColor: Colors.white38,
+              switchTheme: SwitchThemeData(
                 thumbColor: MaterialStateProperty.all(
-                    AppTheme.color ?? Colors.blueAccent),
+                    AppTheme.color ?? Colors.tealAccent),
                 trackColor: MaterialStateProperty.all(
-                    (AppTheme.color ?? Colors.blueAccent).withOpacity(0.4)))),
-        darkTheme: AppTheme.fullBlack
-            ? ThemeData(
-                brightness: Brightness.dark,
-                accentColor: AppTheme.color,
-                scaffoldBackgroundColor: Colors.black,
-                bottomNavigationBarTheme:
-                    BottomNavigationBarThemeData(backgroundColor: Colors.black),
-                dividerColor: Colors.white38,
-                switchTheme: SwitchThemeData(
-                    thumbColor: MaterialStateProperty.all(
-                        AppTheme.color ?? Colors.tealAccent),
-                    trackColor: MaterialStateProperty.all(
-                        (AppTheme.color ?? Colors.tealAccent)
-                            .withOpacity(0.4))))
-            : ThemeData(
-                accentColor: AppTheme.color,
-                brightness: Brightness.dark,
-                switchTheme: SwitchThemeData(
-                    thumbColor: MaterialStateProperty.all(AppTheme.color ?? Colors.tealAccent),
-                    trackColor: MaterialStateProperty.all((AppTheme.color ?? Colors.tealAccent).withOpacity(0.4)))),
-        themeMode: EasyDynamicTheme.of(context).themeMode,
-        home: Navigation());
+                  (AppTheme.color ?? Colors.tealAccent).withOpacity(0.4),
+                ),
+              ),
+            )
+          : ThemeData(
+              accentColor: AppTheme.color,
+              brightness: Brightness.dark,
+              switchTheme: SwitchThemeData(
+                thumbColor: MaterialStateProperty.all(
+                    AppTheme.color ?? Colors.tealAccent),
+                trackColor: MaterialStateProperty.all(
+                  (AppTheme.color ?? Colors.tealAccent).withOpacity(0.4),
+                ),
+              ),
+            ),
+      themeMode: EasyDynamicTheme.of(context).themeMode,
+      home: Navigation(),
+    );
   }
 }

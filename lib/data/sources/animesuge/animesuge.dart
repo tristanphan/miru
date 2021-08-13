@@ -23,5 +23,8 @@ class AnimeSuge implements Anime {
   Future<AnimeDetails> getDetails(String url) => Data.getDetails(url);
 
   Future<VideoDetails?> getVideo(String url, [Function? changeProgress]) =>
-      Data.getVideo(url, changeProgress ?? (String a) {});
+      Data.getVideo(
+        url,
+        changeProgress ?? (String a) {},
+      );
 }
