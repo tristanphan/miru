@@ -24,9 +24,7 @@ void downloadPopup(AnimeDetails details, int index, BuildContext context,
                   },
                 ),
               );
-              setState(
-                () {}
-              );
+              setState(() {});
             },
             child: Text("Yes"),
           ),

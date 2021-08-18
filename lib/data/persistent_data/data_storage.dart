@@ -33,9 +33,7 @@ class Storage {
         for (Map<String, dynamic> pin in data) Pin.fromJson(pin),
       ];
     } catch (e) {
-      print(
-        "Error: " + e.toString(),
-      );
+      print("Error: " + e.toString());
       sharedPreferences!.clear();
       sharedPreferences!.setString("pinned", "[]");
       pinned = [];
@@ -80,14 +78,14 @@ class Storage {
   static bool isPinned(String url) =>
       pinned.indexWhere((Pin pin) => pin.url == url) != -1;
 
-  static void addEpisode(String url, AnimeDetails anime,
+  static void addEpisode(String name, String url, AnimeDetails anime,
       {int timeMs = 0, int totalTime = 10}) {
     if (!isPinned(anime.url)) {
       addPin(anime.url, anime.name, anime.image);
     }
     int animeIndex = pinned.indexWhere((Pin pin) => pin.url == anime.url);
     pinned[animeIndex].episodes.add(
-          Bookmark(url: url, duration: totalTime, position: timeMs),
+          Bookmark(name: name, url: url, duration: totalTime, position: timeMs),
         );
     save();
   }
@@ -126,11 +124,11 @@ class Storage {
         .removeWhere((Bookmark bookmark) => bookmark.url == url);
   }
 
-  static void toggleEpisode(String url, AnimeDetails anime) {
+  static void toggleEpisode(String name, String url, AnimeDetails anime) {
     if (isBookmarked(anime.url, url)) {
       removeEpisode(anime.url, url);
     } else {
-      addEpisode(url, anime);
+      addEpisode(name, url, anime);
     }
   }
 

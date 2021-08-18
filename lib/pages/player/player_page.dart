@@ -52,7 +52,7 @@ class _PlayerState extends State<Player> {
   @override
   void initState() {
     if (!Storage.isBookmarked(widget.anime.url, widget.sourceUrl)) {
-      Storage.addEpisode(widget.sourceUrl, widget.anime);
+      Storage.addEpisode(widget.name.substring(widget.name.lastIndexOf("Episode")), widget.sourceUrl, widget.anime);
     }
     video = Video(
       url: widget.url,
@@ -126,9 +126,7 @@ class _PlayerState extends State<Player> {
             video!.getDuration().inMilliseconds);
       }
     }
-    widget.detailsState(
-      () {}
-    );
+    widget.detailsState(() {});
     unsetTimer();
     super.deactivate();
   }

@@ -44,8 +44,7 @@ class _DetailsLoadingPageState extends State<DetailsLoadingPage> {
           ),
         );
       },
-      onError: (obj, stackTrace) =>
-        Navigator.of(context).pop(),
+      onError: (obj, stackTrace) => Navigator.of(context).pop(),
     );
   }
 

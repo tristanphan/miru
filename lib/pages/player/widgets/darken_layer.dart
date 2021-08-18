@@ -15,19 +15,30 @@ List<Widget> darkenLayer() {
       ),
     ),
 
-    // Left and right seek
+    // Left seek
     AnimatedOpacity(
       duration: Duration(milliseconds: 200),
-      opacity: (Seek.right || Seek.left) ? 1 : 0,
+      opacity: Seek.left ? 1 : 0,
       child: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(colors: [
-            if (Seek.left) Color.fromRGBO(0, 0, 0, 0.4),
+            Color.fromRGBO(0, 0, 0, 0.4),
             Color.fromRGBO(0, 0, 0, 0),
-            // To keep colors.length >= 2
-            if (!Seek.right && !Seek.left) Color.fromRGBO(0, 0, 0, 0),
-            if (Seek.right) Color.fromRGBO(0, 0, 0, 0.4),
           ], begin: Alignment.centerLeft, end: Alignment.centerRight),
+        ),
+      ),
+    ),
+
+    // Right seek
+    AnimatedOpacity(
+      duration: Duration(milliseconds: 200),
+      opacity: Seek.right ? 1 : 0,
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(colors: [
+            Color.fromRGBO(0, 0, 0, 0.4),
+            Color.fromRGBO(0, 0, 0, 0),
+          ], begin: Alignment.centerRight, end: Alignment.centerLeft),
         ),
       ),
     ),

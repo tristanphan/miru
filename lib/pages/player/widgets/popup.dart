@@ -65,9 +65,7 @@ class _PopupState extends State<Popup> {
       (Timer t) {
         if (!mounted) t.cancel();
         if (t.tick == 1) timer = t;
-        setState(
-          () {}
-        );
+        setState(() {});
       },
     );
   }
@@ -311,9 +309,7 @@ class _PopupState extends State<Popup> {
                             if (_isPlayingBeforeScrub) {
                               widget.video.play();
                             }
-                            setState(
-                              () {}
-                            );
+                            setState(() {});
                             widget.setTimer();
                             while ((widget.video.getPosition() -
                                         Duration(

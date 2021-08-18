@@ -40,9 +40,7 @@ Widget episodeCard(
           },
         ),
       );
-      setState(
-        () {}
-      );
+      setState(() {});
     },
     onLongPress: () {
       downloadPopup(details, index, context, setState);
@@ -121,9 +119,7 @@ Widget episodeCard(
           GestureDetector(
             onLongPress: () {
               Storage.removeEpisode(details.url, details.episodes[index].url);
-              setState(
-                () {}
-              );
+              setState(() {});
             },
             child: Icon(Icons.navigate_next),
           ),

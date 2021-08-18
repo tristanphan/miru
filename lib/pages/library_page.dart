@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:miru/data/persistent_data/bookmark.dart';
 import 'package:miru/data/persistent_data/data_storage.dart';
 import 'package:miru/data/persistent_data/pin.dart';
 import 'package:miru/data/structures/popular.dart';
@@ -16,10 +17,11 @@ class LibraryPage extends StatefulWidget {
 }
 
 class _LibraryPageState extends State<LibraryPage> {
-
   @override
   Widget build(BuildContext context) {
-    bool isDark = Theme.of(context).brightness == Brightness.dark;
+    bool isDark = Theme
+        .of(context)
+        .brightness == Brightness.dark;
     Future<List<PaletteGenerator>> pinnedPalette = () async {
       return [
         for (Pin pin in Storage.pinned)
@@ -31,11 +33,11 @@ class _LibraryPageState extends State<LibraryPage> {
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () =>
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (BuildContext context) => SearchPage(),
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (BuildContext context) => SearchPage(),
+              ),
             ),
-          ),
         label: Text("Search"),
         icon: Icon(Icons.search),
       ),
@@ -44,9 +46,7 @@ class _LibraryPageState extends State<LibraryPage> {
             headerSilverBuilder(context, "Library"),
         body: RefreshIndicator(
           onRefresh: () async {
-            setState(
-              () {}
-            );
+            setState(() {});
           },
           color: isDark ? Colors.black : Colors.white,
           backgroundColor: isDark ? Colors.white : Colors.black,
@@ -59,15 +59,23 @@ class _LibraryPageState extends State<LibraryPage> {
                 return Center(
                   child: CupertinoActivityIndicator(),
                 );
-              List<Popular> libraryItems = [
-                for (int index = Storage.pinned.length - 1; index >= 0; index--)
-                  Popular(
-                      image: Storage.pinned[index].image,
-                      url: Storage.pinned[index].url,
-                      title: Storage.pinned[index].title,
-                      palette: snapshot.data![index],
-                      subtext: Storage.pinned[index].source),
-              ];
+
+              List<Popular> libraryItems = [];
+              for (int index = Storage.pinned.length - 1; index >= 0; index--) {
+                String latestEp = 'Not Started';
+
+                for (Bookmark bookmark in Storage.pinned[index].episodes) {
+                  if (bookmark.name.compareTo(latestEp) > 0 || latestEp == 'Not Started') latestEp = bookmark.name;
+                }
+
+                libraryItems.add(Popular(
+                    image: Storage.pinned[index].image,
+                    url: Storage.pinned[index].url,
+                    title: Storage.pinned[index].title,
+                    palette: snapshot.data![index],
+                    subtext: '${Storage.pinned[index].source}\n$latestEp'));
+              }
+
               if (libraryItems.isEmpty)
                 return Center(
                   child: Text("Shows will appear here as you watch!"),
@@ -80,6 +88,15 @@ class _LibraryPageState extends State<LibraryPage> {
                       list: libraryItems,
                       subtext: (item) => item.subtext,
                       setState: setState,
+                      onReorder: (int oldIndex, int newIndex) {
+                        setState(() {
+                          oldIndex = Storage.pinned.length - oldIndex - 1;
+                          newIndex = Storage.pinned.length - newIndex - 1;
+                          Pin pin = Storage.pinned.removeAt(oldIndex);
+                          Storage.pinned.insert(newIndex, pin);
+                          Storage.save();
+                        });
+                      },
                       useCustomCrawler: true),
                 ),
               );

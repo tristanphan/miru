@@ -178,9 +178,7 @@ Widget detailsCard(BuildContext context, AnimeDetails details, Color cardColor,
                                     );
 
                                     // Update episode progress when returned to page
-                                    setState(
-                                      () {}
-                                    );
+                                    setState(() {});
                                   },
                                   backgroundColor: Colors.red,
                                   heroTag: "play"),

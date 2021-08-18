@@ -37,14 +37,14 @@ class _LoadingState extends State<Loading> {
         if (!mounted) return;
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
-            builder: (context) =>Player(
-                  name: video!.title,
-                  url: video.url,
-                  sourceUrl: widget.url,
-                  anime: widget.anime,
-                  detailsState: widget.detailsState,
-                  lastEpisode: video.last,
-                  nextEpisode: video.next),
+            builder: (context) => Player(
+                name: video!.title,
+                url: video.url,
+                sourceUrl: widget.url,
+                anime: widget.anime,
+                detailsState: widget.detailsState,
+                lastEpisode: video.last,
+                nextEpisode: video.next),
           ),
         );
       },

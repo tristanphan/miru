@@ -47,14 +47,13 @@ class _DetailsPageState extends State<DetailsPage> {
     }
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
-          onPressed: () =>
-            showInfo(
-                context: context,
-                url: widget.url,
-                name: widget.title,
-                image: details.image,
-                setState: setState,
-                shouldPop: true),
+          onPressed: () => showInfo(
+              context: context,
+              url: widget.url,
+              name: widget.title,
+              image: details.image,
+              setState: setState,
+              shouldPop: true),
           label: Text(isPinned ? "Unpin" : "Pin"),
           icon: Icon(isPinned ? Icons.favorite : Icons.favorite_border),
           foregroundColor: isPinned

@@ -29,26 +29,29 @@ void saveFrame(BuildContext context, String videoUrl, Duration position) async {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           behavior: SnackBarBehavior.floating,
-          content: Text("Failed to save frame"),
+          content: Text(
+              "Failed to save frame. This could happen if the video is of m3u8 format."),
           duration: Duration(seconds: 3),
         ),
       );
+    } else {
+      await file.writeAsBytes(bytes, flush: true);
+      Share.shareFiles([file.path], subject: filename);
     }
-    await file.writeAsBytes(bytes!, flush: true);
-    Share.shareFiles([file.path], subject: filename);
   }
   if (Platform.isWindows || Platform.isLinux) {
     VideoFrame frame = await videoStreamControllers[1]!.stream.last;
     Completer<ui.Image> imageCompleter = new Completer<ui.Image>();
     ui.decodeImageFromPixels(
-        frame.byteArray,
-        frame.videoWidth,
-        frame.videoHeight,
-        ui.PixelFormat.bgra8888,
-        (ui.Image _image) => imageCompleter.complete(_image),
-        rowBytes: 4 * frame.videoWidth,
-        targetWidth: frame.videoWidth,
-        targetHeight: frame.videoHeight);
+      frame.byteArray,
+      frame.videoWidth,
+      frame.videoHeight,
+      ui.PixelFormat.bgra8888,
+      (ui.Image _image) => imageCompleter.complete(_image),
+      rowBytes: 4 * frame.videoWidth,
+      targetWidth: frame.videoWidth,
+      targetHeight: frame.videoHeight,
+    );
     ui.Image image = await imageCompleter.future;
 
     File file = File("${temporary.path}/$filename");
@@ -61,10 +64,9 @@ void saveFrame(BuildContext context, String videoUrl, Duration position) async {
           duration: Duration(seconds: 3),
         ),
       );
+    } else {
+      await file.writeAsBytes(bytes.buffer.asUint8List(), flush: true);
+      launch(file.uri.toString());
     }
-    await file.writeAsBytes(bytes!.buffer.asUint8List(), flush: true);
-    launch(
-      file.uri.toString(),
-    );
   }
 }

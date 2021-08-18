@@ -48,9 +48,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           },
                           onValueChanged: (ThemeMode? mode) {
                             AppTheme.setTheme(context, mode!);
-                            setState(
-                              () {}
-                            );
+                            setState(() {});
                           },
                           groupValue: AppTheme.theme),
                     ],
@@ -96,9 +94,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   Color? color = await pickColor(
                       isDark, (AppTheme.color == null) ? "Cancel" : "Reset");
                   AppTheme.setColor(context, color);
-                  setState(
-                    () {}
-                  );
+                  setState(() {});
                 },
                 child: Container(
                   height: 60,

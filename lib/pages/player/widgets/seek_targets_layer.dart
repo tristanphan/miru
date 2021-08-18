@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:miru/pages/player/functions/seek.dart';
 import 'package:miru/pages/player/functions/video.dart';
 import 'package:miru/pages/player/player_page.dart';
-import 'package:wakelock/wakelock.dart';
 
 double distance = 0;
 
@@ -51,26 +50,9 @@ Widget seekTargetsLayer(
           width: MediaQuery.of(context).size.width * 0.4,
           // Left Seek
           child: GestureDetector(
-              onTap: togglePopup,
-              onLongPress: null,
-              onDoubleTap: (Platform.isAndroid || Platform.isIOS)
-                  ? () {
-                      setState(
-                        () {
-                          if (video.isPlaying()) {
-                            video.pause();
-                            Wakelock.disable();
-                            setPopup(true);
-                          } else {
-                            video.play();
-                            Wakelock.enable();
-                            setPopup(false);
-                          }
-                          unsetTimer();
-                        },
-                      );
-                    }
-                  : null),
+            onTap: togglePopup,
+            onLongPress: null,
+          ),
         ),
         SizedBox(
           height: MediaQuery.of(context).size.height,

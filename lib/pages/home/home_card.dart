@@ -81,9 +81,7 @@ class _HomeCardState extends State<HomeCard> {
                     ),
                   ),
                 );
-                widget.setState(
-                  () {}
-                );
+                widget.setState(() {});
               },
               onLongPress: () async {
                 if (widget.url.isEmpty) return;
@@ -94,9 +92,7 @@ class _HomeCardState extends State<HomeCard> {
                     name: widget.title,
                     url: widget.url,
                     shouldPop: false);
-                widget.setState(
-                  () {}
-                );
+                widget.setState(() {});
               },
               child: Container(
                 decoration: BoxDecoration(

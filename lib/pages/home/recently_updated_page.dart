@@ -15,7 +15,6 @@ class RecentlyUpdatedPage extends StatefulWidget {
 }
 
 class _RecentlyUpdatedPageState extends State<RecentlyUpdatedPage> {
-
   @override
   Widget build(BuildContext context) {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
