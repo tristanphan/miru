@@ -34,9 +34,9 @@ dependencies:
   flutter_xlider: # ^3.4.0-dev.3
     git:
       url: https://github.com/Ali-Azmoud/flutter_xlider.git
+      ref: master
   easy_dynamic_theme: ^2.2.0
   palette_generator: ^0.3.3+1
-  toggle_switch: ^2.0.1
   flex_color_picker: ^2.5.0
   web_scraper: ^0.1.4
   dart_vlc: ^0.3.0
@@ -49,6 +49,7 @@ dependencies:
   http: ^0.13.4
   fuzzy: ^0.4.0-nullsafety.0
   reorderables: ^0.5.0
+  flutter_js: ^0.5.0+6
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

@@ -1,5 +1,7 @@
 PODS:
   - Flutter (1.0.0)
+  - flutter_js (0.1.0):
+    - Flutter
   - libwebp (1.2.0):
     - libwebp/demux (= 1.2.0)
     - libwebp/mux (= 1.2.0)
@@ -27,6 +29,7 @@ PODS:
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
+  - flutter_js (from `.symlinks/plugins/flutter_js/ios`)
   - path_provider_ios (from `.symlinks/plugins/path_provider_ios/ios`)
   - share (from `.symlinks/plugins/share/ios`)
   - shared_preferences_ios (from `.symlinks/plugins/shared_preferences_ios/ios`)
@@ -42,6 +45,8 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
+  flutter_js:
+    :path: ".symlinks/plugins/flutter_js/ios"
   path_provider_ios:
     :path: ".symlinks/plugins/path_provider_ios/ios"
   share:
@@ -59,6 +64,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
+  flutter_js: 95929d4e146e8ceb1c8e1889d8c2065c5d840076
   libwebp: e90b9c01d99205d03b6bb8f2c8c415e5a4ef66f0
   path_provider_ios: 14f3d2fd28c4fdb42f44e0f751d12861c43cee02
   share: 0b2c3e82132f5888bccca3351c504d0003b3b410

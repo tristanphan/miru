@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:miru/data/persistent_data/data_storage.dart';
 import 'package:miru/data/structures/anime_details.dart';
 import 'package:miru/pages/player/player_loading_page.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 Widget detailsCard(BuildContext context, AnimeDetails details, Color cardColor,
     bool isDark, void Function(VoidCallback fn) setState) {
@@ -166,11 +166,9 @@ Widget detailsCard(BuildContext context, AnimeDetails details, Color cardColor,
                                     await Navigator.of(context).push(
                                       MaterialPageRoute(
                                         builder: (BuildContext context) {
-                                          return Loading(
+                                          return PlayerLoadingPage(
                                               url: details.episodes[epNum].url,
-                                              name: details.name +
-                                                  " " +
-                                                  details.episodes[epNum].name,
+                                              name: details.episodes[epNum].name,
                                               anime: details,
                                               detailsState: setState);
                                         },
@@ -203,7 +201,7 @@ Widget detailsCard(BuildContext context, AnimeDetails details, Color cardColor,
             child: InkWell(
               borderRadius: BorderRadius.circular(15),
               onTap: () =>
-                  launch('https://myanimelist.net/anime/${details.malID}'),
+                  launchUrlString('https://myanimelist.net/anime/${details.malID}'),
               child: Card(
                 color:
                     Color.alphaBlend(cardColor.withOpacity(0.8), Colors.black),

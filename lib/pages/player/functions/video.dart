@@ -45,7 +45,8 @@ class Video {
       );
     }
     if (Platform.isWindows || Platform.isLinux) {
-      vlcPlayer = Vlc.Player(id: 1, videoDimensions: Vlc.VideoDimensions(1920, 1080));
+      vlcPlayer =
+          Vlc.Player(id: 1, videoDimensions: Vlc.VideoDimensions(1920, 1080));
       vlcPlayer!.open(Vlc.Media.network(url), autoStart: false);
       (() async {
         // Ensure initialized

@@ -416,7 +416,7 @@ class _PopupState extends State<Popup> {
                             : () {
                                 Navigator.of(context).pushReplacement(
                                   MaterialPageRoute(
-                                    builder: (BuildContext context) => Loading(
+                                    builder: (BuildContext context) => PlayerLoadingPage(
                                       anime: widget.anime,
                                       detailsState: widget.detailsState,
                                       name: widget.lastEpisode[0],
@@ -483,7 +483,7 @@ class _PopupState extends State<Popup> {
                             : () {
                                 Navigator.of(context).pushReplacement(
                                   MaterialPageRoute(
-                                    builder: (BuildContext context) => Loading(
+                                    builder: (BuildContext context) => PlayerLoadingPage(
                                       anime: widget.anime,
                                       detailsState: widget.detailsState,
                                       name: widget.nextEpisode[0],
@@ -564,6 +564,7 @@ class _PopupState extends State<Popup> {
                         : Icons.volume_off),
                     tooltip: "Volume",
                     iconSize: 30,
+                    color: Colors.white,
                     onPressed: () {
                       if (widget.video.getVolume() == 0) {
                         widget.video
@@ -645,6 +646,7 @@ class _PopupState extends State<Popup> {
                     icon: Icon(Icons.timer),
                     disabledColor: Colors.white,
                     tooltip: "Playback Speed",
+                    color: Colors.white,
                     onPressed: () {
                       speed = 1;
                       widget.video.setSpeed(1);

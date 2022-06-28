@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:miru/data/persistent_data/theme.dart';
 import 'package:miru/pages/home/popular_page.dart';
 import 'package:miru/pages/home/recently_updated_page.dart';
 import 'package:miru/pages/library_page.dart';
@@ -25,7 +26,7 @@ class _NavigationState extends State<Navigation> {
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: Theme.of(context).colorScheme.secondary,
+        selectedItemColor: AppTheme.color,
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.feed), label: "Updated"),
           BottomNavigationBarItem(

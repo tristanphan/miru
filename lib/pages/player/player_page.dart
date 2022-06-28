@@ -53,7 +53,7 @@ class _PlayerState extends State<Player> {
   void initState() {
     if (!Storage.isBookmarked(widget.anime.url, widget.sourceUrl)) {
       Storage.addEpisode(
-          widget.name.substring(widget.name.lastIndexOf("Episode")),
+          widget.name,
           widget.sourceUrl,
           widget.anime);
     }

@@ -5,14 +5,14 @@ import 'package:miru/data/structures/anime_details.dart';
 import 'package:miru/pages/home/home_card.dart';
 import 'package:miru/pages/player/player_page.dart';
 
-class Loading extends StatefulWidget {
+class PlayerLoadingPage extends StatefulWidget {
   final String name;
   final String url;
   final AnimeDetails anime;
   final Function detailsState;
   final String? customCrawler;
 
-  const Loading(
+  const PlayerLoadingPage(
       {required this.name,
       required this.url,
       required this.anime,
@@ -22,10 +22,10 @@ class Loading extends StatefulWidget {
       : super(key: key);
 
   @override
-  _LoadingState createState() => _LoadingState();
+  _PlayerLoadingPageState createState() => _PlayerLoadingPageState();
 }
 
-class _LoadingState extends State<Loading> {
+class _PlayerLoadingPageState extends State<PlayerLoadingPage> {
   String loadingProgress = "";
   int progress = 0;
 
@@ -67,6 +67,7 @@ class _LoadingState extends State<Loading> {
 
   @override
   Widget build(BuildContext context) {
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
@@ -88,7 +89,7 @@ class _LoadingState extends State<Loading> {
                     img: widget.anime.image,
                     url: '',
                     palette: widget.anime.palette,
-                    subtext: "Episode " + widget.name.split('Episode ')[1],
+                    subtext: widget.name,
                   ),
                   Padding(
                     padding: EdgeInsets.all(4),
@@ -100,8 +101,9 @@ class _LoadingState extends State<Loading> {
                         animatedDuration: Duration(milliseconds: 300),
                         maxValue: 100,
                         size: 10,
-                        backgroundColor: Colors.white24,
-                        progressColor: Colors.white,
+                        backgroundColor:
+                            isDark ? Colors.white24 : Colors.black26,
+                        progressColor: isDark ? Colors.white : Colors.black,
                         currentValue: progress.toDouble()),
                   ),
                   Padding(

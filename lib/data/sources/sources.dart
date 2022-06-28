@@ -1,13 +1,13 @@
 import 'package:miru/data/anime.dart';
 import 'package:miru/data/persistent_data/data_storage.dart';
-import 'package:miru/data/sources/animesuge/animesuge.dart';
-import 'package:miru/data/sources/gogoanime/gogoanime.dart';
+import 'package:miru/data/sources/genoanime/genoanime.dart';
 
 class Sources {
   static int _selected = 0;
   static List<Anime> list = [
-    Gogoanime(),
-    AnimeSuge(),
+    Genoanime(),
+    // Gogoanime(),
+    // AnimeSuge(),
   ];
 
   static Anime get([String? name]) {

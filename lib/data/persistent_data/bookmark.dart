@@ -4,7 +4,11 @@ class Bookmark {
   int position;
   int duration;
 
-  Bookmark({required this.name, required this.url, this.position = 0, this.duration = 10});
+  Bookmark(
+      {required this.name,
+      required this.url,
+      this.position = 0,
+      this.duration = 10});
 
   Bookmark.fromJson(Map<String, dynamic> json)
       : this.name = json['name'],
@@ -12,6 +16,10 @@ class Bookmark {
         this.position = json['position'],
         this.duration = json['duration'];
 
-  Map<String, dynamic> toJson() =>
-      {'name': this.name, 'url': this.url, 'position': this.position, 'duration': this.duration};
+  Map<String, dynamic> toJson() => {
+        'name': this.name,
+        'url': this.url,
+        'position': this.position,
+        'duration': this.duration
+      };
 }

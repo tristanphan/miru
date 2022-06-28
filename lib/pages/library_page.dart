@@ -19,9 +19,7 @@ class LibraryPage extends StatefulWidget {
 class _LibraryPageState extends State<LibraryPage> {
   @override
   Widget build(BuildContext context) {
-    bool isDark = Theme
-        .of(context)
-        .brightness == Brightness.dark;
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
     Future<List<PaletteGenerator>> pinnedPalette = () async {
       return [
         for (Pin pin in Storage.pinned)
@@ -32,12 +30,11 @@ class _LibraryPageState extends State<LibraryPage> {
     }();
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () =>
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (BuildContext context) => SearchPage(),
-              ),
-            ),
+        onPressed: () => Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (BuildContext context) => SearchPage(),
+          ),
+        ),
         label: Text("Search"),
         icon: Icon(Icons.search),
       ),
@@ -65,7 +62,8 @@ class _LibraryPageState extends State<LibraryPage> {
                 String latestEp = 'Not Started';
 
                 for (Bookmark bookmark in Storage.pinned[index].episodes) {
-                  if (bookmark.name.compareTo(latestEp) > 0 || latestEp == 'Not Started') latestEp = bookmark.name;
+                  if (bookmark.name.compareTo(latestEp) > 0 ||
+                      latestEp == 'Not Started') latestEp = bookmark.name;
                 }
 
                 libraryItems.add(Popular(

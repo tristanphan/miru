@@ -31,9 +31,9 @@ Widget episodeCard(
       await Navigator.of(context).push(
         MaterialPageRoute(
           builder: (BuildContext context) {
-            return Loading(
+            return PlayerLoadingPage(
                 url: details.episodes[index].url,
-                name: details.name + " " + details.episodes[index].name,
+                name: details.episodes[index].name,
                 anime: details,
                 detailsState: setState,
                 customCrawler: customCrawler);

@@ -34,6 +34,7 @@ class _DownloadState extends State<Download> {
 
   @override
   Widget build(BuildContext context) {
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
     return WillPopScope(
       onWillPop: () async => false,
       child: Theme(
@@ -63,8 +64,8 @@ class _DownloadState extends State<Download> {
                       animatedDuration: Duration(milliseconds: 300),
                       maxValue: total.toDouble(),
                       size: 10,
-                      backgroundColor: Colors.white24,
-                      progressColor: Colors.white,
+                      backgroundColor: isDark ? Colors.white24 : Colors.black12,
+                      progressColor: isDark ? Colors.white : Colors.black38,
                       currentValue: received.toDouble()),
                 ),
                 Padding(
