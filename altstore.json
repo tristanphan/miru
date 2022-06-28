@@ -5,10 +5,10 @@
   "userInfo": {},
   "apps": [
     {
-      "name": "NineAnimator",
+      "name": "Miru",
       "bundleIdentifier": "com.tristanphan.miru",
       "developerName": "Tristan Phan",
-      "version": "1.0.0",
+      "version": "1.2.0",
       "versionDate": "",
       "versionDescription": "",
       "downloadURL": "",

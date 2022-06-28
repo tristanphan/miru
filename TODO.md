@@ -1,4 +1,9 @@
-## To Do
+### Issues to Fix
+
+- Save Frame does not work on m3u8 files
+- Decentralize sources
+
+## Planned Features
 
 - Code Cleanup & Comments
 - Video Player Tweaks
@@ -8,18 +13,12 @@
     - Add more keyboard shortcuts
     - Fix slider's tooltip's animation
 - Handoff?
-- Add more sources
 - Proper Downloads Page
-- Work on Android support
-- Add support for Windows, Linux, and macOS (Intel / Universal)
-  - Wait for VideoPlayer to support desktop OR find alternative video player
+- Polish Android support
+- Add macOS support
+  - Find a video player library for macOS
 - MyAnimeList / AniList integration?
     - Use either to fetch show information, instead of GoGoAnime's summaries
-
-### Issues to Fix
-
-- Save Frame saves a frame near, but not exactly where the playhead is
-- Seeking video does not update the current frame until play
 
 ## Migrating to Desktop
 - Video Player

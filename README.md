@@ -2,10 +2,6 @@
 
 ### Watch all your favorite anime shows and movies in one place.
 
-## NOTE: Current Roadblocks & Issues
-
-Miru is currently "out of order" due to the lack of streaming sources available. If you have any ideas for where Miru might be able to stream content from, any help would be appreciated!
-
 ## Table of Contents
 
 1. [Features](#features)
@@ -82,8 +78,7 @@ Currently, the app supports iOS, Apple Silicon Macs, and Android, but the Androi
 
 ### iOS
 
-Currently, the only way to install without jailbreaking it is through AltStore. TestFlight may come at a later date if
-there is funding because the Apple Developer Program is expensive
+Currently, the only way to install without jailbreaking is through AltStore. TestFlight may come at a later date, but Apple Developer Program is expensive
 
 1. Set Up [AltStore](https://altstore.io/)
 2. Download the IPA file from Releases
