@@ -33,7 +33,7 @@ dependencies:
   wakelock: ^0.5.2
   flutter_xlider:
     git:
-      url: git://github.com/Ali-Azmoud/flutter_xlider.git
+      url: https://github.com/Ali-Azmoud/flutter_xlider.git
   easy_dynamic_theme: ^2.2.0
   palette_generator: ^0.3.0
   toggle_switch: ^1.2.0
@@ -42,7 +42,7 @@ dependencies:
   dart_vlc: ^0.1.0
   window_size:
     git:
-      url: git://github.com/google/flutter-desktop-embedding.git
+      url: https://github.com/google/flutter-desktop-embedding.git
       path: plugins/window_size
   url_launcher: ^6.0.9
   intl: ^0.17.0
