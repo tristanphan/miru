@@ -12,7 +12,7 @@ class Video {
   VideoPlayerController? _videoPlayerController;
 
   // Windows and Linux
-  Vlc.Player? _vlcPlayer;
+  Vlc.Player? vlcPlayer;
 
   Video(
       {required String url,
@@ -45,8 +45,8 @@ class Video {
       );
     }
     if (Platform.isWindows || Platform.isLinux) {
-      _vlcPlayer = Vlc.Player(id: 1, videoHeight: 1080, videoWidth: 1920);
-      _vlcPlayer!.open(Vlc.Media.network(url), autoStart: false);
+      vlcPlayer = Vlc.Player(id: 1, videoDimensions: Vlc.VideoDimensions(1920, 1080));
+      vlcPlayer!.open(Vlc.Media.network(url), autoStart: false);
       (() async {
         // Ensure initialized
         while (getDuration() == Duration(milliseconds: 1)) {
@@ -69,7 +69,7 @@ class Video {
       await _videoPlayerController!.seekTo(duration);
     }
     if (Platform.isWindows || Platform.isLinux) {
-      _vlcPlayer!.seek(duration);
+      vlcPlayer!.seek(duration);
     }
   }
 
@@ -79,7 +79,7 @@ class Video {
         await _videoPlayerController!.play();
       }
       if (Platform.isWindows || Platform.isLinux) {
-        _vlcPlayer!.play();
+        vlcPlayer!.play();
       }
     }
   }
@@ -89,7 +89,7 @@ class Video {
       await _videoPlayerController!.pause();
     }
     if (Platform.isWindows || Platform.isLinux) {
-      _vlcPlayer!.pause();
+      vlcPlayer!.pause();
     }
   }
 
@@ -98,7 +98,7 @@ class Video {
       await _videoPlayerController!.setPlaybackSpeed(speed);
     }
     if (Platform.isWindows || Platform.isLinux) {
-      _vlcPlayer!.setRate(speed);
+      vlcPlayer!.setRate(speed);
     }
   }
 
@@ -107,7 +107,7 @@ class Video {
       return _videoPlayerController!.value.playbackSpeed;
     }
     if (Platform.isWindows || Platform.isLinux) {
-      return _vlcPlayer!.general.rate;
+      return vlcPlayer!.general.rate;
     }
     return 1.0;
   }
@@ -117,7 +117,7 @@ class Video {
       await _videoPlayerController!.setVolume(volume);
     }
     if (Platform.isWindows || Platform.isLinux) {
-      _vlcPlayer!.setVolume(volume);
+      vlcPlayer!.setVolume(volume);
     }
   }
 
@@ -126,7 +126,7 @@ class Video {
       return _videoPlayerController!.value.volume;
     }
     if (Platform.isWindows || Platform.isLinux) {
-      return _vlcPlayer!.general.volume;
+      return vlcPlayer!.general.volume;
     }
     return 1.0;
   }
@@ -136,7 +136,7 @@ class Video {
       return _videoPlayerController!.value.position;
     }
     if (Platform.isWindows || Platform.isLinux) {
-      return _vlcPlayer!.position.position ?? Duration();
+      return vlcPlayer!.position.position ?? Duration();
     }
     return Duration();
   }
@@ -155,7 +155,7 @@ class Video {
     if (Platform.isWindows || Platform.isLinux) {
       // To avoid divide by zero
       Duration duration =
-          _vlcPlayer!.position.duration ?? Duration(milliseconds: 1);
+          vlcPlayer!.position.duration ?? Duration(milliseconds: 1);
       if (duration.isNegative || duration.inMicroseconds == 0) {
         duration = Duration(milliseconds: 1);
       }
@@ -169,7 +169,7 @@ class Video {
       return _videoPlayerController!.value.isPlaying;
     }
     if (Platform.isWindows || Platform.isLinux) {
-      return _vlcPlayer!.playback.isPlaying;
+      return vlcPlayer!.playback.isPlaying;
     }
     return false;
   }
@@ -179,7 +179,7 @@ class Video {
       await _videoPlayerController!.dispose();
     }
     if (Platform.isWindows || Platform.isLinux) {
-      _vlcPlayer!.dispose();
+      vlcPlayer!.dispose();
     }
   }
 

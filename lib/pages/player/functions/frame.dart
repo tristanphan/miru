@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share/share.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
 void saveFrame(BuildContext context, String videoUrl, Duration position) async {
@@ -66,7 +66,7 @@ void saveFrame(BuildContext context, String videoUrl, Duration position) async {
       );
     } else {
       await file.writeAsBytes(bytes.buffer.asUint8List(), flush: true);
-      launch(file.uri.toString());
+      launchUrlString(file.uri.toString());
     }
   }
 }

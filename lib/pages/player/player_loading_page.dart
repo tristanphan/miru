@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
 import 'package:miru/data/sources/sources.dart';
@@ -103,7 +102,7 @@ class _LoadingState extends State<Loading> {
                         size: 10,
                         backgroundColor: Colors.white24,
                         progressColor: Colors.white,
-                        currentValue: progress),
+                        currentValue: progress.toDouble()),
                   ),
                   Padding(
                     padding: EdgeInsets.all(4),

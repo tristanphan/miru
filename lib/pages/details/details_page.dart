@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:miru/data/persistent_data/data_storage.dart';
 import 'package:miru/data/structures/anime_details.dart';

@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_xlider/flutter_xlider.dart';
 import 'package:miru/data/structures/anime_details.dart';
 import 'package:miru/pages/player/functions/formatter.dart';
@@ -11,7 +9,7 @@ import 'package:miru/pages/player/functions/frame.dart';
 import 'package:miru/pages/player/functions/seek.dart';
 import 'package:miru/pages/player/functions/video.dart';
 import 'package:miru/pages/player/player_loading_page.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'package:wakelock/wakelock.dart';
 
 class Popup extends StatefulWidget {
@@ -453,7 +451,7 @@ class _PopupState extends State<Popup> {
                                   ? null
                                   : () {
                                       widget.video.pause();
-                                      launch(
+                                      launchUrlString(
                                           'https://myanimelist.net/anime/${widget.anime.malID}');
                                     },
                               child: Container(

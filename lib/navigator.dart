@@ -25,7 +25,7 @@ class _NavigationState extends State<Navigation> {
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: Theme.of(context).accentColor,
+        selectedItemColor: Theme.of(context).colorScheme.secondary,
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.feed), label: "Updated"),
           BottomNavigationBarItem(

@@ -52,7 +52,10 @@ class _PlayerState extends State<Player> {
   @override
   void initState() {
     if (!Storage.isBookmarked(widget.anime.url, widget.sourceUrl)) {
-      Storage.addEpisode(widget.name.substring(widget.name.lastIndexOf("Episode")), widget.sourceUrl, widget.anime);
+      Storage.addEpisode(
+          widget.name.substring(widget.name.lastIndexOf("Episode")),
+          widget.sourceUrl,
+          widget.anime);
     }
     video = Video(
       url: widget.url,
@@ -87,9 +90,7 @@ class _PlayerState extends State<Player> {
     SystemChrome.setPreferredOrientations(
       [DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight],
     );
-    SystemChrome.setEnabledSystemUIOverlays(
-      [],
-    );
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
     super.initState();
   }
 
@@ -104,9 +105,7 @@ class _PlayerState extends State<Player> {
         DeviceOrientation.portraitUp
       ],
     );
-    SystemChrome.setEnabledSystemUIOverlays(
-      [SystemUiOverlay.top, SystemUiOverlay.bottom],
-    );
+    SystemChrome.restoreSystemUIOverlays();
     if (isInitialized) {
       video!.pause();
       video!.dispose();
@@ -186,7 +185,7 @@ class _PlayerState extends State<Player> {
                   ),
                 ),
               if (Platform.isWindows || Platform.isLinux)
-                Vlc.Video(playerId: 1, width: 1920, height: 1080),
+                Vlc.Video(player: video?.vlcPlayer, width: 1920, height: 1080),
 
               for (Widget i in darkenLayer()) i,
 

@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:miru/data/anime.dart';
 import 'package:miru/data/sources/sources.dart';
 import 'package:miru/data/structures/search_item.dart';

@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:miru/data/persistent_data/data_storage.dart';
 import 'package:miru/data/persistent_data/theme.dart';
@@ -37,7 +36,6 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "Miru",
       theme: ThemeData(
-        accentColor: AppTheme.color,
         switchTheme: SwitchThemeData(
           thumbColor:
               MaterialStateProperty.all(AppTheme.color ?? Colors.blueAccent),
@@ -45,11 +43,11 @@ class MyApp extends StatelessWidget {
             (AppTheme.color ?? Colors.blueAccent).withOpacity(0.4),
           ),
         ),
+        colorScheme:
+            ColorScheme.fromSwatch().copyWith(secondary: AppTheme.color),
       ),
       darkTheme: AppTheme.fullBlack
           ? ThemeData(
-              brightness: Brightness.dark,
-              accentColor: AppTheme.color,
               scaffoldBackgroundColor: Colors.black,
               bottomNavigationBarTheme:
                   BottomNavigationBarThemeData(backgroundColor: Colors.black),
@@ -61,10 +59,10 @@ class MyApp extends StatelessWidget {
                   (AppTheme.color ?? Colors.tealAccent).withOpacity(0.4),
                 ),
               ),
+              colorScheme: ColorScheme.fromSwatch().copyWith(
+                  secondary: AppTheme.color, brightness: Brightness.dark),
             )
           : ThemeData(
-              accentColor: AppTheme.color,
-              brightness: Brightness.dark,
               switchTheme: SwitchThemeData(
                 thumbColor: MaterialStateProperty.all(
                     AppTheme.color ?? Colors.tealAccent),
@@ -72,6 +70,8 @@ class MyApp extends StatelessWidget {
                   (AppTheme.color ?? Colors.tealAccent).withOpacity(0.4),
                 ),
               ),
+              colorScheme: ColorScheme.fromSwatch().copyWith(
+                  secondary: AppTheme.color, brightness: Brightness.dark),
             ),
       themeMode: EasyDynamicTheme.of(context).themeMode,
       home: Navigation(),

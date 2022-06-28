@@ -61,11 +61,11 @@ class _DownloadState extends State<Download> {
                   child: FAProgressBar(
                       borderRadius: BorderRadius.circular(15),
                       animatedDuration: Duration(milliseconds: 300),
-                      maxValue: total,
+                      maxValue: total.toDouble(),
                       size: 10,
                       backgroundColor: Colors.white24,
                       progressColor: Colors.white,
-                      currentValue: received),
+                      currentValue: received.toDouble()),
                 ),
                 Padding(
                   padding: EdgeInsets.all(4),

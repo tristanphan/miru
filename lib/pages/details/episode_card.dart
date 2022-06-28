@@ -95,13 +95,13 @@ Widget episodeCard(
                           child: FAProgressBar(
                               borderRadius: BorderRadius.circular(15),
                               animatedDuration: Duration(milliseconds: 100),
-                              maxValue: totalTime,
+                              maxValue: totalTime.toDouble(),
                               size: 5,
                               backgroundColor:
                                   isDark ? Colors.white24 : Colors.black12,
                               progressColor:
                                   isDark ? Colors.white : Colors.black38,
-                              currentValue: episodeTime),
+                              currentValue: episodeTime.toDouble()),
                         ),
                       ],
                     ),

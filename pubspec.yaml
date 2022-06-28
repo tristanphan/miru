@@ -23,32 +23,32 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  video_player: ^2.1.6
-  video_thumbnail: ^0.3.3
-  path_provider: ^2.0.2
+  video_player: ^2.4.5
+  video_thumbnail: ^0.5.0
+  path_provider: ^2.0.11
   share: ^2.0.4
-  shared_preferences: ^2.0.6
-  dio: ^4.0.0
-  flutter_animation_progress_bar: ^2.0.0
-  wakelock: ^0.5.2
-  flutter_xlider:
+  shared_preferences: ^2.0.15
+  dio: ^4.0.6
+  flutter_animation_progress_bar: ^2.2.1
+  wakelock: ^0.6.1+2
+  flutter_xlider: # ^3.4.0-dev.3
     git:
       url: https://github.com/Ali-Azmoud/flutter_xlider.git
   easy_dynamic_theme: ^2.2.0
-  palette_generator: ^0.3.0
-  toggle_switch: ^1.2.0
-  flex_color_picker: ^2.1.2
+  palette_generator: ^0.3.3+1
+  toggle_switch: ^2.0.1
+  flex_color_picker: ^2.5.0
   web_scraper: ^0.1.4
-  dart_vlc: ^0.1.0
+  dart_vlc: ^0.3.0
   window_size:
     git:
       url: https://github.com/google/flutter-desktop-embedding.git
       path: plugins/window_size
-  url_launcher: ^6.0.9
+  url_launcher: ^6.1.4
   intl: ^0.17.0
-  http: ^0.13.3
+  http: ^0.13.4
   fuzzy: ^0.4.0-nullsafety.0
-  reorderables: ^0.4.1
+  reorderables: ^0.5.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -57,8 +57,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_launcher_icons: ^0.9.0
-  dependency_validator: ^3.1.0
+  flutter_launcher_icons: ^0.9.3
+  dependency_validator: ^3.2.0
 
 flutter_icons:
   android: true
