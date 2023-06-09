@@ -2,6 +2,10 @@
 
 ### Watch all your favorite anime shows and movies in one place.
 
+## NOTE: Current Roadblocks & Issues
+
+Miru is currently "out of order" due to the lack of streaming sources available. If you have any ideas for where Miru might be able to stream content from, any help would be appreciated!
+
 ## Table of Contents
 
 1. [Features](#features)
